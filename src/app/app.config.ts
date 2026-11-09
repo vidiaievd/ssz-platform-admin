@@ -11,6 +11,7 @@ import Aura from '@primeuix/themes/aura';
 import { provideTransloco } from '@jsverse/transloco';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
+import { provideApiClients } from './core/api/provide-api-clients';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { SessionStore } from './core/auth/session.store';
 import { APP_CONFIG, AppConfig } from './core/config/app-config';
@@ -27,6 +28,7 @@ export function buildAppConfig(config: AppConfig): ApplicationConfig {
       { provide: APP_CONFIG, useValue: config },
       provideRouter(routes, withComponentInputBinding()),
       provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+      provideApiClients(),
       providePrimeNG({
         license: config.primeUiLicense,
         theme: {
