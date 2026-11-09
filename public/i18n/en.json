@@ -362,6 +362,101 @@
         "endsAt": "Ends",
         "periodInvalid": "Pick a day after today and after the start."
       }
+    },
+    "ai": {
+      "keys": "AI keys",
+      "keysHint": "State is what the tariff gives (plan, then grants; a switch-off grant applies last). Switching a key on or off issues a grant for a term.",
+      "policyOffBanner": "The payer policy switches all AI of this school off: every agent refuses, whatever the keys below say.",
+      "usageFailed": "Could not load the AI keys and spend",
+      "grantsFailed": "Could not load the grants: the source of each key is unknown",
+      "state": "State",
+      "source": "Source",
+      "used": "Spent this period",
+      "periodEnd": "Period ends",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "grant · on",
+        "grant_off": "grant · off",
+        "none": "not in plan"
+      },
+      "scheduledOn": "switch-on grant from {{ date }}",
+      "scheduledOff": "switch-off grant from {{ date }}",
+      "usedUnmetered": "{{ used }} · unmetered",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over the period's credits",
+      "switchOff": "Switch off",
+      "switchOn": "Switch on",
+      "revokeOff": "Revoke switch-off",
+      "grantReason": "Switched off because: {{ reason }}",
+      "policy": "Payer policy",
+      "changePolicy": "Change policy",
+      "policyFailed": "Could not load the payer policy",
+      "allAi": "All AI",
+      "regions": "Model regions",
+      "policySource": "Set",
+      "storedAt": "{{ date }} by",
+      "policyDefault": "never set — the default applies (on, any region)",
+      "anyRegion": "any region",
+      "region": {
+        "eu": "EU",
+        "us": "US",
+        "global": "global",
+        "local": "self-hosted (local)"
+      },
+      "settings": "School settings",
+      "settingsHint": "Set by the school on its own screens; read only here.",
+      "settingsFailed": "Could not load the school's settings",
+      "noLimit": "no limit",
+      "hours": "{{ n }} h",
+      "precheck": {
+        "title": "Pre-hand-in check",
+        "enabled": "Enabled",
+        "perExercise": "Checks per exercise",
+        "perLearner": "Credits per learner / month"
+      },
+      "assistant": {
+        "title": "Student assistant on the school's account",
+        "mode": "Who may use it",
+        "modes": {
+          "off": "nobody",
+          "all_students": "all students",
+          "selected_groups": "selected groups",
+          "selected_students": "selected students"
+        },
+        "groups": "groups: {{ n }}",
+        "students": "students: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Who answers a work first",
+        "mode": "Mode",
+        "modes": {
+          "teacher_only": "teacher only",
+          "ai_then_teacher": "AI, then teacher",
+          "ai_with_sampling": "AI, teacher samples"
+        },
+        "sample": "Teacher samples",
+        "autoAccept": "AI answer accepted after"
+      },
+      "review": {
+        "title": "Response time",
+        "respond": "Answer within",
+        "escalate": "Escalate after",
+        "escalateTo": {
+          "school_admins": "school admins",
+          "owner": "owner",
+          "primary_teacher": "primary teacher"
+        }
+      },
+      "policyDialog": {
+        "title": "Change payer policy",
+        "confirm": "Save",
+        "aiEnabled": "All AI of the school",
+        "onHint": "Agents work as the keys allow.",
+        "offHint": "Every agent refuses this school, whatever its keys.",
+        "regions": "Regions models may run in",
+        "regionsRequired": "Pick at least one region, or allow any.",
+        "regionsHint": "Only models of providers in these regions are called; a self-hosted model needs “local”."
+      }
     }
   },
   "reasonDialog": {

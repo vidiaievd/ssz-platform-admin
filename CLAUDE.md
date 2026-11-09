@@ -63,6 +63,11 @@ School card is a stub until phase 3.
   not as an error. After any change it reloads the account, the history and the card's lookup. Days in its dialogs
   are sent as that day's 00:00 UTC (`plan-dates.ts`). `GrantDialog` takes a preset key and effect for the AI tab.
   `feature-keys.ts` copies subscription's key catalog — a new key there is one line here.
+  The AI tab (`card/ai`) joins ai-service's keys and spend (what the gate reads) with subscription's live grants (why):
+  `ai-key-rows.ts` names the source (plan / grant on / grant off / not in plan). Switching a key off or on opens
+  `GrantDialog` with the key preset; a key off by a grant comes back by revoking that grant (a new switch-on would
+  change nothing — the switch-off applies last). Without the grants the source is "—" and only "switch off" is offered.
+  The payer policy is read on its own (it stays when the tariff is down); the school's settings are read only.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.

@@ -362,6 +362,101 @@
         "endsAt": "Slutter",
         "periodInvalid": "Velg en dag etter i dag og etter starten."
       }
+    },
+    "ai": {
+      "keys": "KI-nøkler",
+      "keysHint": "Tilstanden er det abonnementet gir (plan, så tildelinger; en avslående tildeling gjelder sist). Å slå en nøkkel på eller av gir en tildeling for en periode.",
+      "policyOffBanner": "Betalerpolicyen slår av all KI for denne skolen: alle agenter avviser, uansett hva nøklene under sier.",
+      "usageFailed": "Kunne ikke laste KI-nøkler og forbruk",
+      "grantsFailed": "Kunne ikke laste tildelingene: kilden til hver nøkkel er ukjent",
+      "state": "Tilstand",
+      "source": "Kilde",
+      "used": "Brukt denne perioden",
+      "periodEnd": "Perioden slutter",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "tildeling · på",
+        "grant_off": "tildeling · av",
+        "none": "ikke i planen"
+      },
+      "scheduledOn": "påslående tildeling fra {{ date }}",
+      "scheduledOff": "avslående tildeling fra {{ date }}",
+      "usedUnmetered": "{{ used }} · uten grense",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over periodens kreditter",
+      "switchOff": "Slå av",
+      "switchOn": "Slå på",
+      "revokeOff": "Opphev avslåing",
+      "grantReason": "Slått av fordi: {{ reason }}",
+      "policy": "Betalerpolicy",
+      "changePolicy": "Endre policy",
+      "policyFailed": "Kunne ikke laste betalerpolicyen",
+      "allAi": "All KI",
+      "regions": "Modellregioner",
+      "policySource": "Satt",
+      "storedAt": "{{ date }} av",
+      "policyDefault": "aldri satt — standard gjelder (på, alle regioner)",
+      "anyRegion": "alle regioner",
+      "region": {
+        "eu": "EU",
+        "us": "USA",
+        "global": "global",
+        "local": "egen drift (local)"
+      },
+      "settings": "Skolens innstillinger",
+      "settingsHint": "Skolen endrer dem på egne skjermer; her kun visning.",
+      "settingsFailed": "Kunne ikke laste skolens innstillinger",
+      "noLimit": "ingen grense",
+      "hours": "{{ n }} t",
+      "precheck": {
+        "title": "Sjekk før innlevering",
+        "enabled": "Slått på",
+        "perExercise": "Sjekker per oppgave",
+        "perLearner": "Kreditter per elev / måned"
+      },
+      "assistant": {
+        "title": "Elevassistent på skolens regning",
+        "mode": "Hvem kan bruke den",
+        "modes": {
+          "off": "ingen",
+          "all_students": "alle elever",
+          "selected_groups": "valgte grupper",
+          "selected_students": "valgte elever"
+        },
+        "groups": "grupper: {{ n }}",
+        "students": "elever: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Hvem svarer først på en innlevering",
+        "mode": "Modus",
+        "modes": {
+          "teacher_only": "bare lærer",
+          "ai_then_teacher": "KI, så lærer",
+          "ai_with_sampling": "KI, lærer stikkprøver"
+        },
+        "sample": "Lærerens stikkprøver",
+        "autoAccept": "KI-svar godtas etter"
+      },
+      "review": {
+        "title": "Svartid",
+        "respond": "Svar innen",
+        "escalate": "Eskaler etter",
+        "escalateTo": {
+          "school_admins": "skoleadministratorer",
+          "owner": "eier",
+          "primary_teacher": "hovedlærer"
+        }
+      },
+      "policyDialog": {
+        "title": "Endre betalerpolicy",
+        "confirm": "Lagre",
+        "aiEnabled": "All KI for skolen",
+        "onHint": "Agentene virker slik nøklene tillater.",
+        "offHint": "Alle agenter avviser denne skolen, uansett nøkler.",
+        "regionsRequired": "Velg minst én region, eller tillat alle.",
+        "regions": "Regioner modellene kan kjøre i",
+        "regionsHint": "Bare modeller fra leverandører i disse regionene kalles; en egen modell trenger «local»."
+      }
     }
   },
   "reasonDialog": {

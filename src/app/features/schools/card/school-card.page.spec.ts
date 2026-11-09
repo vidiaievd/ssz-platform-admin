@@ -157,18 +157,11 @@ describe('SchoolCardPage', () => {
   });
 
   it('keeps the tab in the URL and reads the school once for all tabs', async () => {
-    await open(`/schools/${ID}/ai`);
+    // The journal is the last placeholder; built tabs read their own data, the card's stays.
+    await open(`/schools/${ID}/journal`);
     await answer();
-    expect(activeTab()).toBe('tab-ai');
-    expect(placeholderTab()).toBe('ai');
-
-    el.querySelector<HTMLElement>('[data-testid="tab-journal"]')!.click();
-    await vi.waitFor(async () => {
-      await stable();
-      expect(placeholderTab()).toBe('journal');
-    });
-    expect(url()).toBe(`/schools/${ID}/journal`);
     expect(activeTab()).toBe('tab-journal');
+    expect(placeholderTab()).toBe('journal');
 
     el.querySelector<HTMLElement>('[data-testid="tab-overview"]')!.click();
     await vi.waitFor(async () => {

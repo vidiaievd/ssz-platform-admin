@@ -20,7 +20,7 @@ import { SchoolCardData } from '../school-card.data';
 export const PAYER_TYPE = 'workspace' as const;
 
 /** subscription answers 404 for a payer it has never seen: no account yet, the free plan. */
-function noAccountAsNull<T>(source: Observable<T>): Observable<T | null> {
+export function noAccountAsNull<T>(source: Observable<T>): Observable<T | null> {
   return source.pipe(
     catchError((error: unknown) =>
       ApiError.from(error).status === 404 ? of(null) : throwError(() => error),
@@ -28,7 +28,7 @@ function noAccountAsNull<T>(source: Observable<T>): Observable<T | null> {
   );
 }
 
-function stateOf<T>(resource: {
+export function stateOf<T>(resource: {
   error(): unknown;
   hasValue(): boolean;
   value(): T | undefined;
