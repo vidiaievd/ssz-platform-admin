@@ -283,7 +283,10 @@ const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
                   />
                 </td>
                 <td class="text-right tabular-nums">{{ school.counts.students }}</td>
-                <td class="text-right tabular-nums">{{ school.counts.teachers }}</td>
+                <!-- A tutor's workspace has no teacher rows: its only teacher is the owner. -->
+                <td class="text-right tabular-nums" data-testid="school-teachers">
+                  {{ school.kind === 'SOLO' ? '—' : school.counts.teachers }}
+                </td>
                 <td class="whitespace-nowrap">{{ school.createdAt | localDate: lang() }}</td>
               </tr>
             </ng-template>

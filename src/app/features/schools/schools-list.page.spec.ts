@@ -189,6 +189,8 @@ describe('SchoolsListPage', () => {
     expect(rows[0]).toContain('school-a · Oslo');
     expect(rows[1]).toContain('Tutor');
     expect(rows[1]).toContain('Deleted');
+    // The owner of a SOLO workspace is its teacher but not on the roster: no misleading 0.
+    expect(all('[data-testid="school-teachers"]')).toEqual(['3', '—', '3']);
     expect(text('[data-testid="schools-total"]')).toBe('Found: 3');
     expect(el.querySelector('[data-testid="schools-column-errors"]')).toBeNull();
   });
