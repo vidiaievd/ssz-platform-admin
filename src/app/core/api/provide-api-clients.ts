@@ -1,6 +1,7 @@
 import { EnvironmentProviders, inject, makeEnvironmentProviders } from '@angular/core';
 import { AiApiConfiguration } from '../../api/ai/ai-api-configuration';
 import { AnalyticsApiConfiguration } from '../../api/analytics/analytics-api-configuration';
+import { ContentApiConfiguration } from '../../api/content/content-api-configuration';
 import { OrganizationApiConfiguration } from '../../api/organization/organization-api-configuration';
 import { SubscriptionApiConfiguration } from '../../api/subscription/subscription-api-configuration';
 import { UserProfileApiConfiguration } from '../../api/user-profile/user-profile-api-configuration';
@@ -14,6 +15,7 @@ import { APP_CONFIG } from '../config/app-config';
 const CLIENT_CONFIGURATIONS = [
   AiApiConfiguration,
   AnalyticsApiConfiguration,
+  ContentApiConfiguration,
   OrganizationApiConfiguration,
   SubscriptionApiConfiguration,
   UserProfileApiConfiguration,

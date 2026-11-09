@@ -7,6 +7,8 @@ import { AiApi } from '../../api/ai/ai-api';
 import { adminUsageGet } from '../../api/ai/functions';
 import { AnalyticsApi } from '../../api/analytics/analytics-api';
 import { adminAuditList } from '../../api/analytics/functions';
+import { ContentApi } from '../../api/content/content-api';
+import { containerFindOne } from '../../api/content/functions';
 import { adminSchoolsList } from '../../api/organization/functions';
 import { OrganizationApi } from '../../api/organization/organization-api';
 import { adminAccountsLookup } from '../../api/subscription/functions';
@@ -88,5 +90,12 @@ describe('provideApiClients', () => {
     expect(audit.request.params.get('targetType')).toBe('workspace');
     expect(audit.request.params.get('targetId')).toBe('s-1');
     audit.flush({ items: [], nextCursor: null });
+  });
+
+  it('configures the content client too', () => {
+    TestBed.inject(ContentApi).invoke(containerFindOne, { id: 'c-1' }).subscribe();
+    const course = mock.expectOne('http://gw/api/v1/containers/c-1');
+    expect(course.request.method).toBe('GET');
+    course.flush({});
   });
 });

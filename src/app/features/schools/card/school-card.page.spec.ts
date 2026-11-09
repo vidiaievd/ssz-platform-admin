@@ -31,11 +31,18 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
     createdAt: '2026-03-05T10:00:00.000Z',
     updatedAt: '2026-03-05T10:00:00.000Z',
     deletedAt: null,
-    contacts: {} as AdminSchoolDetailDto['contacts'],
-    owner: null as unknown as AdminSchoolDetailDto['owner'],
-    counts: {} as AdminSchoolDetailDto['counts'],
+    contacts: { email: null, website: null, city: null },
+    owner: { userId: 'owner-1', name: 'Kari Nordmann', email: null },
+    counts: {
+      students: 0,
+      archivedStudents: 0,
+      teachers: 0,
+      staff: 0,
+      pendingApplications: 0,
+      pendingInvitations: 0,
+    },
     groups: [],
-    courses: { count: 0, ids: [] } as unknown as AdminSchoolDetailDto['courses'],
+    courses: { count: 0, ids: [] },
     ...overrides,
   };
 }
@@ -118,8 +125,11 @@ describe('SchoolCardPage', () => {
     el
       .querySelector('[data-testid="school-tabs"] [aria-current="page"]')
       ?.getAttribute('data-testid');
+  /** The tab on screen: a placeholder names itself, the overview is a built tab. */
   const placeholderTab = () =>
-    el.querySelector('[data-testid="tab-placeholder"]')?.getAttribute('data-tab');
+    el.querySelector('[data-testid="school-overview"]')
+      ? 'overview'
+      : el.querySelector('[data-testid="tab-placeholder"]')?.getAttribute('data-tab');
 
   it('shows a skeleton, then the header: name, kind, status, plan', async () => {
     await open(`/schools/${ID}`);

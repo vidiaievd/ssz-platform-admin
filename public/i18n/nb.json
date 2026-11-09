@@ -186,6 +186,46 @@
         "forbidden": "Ingen tilgang til denne skolen.",
         "generic": "Kunne ikke laste skolen."
       }
+    },
+    "overview": {
+      "details": "Detaljer",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Nett",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Oppdatert",
+      "contacts": "Kontakt",
+      "email": "E-post",
+      "website": "Nettsted",
+      "city": "By",
+      "noContacts": "Skolen har ikke oppgitt kontaktinformasjon.",
+      "ownerNoName": "Navn utilgjengelig",
+      "ownerHint": "Eieren står ikke i medlemslisten og telles ikke blant personene nedenfor.",
+      "people": "Personer",
+      "counts": {
+        "students": "Elever",
+        "archivedStudents": "Arkiverte elever",
+        "teachers": "Lærere",
+        "staff": "Ansatte",
+        "pendingApplications": "Ventende søknader",
+        "pendingInvitations": "Ventende invitasjoner"
+      },
+      "groups": "Grupper",
+      "noGroups": "Skolen har ingen grupper.",
+      "level": "Nivå",
+      "course": "Kurs",
+      "defaultGroup": "alle elever, skjult",
+      "groupStatus": {
+        "draft": "Utkast",
+        "active": "Aktiv",
+        "archived": "Arkivert"
+      },
+      "courses": "Kurs",
+      "noCourses": "Ingen av skolens grupper bruker et kurs.",
+      "coursesFailed": "Kunne ikke laste kursnavn.",
+      "courseUnknown": "Finnes ikke i content",
+      "courseArchived": "arkivert"
     }
   },
   "reasonDialog": {

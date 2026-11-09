@@ -43,7 +43,7 @@ School card is a stub until phase 3.
 - **Lists are batch-read.** One request per page for owners (`GET profiles?userIds=`) and one for plans
   (`accounts/lookup`); never a request per row. A failed side request shows "—" and "retry", the table stays.
 - **Generated clients.** `npm run api:gen` reads specs from the dev stand's service ports (organization :3002,
-  subscription :3011, ai :3010, analytics :3008, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
+  subscription :3011, ai :3010, analytics :3008, content :3003, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
   and refuses to overwrite a client when nothing matched (stale image). Add a new operation to `keep()`, then regenerate.
   Auth is hand-written because its login answers are anonymous objects Swagger does not type.
 - **Every change has a reason.** Open `app-reason-dialog` from a button under `*appIfLevel` and pass the change as
@@ -52,6 +52,9 @@ School card is a stub until phase 3.
   ref inside `p-dialog` `#content` / `#header` / `#footer` — PrimeNG takes it for its own template.
 - **School card tabs** are child routes of `/schools/:id` (`card/school-tabs.ts`); the overview has no path and an
   unknown tab redirects to it. `SchoolCardData` is provided by the card page, so the tabs share one read of the school.
+  A built tab goes into `TAB_COMPONENTS` in `schools.routes.ts`; the rest stay placeholders. Course titles on the overview
+  come from content one `GET containers/:id` per course (no batch read there; capped at `MAX_COURSE_READS`), a 404/403
+  marks that course "not found" and any other failure keeps the ids with a retry.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.

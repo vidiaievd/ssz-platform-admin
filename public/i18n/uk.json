@@ -186,6 +186,46 @@
         "forbidden": "Немає доступу до цієї школи.",
         "generic": "Не вдалося завантажити школу."
       }
+    },
+    "overview": {
+      "details": "Відомості",
+      "format": "Формат",
+      "type": {
+        "ONLINE": "Онлайн",
+        "HYBRID": "Змішаний"
+      },
+      "updatedAt": "Оновлена",
+      "contacts": "Контакти",
+      "email": "Email",
+      "website": "Сайт",
+      "city": "Місто",
+      "noContacts": "Школа не вказала контактів.",
+      "ownerNoName": "Ім’я недоступне",
+      "ownerHint": "Власник не входить до складу й не рахується серед людей нижче.",
+      "people": "Люди",
+      "counts": {
+        "students": "Учні",
+        "archivedStudents": "Учні в архіві",
+        "teachers": "Викладачі",
+        "staff": "Персонал",
+        "pendingApplications": "Заявки, що чекають",
+        "pendingInvitations": "Запрошення, що чекають"
+      },
+      "groups": "Групи",
+      "noGroups": "У школи немає груп.",
+      "level": "Рівень",
+      "course": "Курс",
+      "defaultGroup": "усі учні, прихована",
+      "groupStatus": {
+        "draft": "Чернетка",
+        "active": "Активна",
+        "archived": "В архіві"
+      },
+      "courses": "Курси",
+      "noCourses": "Жодна група школи не використовує курс.",
+      "coursesFailed": "Не вдалося завантажити назви курсів.",
+      "courseUnknown": "Не знайдено в content",
+      "courseArchived": "в архіві"
     }
   },
   "reasonDialog": {

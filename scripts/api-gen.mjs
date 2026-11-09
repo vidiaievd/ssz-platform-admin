@@ -57,6 +57,14 @@ const SERVICES = [
     keep: (method, p) => method === 'get' && p === '/api/v1/admin/audit',
   },
   {
+    name: 'content',
+    port: 3003,
+    prefix: 'Content',
+    // Course titles on the school card. Content has no batch read: one GET per course of the
+    // school (a handful), platform_admin passes the visibility check of any course.
+    keep: (method, p) => method === 'get' && p === '/api/v1/containers/{id}',
+  },
+  {
     name: 'user-profile',
     port: 3001,
     prefix: 'UserProfile',

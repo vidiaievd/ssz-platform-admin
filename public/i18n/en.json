@@ -186,6 +186,46 @@
         "forbidden": "No access to this school.",
         "generic": "Could not load the school."
       }
+    },
+    "overview": {
+      "details": "Details",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Online",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Updated",
+      "contacts": "Contacts",
+      "email": "Email",
+      "website": "Website",
+      "city": "City",
+      "noContacts": "The school has given no contacts.",
+      "ownerNoName": "Name unavailable",
+      "ownerHint": "The owner is not on the roster and is not counted among the people below.",
+      "people": "People",
+      "counts": {
+        "students": "Students",
+        "archivedStudents": "Archived students",
+        "teachers": "Teachers",
+        "staff": "Staff",
+        "pendingApplications": "Pending applications",
+        "pendingInvitations": "Pending invitations"
+      },
+      "groups": "Groups",
+      "noGroups": "The school has no groups.",
+      "level": "Level",
+      "course": "Course",
+      "defaultGroup": "all learners, hidden",
+      "groupStatus": {
+        "draft": "Draft",
+        "active": "Active",
+        "archived": "Archived"
+      },
+      "courses": "Courses",
+      "noCourses": "No group of the school uses a course.",
+      "coursesFailed": "Could not load course titles.",
+      "courseUnknown": "Not found in content",
+      "courseArchived": "archived"
     }
   },
   "reasonDialog": {
