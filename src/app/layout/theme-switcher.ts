@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { ThemeService } from '../core/theme/theme.service';
 
 const ICONS = { light: 'pi pi-sun', dark: 'pi pi-moon', system: 'pi pi-desktop' } as const;
@@ -8,17 +8,21 @@ const ICONS = { light: 'pi pi-sun', dark: 'pi pi-moon', system: 'pi pi-desktop' 
 /** One button that cycles light → dark → system; the icon shows the current choice. */
 @Component({
   selector: 'app-theme-switcher',
-  imports: [Button, TranslocoPipe],
+  imports: [ButtonDirective, TranslocoPipe],
   template: `
-    <p-button
-      [icon]="icon()"
+    <button
+      pButton
+      type="button"
       [text]="true"
       [rounded]="true"
+      [iconOnly]="true"
       severity="secondary"
-      [ariaLabel]="'theme.' + theme.mode() | transloco"
+      [attr.aria-label]="'theme.' + theme.mode() | transloco"
       [title]="'theme.' + theme.mode() | transloco"
-      (onClick)="theme.cycle()"
-    />
+      (click)="theme.cycle()"
+    >
+      <i [class]="icon()" aria-hidden="true"></i>
+    </button>
   `,
 })
 export class ThemeSwitcher {

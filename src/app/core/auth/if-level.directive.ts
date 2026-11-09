@@ -12,7 +12,7 @@ import { SessionStore } from './session.store';
 
 /**
  * Renders its content only for the given admin level and above:
- * `<p-button *appIfLevel="'admin'" … />`. What the level may not do is not drawn at all — no
+ * `<button pButton *appIfLevel="'admin'" …>`. What the level may not do is not drawn at all — no
  * disabled buttons (§2 of plan 90); the server checks the level again on every call.
  */
 @Directive({ selector: '[appIfLevel]' })

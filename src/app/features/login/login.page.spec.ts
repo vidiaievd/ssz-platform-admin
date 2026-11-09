@@ -70,6 +70,23 @@ describe('LoginPage', () => {
     );
   });
 
+  it('shows and hides the password with the eye button', async () => {
+    const { query, stable } = await render();
+    const input = query<HTMLInputElement>('#login-password')!;
+    const toggle = query<HTMLButtonElement>('[data-testid="toggle-password"]')!;
+    expect(input.type).toBe('password');
+    expect(toggle.getAttribute('aria-pressed')).toBe('false');
+
+    toggle.click();
+    await stable();
+    expect(input.type).toBe('text');
+    expect(toggle.getAttribute('aria-pressed')).toBe('true');
+
+    toggle.click();
+    await stable();
+    expect(input.type).toBe('password');
+  });
+
   it('password → MFA → wrong code shows the message', async () => {
     const { query, type, submit, stable } = await render();
     type('#login-email', 'admin@example.no');
@@ -124,7 +141,7 @@ describe('LoginPage', () => {
 
     expect(query('[data-testid="backup-codes"]')?.textContent).toContain('BBBBBBBB-0002');
     const continueButton = () =>
-      el.querySelector<HTMLButtonElement>('[data-testid="codes-continue"] button')!;
+      el.querySelector<HTMLButtonElement>('[data-testid="codes-continue"]')!;
     expect(continueButton().disabled).toBe(true);
 
     el.querySelector<HTMLInputElement>('#codes-saved')!.click();

@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { FocusOnRender } from '../../shared/focus-on-render.directive';
 import { backupCodeValidator, cleanTotpCode, totpCodeValidator } from './code-field';
@@ -9,7 +9,7 @@ import { backupCodeValidator, cleanTotpCode, totpCodeValidator } from './code-fi
 /** Step 2: the authenticator code, or a one-time backup code instead. */
 @Component({
   selector: 'app-mfa-step',
-  imports: [ReactiveFormsModule, TranslocoPipe, Button, InputText, FocusOnRender],
+  imports: [ReactiveFormsModule, TranslocoPipe, ButtonDirective, InputText, FocusOnRender],
   template: `
     <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       @if (useBackupCode()) {
@@ -57,29 +57,27 @@ import { backupCodeValidator, cleanTotpCode, totpCodeValidator } from './code-fi
           {{ (useBackupCode() ? 'login.mfa.backupFormat' : 'login.codeFormat') | transloco }}
         </small>
       }
-      <p-button
-        type="submit"
-        [label]="'login.mfa.verify' | transloco"
-        [loading]="busy()"
-        [fluid]="true"
-      />
+      <button pButton type="submit" [fluid]="true" [disabled]="busy()">
+        @if (busy()) {
+          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        }
+        {{ 'login.mfa.verify' | transloco }}
+      </button>
       <div class="flex items-center justify-between gap-2 text-sm">
-        <p-button
-          [link]="true"
-          size="small"
-          icon="pi pi-arrow-left"
-          [label]="'login.back' | transloco"
-          (onClick)="back.emit()"
-        />
-        <p-button
+        <button pButton type="button" [link]="true" size="small" (click)="back.emit()">
+          <i class="pi pi-arrow-left" aria-hidden="true"></i>
+          {{ 'login.back' | transloco }}
+        </button>
+        <button
+          pButton
+          type="button"
           [link]="true"
           size="small"
           data-testid="toggle-backup"
-          [label]="
-            (useBackupCode() ? 'login.mfa.useAuthenticator' : 'login.mfa.useBackup') | transloco
-          "
-          (onClick)="toggleBackup.emit(!useBackupCode())"
-        />
+          (click)="toggleBackup.emit(!useBackupCode())"
+        >
+          {{ (useBackupCode() ? 'login.mfa.useAuthenticator' : 'login.mfa.useBackup') | transloco }}
+        </button>
       </div>
     </form>
   `,

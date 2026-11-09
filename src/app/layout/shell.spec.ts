@@ -83,7 +83,7 @@ describe('Shell and panel routes', () => {
 
   it('signs out on the server and goes to sign-in', async () => {
     const { el, harness } = await open('/schools');
-    el.querySelector<HTMLButtonElement>('[data-testid="sign-out"] button')!.click();
+    el.querySelector<HTMLButtonElement>('[data-testid="sign-out"]')!.click();
     http.expectOne('http://gw/api/v1/auth/admin/session/logout').flush(null, {
       status: 204,
       statusText: 'No Content',

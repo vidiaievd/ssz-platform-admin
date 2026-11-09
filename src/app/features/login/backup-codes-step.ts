@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { Message } from 'primeng/message';
 import { copyText, downloadText } from './clipboard';
@@ -14,7 +14,7 @@ export const BACKUP_CODES_FILE = 'ssz-admin-backup-codes.txt';
  */
 @Component({
   selector: 'app-backup-codes-step',
-  imports: [FormsModule, TranslocoPipe, Button, Checkbox, Message],
+  imports: [FormsModule, TranslocoPipe, ButtonDirective, Checkbox, Message],
   host: { '(window:beforeunload)': 'onBeforeUnload($event)' },
   template: `
     <div class="flex flex-col gap-4">
@@ -31,21 +31,21 @@ export const BACKUP_CODES_FILE = 'ssz-admin-backup-codes.txt';
       </ol>
 
       <div class="flex flex-wrap gap-2">
-        <p-button
-          [icon]="copied() ? 'pi pi-check' : 'pi pi-copy'"
+        <button pButton type="button" severity="secondary" [outlined]="true" (click)="copy()">
+          <i [class]="copied() ? 'pi pi-check' : 'pi pi-copy'" aria-hidden="true"></i>
+          {{ (copied() ? 'login.copied' : 'login.copy') | transloco }}
+        </button>
+        <button
+          pButton
+          type="button"
           severity="secondary"
           [outlined]="true"
-          [label]="(copied() ? 'login.copied' : 'login.copy') | transloco"
-          (onClick)="copy()"
-        />
-        <p-button
-          icon="pi pi-download"
-          severity="secondary"
-          [outlined]="true"
-          [label]="'login.codes.download' | transloco"
           data-testid="download-codes"
-          (onClick)="download()"
-        />
+          (click)="download()"
+        >
+          <i class="pi pi-download" aria-hidden="true"></i>
+          {{ 'login.codes.download' | transloco }}
+        </button>
       </div>
       @if (copyFailed()) {
         <small class="text-red-500">{{ 'login.codes.copyFailed' | transloco }}</small>
@@ -62,14 +62,19 @@ export const BACKUP_CODES_FILE = 'ssz-admin-backup-codes.txt';
         <label for="codes-saved">{{ 'login.codes.saved' | transloco }}</label>
       </div>
 
-      <p-button
-        [label]="'login.codes.continue' | transloco"
-        [disabled]="!saved()"
-        [loading]="busy()"
+      <button
+        pButton
+        type="button"
         [fluid]="true"
+        [disabled]="!saved() || busy()"
         data-testid="codes-continue"
-        (onClick)="done.emit()"
-      />
+        (click)="done.emit()"
+      >
+        @if (busy()) {
+          <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+        }
+        {{ 'login.codes.continue' | transloco }}
+      </button>
     </div>
   `,
 })

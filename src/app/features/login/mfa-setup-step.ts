@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Skeleton } from 'primeng/skeleton';
 import { MfaSetupSecret } from '../../core/auth/admin-session.api';
@@ -14,7 +14,7 @@ import { cleanTotpCode, totpCodeValidator } from './code-field';
  */
 @Component({
   selector: 'app-mfa-setup-step',
-  imports: [ReactiveFormsModule, TranslocoPipe, Button, InputText, Skeleton],
+  imports: [ReactiveFormsModule, TranslocoPipe, ButtonDirective, InputText, Skeleton],
   template: `
     <div class="flex flex-col gap-4">
       <p class="text-muted-color text-sm">{{ 'login.setup.intro' | transloco }}</p>
@@ -37,14 +37,18 @@ import { cleanTotpCode, totpCodeValidator } from './code-field';
                   data-testid="setup-secret"
                   >{{ groupedSecret() }}</code
                 >
-                <p-button
-                  [icon]="copied() ? 'pi pi-check' : 'pi pi-copy'"
+                <button
+                  pButton
+                  type="button"
                   [text]="true"
+                  [iconOnly]="true"
                   severity="secondary"
-                  [ariaLabel]="'login.copy' | transloco"
+                  [attr.aria-label]="'login.copy' | transloco"
                   [title]="'login.copy' | transloco"
-                  (onClick)="copySecret(s.secretKey)"
-                />
+                  (click)="copySecret(s.secretKey)"
+                >
+                  <i [class]="copied() ? 'pi pi-check' : 'pi pi-copy'" aria-hidden="true"></i>
+                </button>
               </div>
               <a class="text-primary text-sm underline sm:hidden" [href]="s.qrCodeUri">
                 {{ 'login.setup.openApp' | transloco }}
@@ -68,37 +72,43 @@ import { cleanTotpCode, totpCodeValidator } from './code-field';
               @if (showErrors() && code.invalid) {
                 <small class="text-red-500">{{ 'login.codeFormat' | transloco }}</small>
               }
-              <p-button
-                type="submit"
-                class="mt-2"
-                [label]="'login.setup.confirm' | transloco"
-                [loading]="busy()"
-                [fluid]="true"
-              />
+              <button pButton type="submit" class="mt-2" [fluid]="true" [disabled]="busy()">
+                @if (busy()) {
+                  <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+                }
+                {{ 'login.setup.confirm' | transloco }}
+              </button>
             </form>
           </li>
         </ol>
       } @else if (failed()) {
-        <p-button
-          icon="pi pi-refresh"
+        <button
+          pButton
+          type="button"
           severity="secondary"
-          [label]="'login.retry' | transloco"
-          [loading]="busy()"
-          (onClick)="retry.emit()"
-        />
+          class="self-start"
+          [disabled]="busy()"
+          (click)="retry.emit()"
+        >
+          <i [class]="busy() ? 'pi pi-spin pi-spinner' : 'pi pi-refresh'" aria-hidden="true"></i>
+          {{ 'login.retry' | transloco }}
+        </button>
       } @else {
         <p-skeleton width="12rem" height="12rem" styleClass="self-center" />
         <p-skeleton height="2.5rem" />
       }
 
-      <p-button
+      <button
+        pButton
+        type="button"
         [link]="true"
         size="small"
-        icon="pi pi-arrow-left"
         class="self-start"
-        [label]="'login.back' | transloco"
-        (onClick)="back.emit()"
-      />
+        (click)="back.emit()"
+      >
+        <i class="pi pi-arrow-left" aria-hidden="true"></i>
+        {{ 'login.back' | transloco }}
+      </button>
     </div>
   `,
 })

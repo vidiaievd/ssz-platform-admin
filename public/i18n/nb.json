@@ -50,6 +50,7 @@
   "login": {
     "email": "E-post",
     "password": "Passord",
+    "showPassword": "Vis passord",
     "signIn": "Logg inn",
     "fillBoth": "Skriv inn e-post og passord.",
     "codeFormat": "Koden består av 6 sifre.",

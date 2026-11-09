@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Button } from 'primeng/button';
+import { ButtonDirective } from 'primeng/button';
 import { Drawer } from 'primeng/drawer';
 import { LOGIN_PATH } from '../core/auth/auth.interceptor';
 import { SessionStore } from '../core/auth/session.store';
@@ -19,7 +19,7 @@ import { ThemeSwitcher } from './theme-switcher';
   imports: [
     RouterOutlet,
     TranslocoPipe,
-    Button,
+    ButtonDirective,
     Drawer,
     LanguageSwitcher,
     LevelBadge,
@@ -47,16 +47,20 @@ import { ThemeSwitcher } from './theme-switcher';
 
       <div class="flex min-w-0 flex-1 flex-col">
         <header class="border-border flex h-14 items-center gap-2 border-b px-2 sm:px-4">
-          <p-button
+          <button
+            pButton
+            type="button"
             class="lg:hidden"
-            icon="pi pi-bars"
             [text]="true"
             [rounded]="true"
+            [iconOnly]="true"
             severity="secondary"
-            [ariaLabel]="'shell.openMenu' | transloco"
+            [attr.aria-label]="'shell.openMenu' | transloco"
             data-testid="open-menu"
-            (onClick)="menuOpen.set(true)"
-          />
+            (click)="menuOpen.set(true)"
+          >
+            <i class="pi pi-bars" aria-hidden="true"></i>
+          </button>
           <span class="truncate font-semibold lg:hidden">{{ 'app.title' | transloco }}</span>
 
           <div class="ml-auto flex min-w-0 items-center gap-2">
@@ -72,17 +76,21 @@ import { ThemeSwitcher } from './theme-switcher';
             }
             <app-language-switcher class="hidden md:block" />
             <app-theme-switcher />
-            <p-button
-              icon="pi pi-sign-out"
+            <button
+              pButton
+              type="button"
               [text]="true"
               [rounded]="true"
+              [iconOnly]="true"
               severity="secondary"
-              [ariaLabel]="'shell.signOut' | transloco"
+              [attr.aria-label]="'shell.signOut' | transloco"
               [title]="'shell.signOut' | transloco"
               [disabled]="signingOut()"
               data-testid="sign-out"
-              (onClick)="signOut()"
-            />
+              (click)="signOut()"
+            >
+              <i class="pi pi-sign-out" aria-hidden="true"></i>
+            </button>
           </div>
         </header>
 

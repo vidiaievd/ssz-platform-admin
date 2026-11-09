@@ -50,6 +50,7 @@
   "login": {
     "email": "Email",
     "password": "Password",
+    "showPassword": "Show password",
     "signIn": "Sign in",
     "fillBoth": "Enter your email and password.",
     "codeFormat": "The code is 6 digits.",
