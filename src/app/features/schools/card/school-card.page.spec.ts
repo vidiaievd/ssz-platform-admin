@@ -157,10 +157,10 @@ describe('SchoolCardPage', () => {
   });
 
   it('keeps the tab in the URL and reads the school once for all tabs', async () => {
-    await open(`/schools/${ID}/plan`);
+    await open(`/schools/${ID}/ai`);
     await answer();
-    expect(activeTab()).toBe('tab-plan');
-    expect(placeholderTab()).toBe('plan');
+    expect(activeTab()).toBe('tab-ai');
+    expect(placeholderTab()).toBe('ai');
 
     el.querySelector<HTMLElement>('[data-testid="tab-journal"]')!.click();
     await vi.waitFor(async () => {

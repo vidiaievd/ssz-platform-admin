@@ -265,6 +265,103 @@
         "STUDENT": "Elev",
         "SCHEDULER": "Timeplanansvarlig"
       }
+    },
+    "plan": {
+      "current": "Gjeldende plan",
+      "assign": "Bytt plan",
+      "cancel": "Avslutt abonnement",
+      "freeByDefault": "gratisplan som standard",
+      "since": "Fra {{ date }}",
+      "until": "til {{ date }}",
+      "openEnded": "uten sluttdato",
+      "noAccount": "Abonnementstjenesten har ikke sett denne skolen ennå: den er på gratisplanen. En plan eller et tillegg åpner kontoen.",
+      "freeHint": "Ingen abonnement løper: skolen er på gratisplanen for sin målgruppe.",
+      "outdated": "Skolen er på v{{ version }}; planens nyeste versjon er v{{ latest }}. Endringer i planen flytter ikke abonnenter.",
+      "moveTo": "Flytt til v{{ version }}",
+      "featuresFailed": "Kunne ikke laste nøklene i denne versjonen",
+      "noFeatures": "Denne versjonen gir ingen nøkler.",
+      "key": "Nøkkel",
+      "effectColumn": "Virkning",
+      "credits": "Kreditter / mnd.",
+      "effect": {
+        "on": "På",
+        "off": "Av"
+      },
+      "noCredits": "—",
+      "unmetered": "ubegrenset",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Tillegg",
+      "issueGrant": "Gi tillegg",
+      "accountFailed": "Kunne ikke laste kontoen",
+      "noGrants": "Ingen aktive eller planlagte tillegg.",
+      "history": "Historikk",
+      "historyFailed": "Kunne ikke laste historikken",
+      "subscriptions": "Abonnementer",
+      "noSubscriptions": "Skolen har aldri hatt et abonnement.",
+      "term": "Periode",
+      "endedAt": "Avsluttet",
+      "pastGrants": "Tidligere tillegg",
+      "noPastGrants": "Ingen utløpte eller tilbakekalte tillegg.",
+      "actions": "Handlinger",
+      "grantEffect": {
+        "on": "slår på",
+        "off": "slår av"
+      },
+      "grantState": {
+        "scheduled": "Planlagt",
+        "active": "Aktiv",
+        "ended": "Utløpt",
+        "revoked": "Tilbakekalt"
+      },
+      "revoke": "Tilbakekall",
+      "subscriptionStatus": {
+        "trial": "Prøve",
+        "active": "Aktiv",
+        "canceled": "Avsluttet",
+        "expired": "Utløpt"
+      },
+      "dayHint": "Slutter når denne dagen begynner (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Avslutt abonnement",
+        "confirm": "Avslutt abonnement",
+        "text": "Skolen forlater «{{ plan }}» nå og går tilbake til gratisplanen. Tillegg blir stående."
+      },
+      "revokeDialog": {
+        "title": "Tilbakekall tillegg",
+        "confirm": "Tilbakekall",
+        "textOn": "{{ key }} går tilbake til det planen gir, nå.",
+        "textOff": "{{ key }} er ikke lenger slått av; planen bestemmer igjen, nå."
+      },
+      "assignDialog": {
+        "title": "Bytt plan",
+        "confirm": "Tildel",
+        "plan": "Plan",
+        "planPlaceholder": "Velg en plan",
+        "plansFailed": "Kunne ikke laste planer",
+        "samePlan": "Skolen er allerede på denne planen: tildeling flytter den til v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Prøveperioden slutter",
+        "periodEnd": "Slutter (valgfritt)",
+        "periodInvalid": "Velg en dag etter i dag.",
+        "trialHint": "Påkrevd for prøve. Slutter når denne dagen begynner (00:00 UTC).",
+        "periodHint": "Tomt = uten sluttdato. Slutter når denne dagen begynner (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Gi tillegg",
+        "confirm": "Gi",
+        "key": "Nøkkel",
+        "keyPlaceholder": "Velg en nøkkel",
+        "effect": "Virkning",
+        "onHint": "Nøkkelen er på i perioden, også der planen har den av.",
+        "offHint": "Nøkkelen er av i perioden, også der planen gir den. Tilbakekalling gir den tilbake til planen.",
+        "credits": "Kreditter per måned, i tillegg til planens",
+        "creditsInvalid": "Et tall, for eksempel 500 eller 12.5.",
+        "creditsHint": "Tomt = ubegrenset mens tillegget gjelder.",
+        "startsAt": "Starter (valgfritt)",
+        "startsHint": "Tomt eller i dag = nå.",
+        "endsAt": "Slutter",
+        "periodInvalid": "Velg en dag etter i dag og etter starten."
+      }
     }
   },
   "reasonDialog": {

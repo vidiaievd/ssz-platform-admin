@@ -58,6 +58,11 @@ School card is a stub until phase 3.
   The members tab keeps its filters in the URL (`role`, `status`, `group`, `page`, `size`; `members-query.ts`); the
   overview's people counts link there. Roster names come with the row; only unsynced rows (`name: null`) are asked
   of profiles, one request per page. The owner is not a roster row and has its own line (unfiltered first page).
+  The plan tab (`card/plan`) takes the plan that applies from the card's lookup (it settles "no account / expired →
+  free plan"); the account and its history answer 404 for a school subscription has never seen — read as "no account",
+  not as an error. After any change it reloads the account, the history and the card's lookup. Days in its dialogs
+  are sent as that day's 00:00 UTC (`plan-dates.ts`). `GrantDialog` takes a preset key and effect for the AI tab.
+  `feature-keys.ts` copies subscription's key catalog — a new key there is one line here.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.

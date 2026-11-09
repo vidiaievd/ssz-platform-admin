@@ -265,6 +265,103 @@
         "STUDENT": "Student",
         "SCHEDULER": "Scheduler"
       }
+    },
+    "plan": {
+      "current": "Current plan",
+      "assign": "Change plan",
+      "cancel": "Cancel subscription",
+      "freeByDefault": "free plan by default",
+      "since": "Since {{ date }}",
+      "until": "until {{ date }}",
+      "openEnded": "open-ended",
+      "noAccount": "Subscription service has not seen this school yet: it is on the free plan. Assigning a plan or issuing a grant opens its account.",
+      "freeHint": "No subscription runs: the school is on its audience's free plan.",
+      "outdated": "The school is on v{{ version }}; the plan's latest version is v{{ latest }}. Plan edits do not move subscribers.",
+      "moveTo": "Move to v{{ version }}",
+      "featuresFailed": "Could not load the keys of this version",
+      "noFeatures": "This version gives no keys.",
+      "key": "Key",
+      "effectColumn": "Effect",
+      "credits": "Credits / month",
+      "effect": {
+        "on": "On",
+        "off": "Off"
+      },
+      "noCredits": "—",
+      "unmetered": "unmetered",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Grants",
+      "issueGrant": "Issue grant",
+      "accountFailed": "Could not load the account",
+      "noGrants": "No active or scheduled grants.",
+      "history": "History",
+      "historyFailed": "Could not load the history",
+      "subscriptions": "Subscriptions",
+      "noSubscriptions": "The school has never had a subscription.",
+      "term": "Term",
+      "endedAt": "Ended",
+      "pastGrants": "Past grants",
+      "noPastGrants": "No ended or revoked grants.",
+      "actions": "Actions",
+      "grantEffect": {
+        "on": "switches on",
+        "off": "switches off"
+      },
+      "grantState": {
+        "scheduled": "Scheduled",
+        "active": "Active",
+        "ended": "Ended",
+        "revoked": "Revoked"
+      },
+      "revoke": "Revoke",
+      "subscriptionStatus": {
+        "trial": "Trial",
+        "active": "Active",
+        "canceled": "Canceled",
+        "expired": "Expired"
+      },
+      "dayHint": "Ends as this day begins (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Cancel subscription",
+        "confirm": "Cancel subscription",
+        "text": "The school leaves “{{ plan }}” now and falls back to the free plan. Grants stay."
+      },
+      "revokeDialog": {
+        "title": "Revoke grant",
+        "confirm": "Revoke",
+        "textOn": "{{ key }} goes back to what the plan gives, now.",
+        "textOff": "{{ key }} is no longer switched off; the plan decides again, now."
+      },
+      "assignDialog": {
+        "title": "Change plan",
+        "confirm": "Assign",
+        "plan": "Plan",
+        "planPlaceholder": "Choose a plan",
+        "plansFailed": "Could not load plans",
+        "samePlan": "The school is on this plan already: assigning it moves the school to v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Trial ends",
+        "periodEnd": "Ends (optional)",
+        "periodInvalid": "Pick a day after today.",
+        "trialHint": "Required for a trial. Ends as this day begins (00:00 UTC).",
+        "periodHint": "Empty = open-ended. Ends as this day begins (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Issue grant",
+        "confirm": "Issue",
+        "key": "Key",
+        "keyPlaceholder": "Choose a key",
+        "effect": "Effect",
+        "onHint": "The key is on for the term, even where the plan has it off.",
+        "offHint": "The key is off for the term, even where the plan gives it. Revoking gives it back to the plan.",
+        "credits": "Credits per month, added to the plan's",
+        "creditsInvalid": "A number, for example 500 or 12.5.",
+        "creditsHint": "Empty = unmetered while the grant runs.",
+        "startsAt": "Starts (optional)",
+        "startsHint": "Empty or today = now.",
+        "endsAt": "Ends",
+        "periodInvalid": "Pick a day after today and after the start."
+      }
     }
   },
   "reasonDialog": {
