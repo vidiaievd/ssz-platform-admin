@@ -24,6 +24,26 @@
     "closeMenu": "Close menu",
     "signOut": "Sign out"
   },
+  "palette": {
+    "open": "Search",
+    "title": "Go to",
+    "close": "Close search",
+    "placeholder": "Section, or a school's name or slug",
+    "sections": "Sections",
+    "schools": "Schools",
+    "hint": "Type a section, or a school's name or slug.",
+    "minChars": "Type at least {{ min }} characters to find a school.",
+    "searching": "Searching…",
+    "noSchools": "No schools found.",
+    "failed": "Could not search schools.",
+    "retry": "Retry",
+    "allResults": "All {{ total }} results in the schools list",
+    "keys": {
+      "move": "move",
+      "open": "open",
+      "close": "close"
+    }
+  },
   "sections": {
     "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
     "schools": "Schools with their plan and status; the school card: members, plan and grants, AI, audit log.",

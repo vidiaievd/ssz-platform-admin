@@ -24,6 +24,26 @@
     "closeMenu": "Lukk meny",
     "signOut": "Logg ut"
   },
+  "palette": {
+    "open": "Søk",
+    "title": "Gå til",
+    "close": "Lukk søk",
+    "placeholder": "Seksjon, eller skolens navn eller slug",
+    "sections": "Seksjoner",
+    "schools": "Skoler",
+    "hint": "Skriv en seksjon, eller skolens navn eller slug.",
+    "minChars": "Skriv minst {{ min }} tegn for å finne en skole.",
+    "searching": "Søker …",
+    "noSchools": "Fant ingen skoler.",
+    "failed": "Kunne ikke søke etter skoler.",
+    "retry": "Prøv igjen",
+    "allResults": "Alle {{ total }} treff i skolelisten",
+    "keys": {
+      "move": "flytt",
+      "open": "åpne",
+      "close": "lukk"
+    }
+  },
   "sections": {
     "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
     "schools": "Skoler med abonnement og status; skolekortet: medlemmer, abonnement og tildelinger, KI, logg.",
