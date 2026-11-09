@@ -2,10 +2,45 @@
   "app": {
     "title": "SSZ-adminpanel"
   },
-  "home": {
-    "placeholder": "Panelskjelett. Menyen kommer i neste steg.",
-    "signedInAs": "Logget inn som {{email}} (nivå: {{level}})",
+  "nav": {
+    "label": "Seksjoner i panelet",
+    "dashboard": "Oversikt",
+    "schools": "Skoler",
+    "users": "Brukere",
+    "plans": "Abonnementer",
+    "ai": "KI",
+    "platform": "Plattform",
+    "audit": "Logg",
+    "payments": "Betalinger"
+  },
+  "level": {
+    "super": "Superadmin",
+    "admin": "Admin",
+    "support": "Brukerstøtte",
+    "hint": "Ditt tilgangsnivå i panelet"
+  },
+  "shell": {
+    "openMenu": "Åpne meny",
+    "closeMenu": "Lukk meny",
     "signOut": "Logg ut"
+  },
+  "sections": {
+    "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
+    "schools": "Skoler med abonnement og status; skolekortet: medlemmer, abonnement og tildelinger, KI, logg.",
+    "users": "Søk på e-post, roller og skoler, sperring, nullstilling av MFA, slettingsforespørsler.",
+    "plans": "Katalog over abonnementer og funksjonsnøkler, versjoner og antall abonnenter på hver.",
+    "ai": "Leverandører, modeller og priser, agentkoblinger, kredittforbruk, eval-kjøringer.",
+    "platform": "Levetid for tokener og opprydding i media.",
+    "audit": "Alle admin-handlinger i alle tjenester.",
+    "payments": "Betalinger kommer med fakturering; inntil da tildeles abonnementer manuelt."
+  },
+  "comingSoon": {
+    "text": "Denne seksjonen er under arbeid."
+  },
+  "notFound": {
+    "title": "Fant ikke siden",
+    "text": "Siden finnes ikke, eller den er ikke tilgjengelig på ditt nivå.",
+    "home": "Til oversikten"
   },
   "theme": {
     "light": "Lyst tema",

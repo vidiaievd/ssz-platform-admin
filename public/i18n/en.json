@@ -2,10 +2,45 @@
   "app": {
     "title": "SSZ admin panel"
   },
-  "home": {
-    "placeholder": "Panel skeleton. The menu arrives in the next step.",
-    "signedInAs": "Signed in as {{email}} (level: {{level}})",
+  "nav": {
+    "label": "Panel sections",
+    "dashboard": "Overview",
+    "schools": "Schools",
+    "users": "Users",
+    "plans": "Plans",
+    "ai": "AI",
+    "platform": "Platform",
+    "audit": "Audit log",
+    "payments": "Payments"
+  },
+  "level": {
+    "super": "Super admin",
+    "admin": "Admin",
+    "support": "Support",
+    "hint": "Your access level in the panel"
+  },
+  "shell": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "signOut": "Sign out"
+  },
+  "sections": {
+    "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
+    "schools": "Schools with their plan and status; the school card: members, plan and grants, AI, audit log.",
+    "users": "Search by email, roles and schools, blocking, MFA reset, deletion requests.",
+    "plans": "Catalogue of plans and feature keys, versions and subscribers on each.",
+    "ai": "Providers, models and prices, agent bindings, credit usage, eval runs.",
+    "platform": "Token lifetimes and media cleanup.",
+    "audit": "Every admin action across all services.",
+    "payments": "Payments arrive with billing; until then plans are assigned by hand."
+  },
+  "comingSoon": {
+    "text": "This section is still being built."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page does not exist or is not available at your level.",
+    "home": "Go to overview"
   },
   "theme": {
     "light": "Light theme",
