@@ -226,6 +226,45 @@
       "coursesFailed": "Could not load course titles.",
       "courseUnknown": "Not found in content",
       "courseArchived": "archived"
+    },
+    "members": {
+      "role": "Role",
+      "allRoles": "All roles",
+      "allStatuses": "All statuses",
+      "group": "Group",
+      "allGroups": "All groups",
+      "roles": {
+        "student": "Student",
+        "teacher": "Teacher",
+        "staff": "Staff"
+      },
+      "statuses": {
+        "active": "On the roster",
+        "archived": "Archived"
+      },
+      "as": {
+        "trial": "trial",
+        "observer": "observer"
+      },
+      "joinedAt": "Joined",
+      "owner": "owner",
+      "ownerHint": "Not a roster row: the owner is not counted in the list.",
+      "filterByGroup": "Show this group only",
+      "namesFailed": "Could not load some names",
+      "empty": "The roster is empty.",
+      "emptyFiltered": "Nobody matches these filters.",
+      "errors": {
+        "generic": "Could not load the roster."
+      },
+      "rosterRoles": {
+        "OWNER": "Owner",
+        "ADMIN": "Admin",
+        "MANAGER": "Manager",
+        "CONTENT_ADMIN": "Content admin",
+        "TEACHER": "Teacher",
+        "STUDENT": "Student",
+        "SCHEDULER": "Scheduler"
+      }
     }
   },
   "reasonDialog": {

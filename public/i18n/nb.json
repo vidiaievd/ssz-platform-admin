@@ -226,6 +226,45 @@
       "coursesFailed": "Kunne ikke laste kursnavn.",
       "courseUnknown": "Finnes ikke i content",
       "courseArchived": "arkivert"
+    },
+    "members": {
+      "role": "Rolle",
+      "allRoles": "Alle roller",
+      "allStatuses": "Alle statuser",
+      "group": "Gruppe",
+      "allGroups": "Alle grupper",
+      "roles": {
+        "student": "Elev",
+        "teacher": "Lærer",
+        "staff": "Ansatt"
+      },
+      "statuses": {
+        "active": "I medlemslisten",
+        "archived": "Arkivert"
+      },
+      "as": {
+        "trial": "prøve",
+        "observer": "observatør"
+      },
+      "joinedAt": "Ble med",
+      "owner": "eier",
+      "ownerHint": "Ikke en rad i medlemslisten: eieren telles ikke i listen.",
+      "filterByGroup": "Vis bare denne gruppen",
+      "namesFailed": "Kunne ikke laste noen navn",
+      "empty": "Medlemslisten er tom.",
+      "emptyFiltered": "Ingen passer til disse filtrene.",
+      "errors": {
+        "generic": "Kunne ikke laste medlemslisten."
+      },
+      "rosterRoles": {
+        "OWNER": "Eier",
+        "ADMIN": "Administrator",
+        "MANAGER": "Leder",
+        "CONTENT_ADMIN": "Innholdsansvarlig",
+        "TEACHER": "Lærer",
+        "STUDENT": "Elev",
+        "SCHEDULER": "Timeplanansvarlig"
+      }
     }
   },
   "reasonDialog": {

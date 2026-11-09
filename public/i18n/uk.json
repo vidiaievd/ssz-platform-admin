@@ -226,6 +226,45 @@
       "coursesFailed": "Не вдалося завантажити назви курсів.",
       "courseUnknown": "Не знайдено в content",
       "courseArchived": "в архіві"
+    },
+    "members": {
+      "role": "Роль",
+      "allRoles": "Усі ролі",
+      "allStatuses": "Усі статуси",
+      "group": "Група",
+      "allGroups": "Усі групи",
+      "roles": {
+        "student": "Учень",
+        "teacher": "Викладач",
+        "staff": "Персонал"
+      },
+      "statuses": {
+        "active": "У складі",
+        "archived": "В архіві"
+      },
+      "as": {
+        "trial": "пробний",
+        "observer": "спостерігач"
+      },
+      "joinedAt": "Дата вступу",
+      "owner": "власник",
+      "ownerHint": "Не рядок складу: власника в списку не рахують.",
+      "filterByGroup": "Показати лише цю групу",
+      "namesFailed": "Не вдалося завантажити деякі імена",
+      "empty": "Склад порожній.",
+      "emptyFiltered": "Ніхто не відповідає цим фільтрам.",
+      "errors": {
+        "generic": "Не вдалося завантажити склад."
+      },
+      "rosterRoles": {
+        "OWNER": "Власник",
+        "ADMIN": "Адміністратор",
+        "MANAGER": "Менеджер",
+        "CONTENT_ADMIN": "Адміністратор контенту",
+        "TEACHER": "Викладач",
+        "STUDENT": "Учень",
+        "SCHEDULER": "Розклад"
+      }
     }
   },
   "reasonDialog": {

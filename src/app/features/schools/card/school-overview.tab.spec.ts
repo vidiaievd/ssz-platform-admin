@@ -148,6 +148,13 @@ describe('SchoolOverviewTab', () => {
     expect(text('count-archivedStudents')).toBe('Archived students 2');
     expect(text('count-teachers')).toBe('Teachers 6');
     expect(text('count-pendingInvitations')).toBe('Pending invitations 4');
+    // People counts open the members tab filtered to them; pending ones are not roster rows.
+    const link = (key: string) =>
+      el.querySelector(`[data-testid="count-link-${key}"]`)?.getAttribute('href') ?? null;
+    expect(link('students')).toBe(`/schools/${ID}/members?role=student&status=active`);
+    expect(link('archivedStudents')).toBe(`/schools/${ID}/members?role=student&status=archived`);
+    expect(link('staff')).toBe(`/schools/${ID}/members?role=staff`);
+    expect(link('pendingApplications')).toBeNull();
   });
 
   it('lists groups and courses with titles from content', async () => {

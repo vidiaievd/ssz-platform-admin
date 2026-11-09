@@ -1,4 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
@@ -9,6 +10,8 @@ import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
 import { SchoolCardData } from './school-card.data';
 import { CourseSummary, SchoolCoursesData } from './school-courses.data';
+import { schoolTabLink } from './school-tabs';
+import { toMembersQueryParams } from './members-query';
 
 type CountKey = keyof AdminSchoolDetailCountsDto;
 
@@ -22,6 +25,14 @@ const COUNT_KEYS: readonly CountKey[] = [
   'pendingInvitations',
 ];
 const NOT_IN_SOLO: ReadonlySet<CountKey> = new Set(['teachers', 'staff']);
+
+/** Counts that open the "Members" tab filtered to the people they count. */
+const MEMBER_FILTERS: Partial<Record<CountKey, Record<string, unknown>>> = {
+  students: toMembersQueryParams({ role: 'student', status: 'active' }),
+  archivedStudents: toMembersQueryParams({ role: 'student', status: 'archived' }),
+  teachers: toMembersQueryParams({ role: 'teacher' }),
+  staff: toMembersQueryParams({ role: 'staff' }),
+};
 
 const GROUP_STATUS_SEVERITY = {
   draft: 'secondary',
@@ -37,7 +48,7 @@ const GROUP_STATUS_SEVERITY = {
 @Component({
   selector: 'app-school-overview-tab',
   providers: [SchoolCoursesData],
-  imports: [TranslocoPipe, Skeleton, TableModule, Tag, LocalDatePipe],
+  imports: [RouterLink, TranslocoPipe, Skeleton, TableModule, Tag, LocalDatePipe],
   template: `
     @if (data.school(); as school) {
       <div class="grid gap-4 lg:grid-cols-3" data-testid="school-overview">
@@ -148,7 +159,19 @@ const GROUP_STATUS_SEVERITY = {
                 {{ 'schools.overview.counts.' + key | transloco }}
               </dt>
               <dd class="text-xl font-semibold tabular-nums">
-                {{ solo() && notInSolo.has(key) ? '—' : school.counts[key] }}
+                @if (solo() && notInSolo.has(key)) {
+                  —
+                } @else if (memberFilters[key]; as filters) {
+                  <a
+                    class="hover:text-primary hover:underline"
+                    [routerLink]="membersLink()"
+                    [queryParams]="filters"
+                    [attr.data-testid]="'count-link-' + key"
+                    >{{ school.counts[key] }}</a
+                  >
+                } @else {
+                  {{ school.counts[key] }}
+                }
               </dd>
             </div>
           }
@@ -289,6 +312,10 @@ export class SchoolOverviewTab {
   protected readonly lang = inject(LanguageService).current;
   protected readonly countKeys = COUNT_KEYS;
   protected readonly notInSolo = NOT_IN_SOLO;
+  protected readonly memberFilters = MEMBER_FILTERS;
+  protected readonly membersLink = computed(() =>
+    schoolTabLink(this.data.schoolId() ?? '', 'members'),
+  );
   protected readonly groupStatusSeverity = GROUP_STATUS_SEVERITY;
 
   protected readonly solo = computed(() => this.data.school()?.kind === 'SOLO');

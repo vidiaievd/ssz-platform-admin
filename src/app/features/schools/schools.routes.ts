@@ -1,9 +1,10 @@
 import { Route, Routes } from '@angular/router';
 import { SCHOOL_TABS, SchoolTab, schoolTabPath } from './card/school-tabs';
 
-/** The built tabs; the rest are placeholders until their step of phase 3 (§6.3, steps 8–11). */
+/** The built tabs; the rest are placeholders until their step of phase 3 (§6.3, steps 9–11). */
 const TAB_COMPONENTS: Partial<Record<SchoolTab, Route['loadComponent']>> = {
   overview: () => import('./card/school-overview.tab').then((m) => m.SchoolOverviewTab),
+  members: () => import('./card/school-members.tab').then((m) => m.SchoolMembersTab),
 };
 
 /** One tab of the card. */
