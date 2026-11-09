@@ -1,5 +1,77 @@
 {
-  "app": { "title": "SSZ-adminpanel" },
-  "home": { "placeholder": "Panelskjelett. Innlogging og meny kommer i de neste stegene." },
-  "theme": { "light": "Lyst tema", "dark": "Mørkt tema", "system": "Systemtema" }
+  "app": {
+    "title": "SSZ-adminpanel"
+  },
+  "home": {
+    "placeholder": "Panelskjelett. Menyen kommer i neste steg.",
+    "signedInAs": "Logget inn som {{email}} (nivå: {{level}})",
+    "signOut": "Logg ut"
+  },
+  "theme": {
+    "light": "Lyst tema",
+    "dark": "Mørkt tema",
+    "system": "Systemtema"
+  },
+  "login": {
+    "email": "E-post",
+    "password": "Passord",
+    "signIn": "Logg inn",
+    "fillBoth": "Skriv inn e-post og passord.",
+    "codeFormat": "Koden består av 6 sifre.",
+    "back": "Tilbake",
+    "retry": "Prøv igjen",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "titles": {
+      "password": "Logg inn",
+      "mfa": "Tofaktorbekreftelse",
+      "setup": "Sett opp tofaktorinnlogging",
+      "backup-codes": "Reservekoder"
+    },
+    "mfa": {
+      "codeHint": "Skriv inn den 6-sifrede koden fra autentiseringsappen.",
+      "code": "Kode",
+      "verify": "Bekreft",
+      "useBackup": "Bruk en reservekode",
+      "useAuthenticator": "Bruk kode fra appen",
+      "backupHint": "Hver reservekode kan brukes én gang.",
+      "backupCode": "Reservekode",
+      "backupFormat": "En reservekode ser slik ut: XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Tofaktorinnlogging er påkrevd for adminpanelet. Sett den opp nå – det tar et minutt.",
+      "scan": "Skann QR-koden med en autentiseringsapp (Google Authenticator, Microsoft Authenticator, 1Password o.l.).",
+      "qrAlt": "QR-kode for autentiseringsappen",
+      "orEnter": "Eller skriv inn nøkkelen manuelt:",
+      "openApp": "Åpne i autentiseringsappen",
+      "enterCode": "Skriv inn koden appen viser:",
+      "confirm": "Slå på og logg inn"
+    },
+    "codes": {
+      "once": "Disse kodene vises bare én gang.",
+      "explain": "Hvis du mister tilgangen til autentiseringsappen, logger du inn med en av disse kodene. Hver kode kan brukes én gang. Oppbevar dem et trygt sted.",
+      "download": "Last ned .txt",
+      "copyFailed": "Nettleseren tillot ikke kopiering – last ned filen.",
+      "saved": "Jeg har lagret reservekodene",
+      "continue": "Fortsett",
+      "fileTitle": "Reservekoder for SSZ-adminpanelet",
+      "fileNote": "Hver kode kan brukes én gang. Oppbevar filen et trygt sted."
+    },
+    "messages": {
+      "invalidCredentials": "Feil e-post eller passord.",
+      "invalidCode": "Feil kode. Sjekk klokken på enheten og prøv igjen.",
+      "invalidBackupCode": "Feil eller allerede brukt reservekode.",
+      "lockedUntil": "Kontoen er midlertidig sperret. Prøv igjen etter {{time}}.",
+      "tooManyAttempts": "For mange mislykkede forsøk. Prøv igjen om omtrent 15 minutter.",
+      "accessDenied": "Denne kontoen har ikke tilgang til adminpanelet.",
+      "emailNotVerified": "E-postadressen er ikke bekreftet. Sjekk innboksen.",
+      "expired": "Tiden for dette steget gikk ut. Logg inn på nytt.",
+      "mfaAlreadyEnabled": "Tofaktorinnlogging er allerede slått på. Logg inn på nytt med en kode.",
+      "setupRequired": "Tofaktorinnlogging må settes opp først. Logg inn på nytt.",
+      "invalidInput": "Sjekk det du skrev inn.",
+      "unavailable": "Tjenesten er midlertidig utilgjengelig. Prøv igjen om et minutt.",
+      "network": "Får ikke kontakt med serveren. Sjekk nettverket.",
+      "unexpected": "Noe gikk galt. Prøv igjen."
+    }
+  }
 }

@@ -13,6 +13,9 @@
 
 @theme inline {
   --color-muted-color: var(--p-text-muted-color);
+  --color-border: var(--p-content-border-color);
+  --color-emphasis: var(--p-content-hover-background);
+  --color-primary: var(--p-primary-color);
 }
 
 html {

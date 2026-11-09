@@ -1,5 +1,77 @@
 {
-  "app": { "title": "SSZ admin panel" },
-  "home": { "placeholder": "Panel skeleton. Sign-in and the menu arrive in the next steps." },
-  "theme": { "light": "Light theme", "dark": "Dark theme", "system": "System theme" }
+  "app": {
+    "title": "SSZ admin panel"
+  },
+  "home": {
+    "placeholder": "Panel skeleton. The menu arrives in the next step.",
+    "signedInAs": "Signed in as {{email}} (level: {{level}})",
+    "signOut": "Sign out"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "fillBoth": "Enter your email and password.",
+    "codeFormat": "The code is 6 digits.",
+    "back": "Back",
+    "retry": "Try again",
+    "copy": "Copy",
+    "copied": "Copied",
+    "titles": {
+      "password": "Sign in",
+      "mfa": "Two-factor verification",
+      "setup": "Set up two-factor sign-in",
+      "backup-codes": "Backup codes"
+    },
+    "mfa": {
+      "codeHint": "Enter the 6-digit code from your authenticator app.",
+      "code": "Code",
+      "verify": "Verify",
+      "useBackup": "Use a backup code",
+      "useAuthenticator": "Use the app code",
+      "backupHint": "Each backup code works once.",
+      "backupCode": "Backup code",
+      "backupFormat": "A backup code looks like XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Two-factor sign-in is required for the admin panel. Set it up now — it takes a minute.",
+      "scan": "Scan the QR code with an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, …).",
+      "qrAlt": "QR code for the authenticator app",
+      "orEnter": "Or enter the key by hand:",
+      "openApp": "Open in the authenticator app",
+      "enterCode": "Enter the code the app shows:",
+      "confirm": "Turn on and sign in"
+    },
+    "codes": {
+      "once": "These codes are shown only once.",
+      "explain": "If you lose access to your authenticator app, sign in with one of these codes. Each code works once. Keep them somewhere safe.",
+      "download": "Download .txt",
+      "copyFailed": "The browser did not allow copying — download the file.",
+      "saved": "I have saved the backup codes",
+      "continue": "Continue",
+      "fileTitle": "SSZ admin panel backup codes",
+      "fileNote": "Each code works once. Keep this file somewhere safe."
+    },
+    "messages": {
+      "invalidCredentials": "Wrong email or password.",
+      "invalidCode": "Wrong code. Check the time on your device and try again.",
+      "invalidBackupCode": "Wrong or already used backup code.",
+      "lockedUntil": "The account is temporarily locked. Try again after {{time}}.",
+      "tooManyAttempts": "Too many failed attempts. Try again in about 15 minutes.",
+      "accessDenied": "This account has no access to the admin panel.",
+      "emailNotVerified": "The email address is not verified. Check your inbox.",
+      "expired": "This step timed out. Sign in again.",
+      "mfaAlreadyEnabled": "Two-factor sign-in is already on. Sign in again with a code.",
+      "setupRequired": "Two-factor sign-in has to be set up first. Sign in again.",
+      "invalidInput": "Check what you entered.",
+      "unavailable": "The service is temporarily unavailable. Try again in a minute.",
+      "network": "Cannot reach the server. Check your connection.",
+      "unexpected": "Something went wrong. Try again."
+    }
+  }
 }
