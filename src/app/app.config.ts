@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   inject,
@@ -11,6 +11,8 @@ import Aura from '@primeuix/themes/aura';
 import { provideTransloco } from '@jsverse/transloco';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
+import { authInterceptor } from './core/auth/auth.interceptor';
+import { SessionStore } from './core/auth/session.store';
 import { APP_CONFIG, AppConfig } from './core/config/app-config';
 import { LanguageService } from './core/i18n/language.service';
 import { DEFAULT_LANGUAGE, LANGUAGES } from './core/i18n/languages';
@@ -24,7 +26,7 @@ export function buildAppConfig(config: AppConfig): ApplicationConfig {
       provideBrowserGlobalErrorListeners(),
       { provide: APP_CONFIG, useValue: config },
       provideRouter(routes, withComponentInputBinding()),
-      provideHttpClient(withFetch()),
+      provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
       providePrimeNG({
         license: config.primeUiLicense,
         theme: {
@@ -50,6 +52,9 @@ export function buildAppConfig(config: AppConfig): ApplicationConfig {
         inject(ThemeService);
         inject(LanguageService).init();
       }),
+      // A reload keeps the administrator signed in: the refresh cookie buys a new access
+      // token before the first route renders. Never fails the start-up.
+      provideAppInitializer(() => inject(SessionStore).restore()),
     ],
   };
 }
