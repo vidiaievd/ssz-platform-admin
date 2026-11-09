@@ -12,6 +12,7 @@
 @custom-variant dark (&:where(.app-dark, .app-dark *));
 
 @theme inline {
+  --color-fg: var(--p-text-color);
   --color-muted-color: var(--p-text-muted-color);
   --color-border: var(--p-content-border-color);
   --color-emphasis: var(--p-content-hover-background);

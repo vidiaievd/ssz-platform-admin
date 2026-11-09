@@ -170,8 +170,37 @@
       "generic": "Kunne ikke laste skoler."
     },
     "card": {
-      "title": "Skolekort",
-      "soon": "Skolekortet kommer i fase 3: medlemmer, abonnement og tildelinger, KI, logg."
+      "notFound": "Fant ikke skolen",
+      "notFoundText": "Organization kjenner ikke denne id-en. Skolen har kanskje aldri fantes, eller lenken er feilskrevet.",
+      "deletedAt": "Slettet {{ date }}",
+      "tabsLabel": "Skolens deler",
+      "tabs": {
+        "overview": "Oversikt",
+        "members": "Medlemmer",
+        "plan": "Abonnement",
+        "ai": "KI og tjenester",
+        "journal": "Logg"
+      },
+      "tabSoon": "Denne fanen bygges i de neste stegene av fase 3.",
+      "errors": {
+        "forbidden": "Ingen tilgang til denne skolen.",
+        "generic": "Kunne ikke laste skolen."
+      }
+    }
+  },
+  "reasonDialog": {
+    "label": "Begrunnelse",
+    "hint": "Påkrevd. Lagres i administratorloggen.",
+    "required": "Oppgi en begrunnelse for endringen.",
+    "cancel": "Avbryt",
+    "errors": {
+      "network": "Gatewayen svarer ikke. Ingenting ble endret.",
+      "forbidden": "Nivået ditt tillater ikke dette.",
+      "notFound": "Objektet finnes ikke lenger.",
+      "conflict": "Noe er endret i mellomtiden. Lukk dialogen og oppdater skjermen.",
+      "invalid": "Serveren avviste endringen.",
+      "unavailable": "Tjenesten er utilgjengelig. Prøv igjen senere.",
+      "generic": "Endringen mislyktes."
     }
   }
 }

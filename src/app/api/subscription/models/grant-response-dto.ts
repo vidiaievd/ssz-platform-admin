@@ -4,6 +4,11 @@
 export interface GrantResponseDto {
   createdAt: string;
   createdBy: string;
+
+  /**
+   * false = the grant switches the key off
+   */
+  enabled: boolean;
   endsAt: string;
   featureKey: string;
   id: string;

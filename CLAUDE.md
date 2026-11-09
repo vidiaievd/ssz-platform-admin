@@ -27,7 +27,8 @@ School card is a stub until phase 3.
 - `core/i18n`, `core/theme`, `core/storage.ts` — language / theme choice kept in `localStorage`
 - `api/<service>` — **generated**, committed, outside lint and prettier; never edit by hand
 - `layout` — shell, nav (one list in `nav-sections.ts` drives menu and routes), command palette
-- `features/<name>` — login, schools, coming-soon, not-found
+- `features/<name>` — login, schools (list + card in `schools/card`), coming-soon, not-found
+- `shared/reason-dialog` — the one dialog every admin change goes through (reason required, ≤ 500)
 
 ## Rules that are easy to break
 
@@ -42,9 +43,15 @@ School card is a stub until phase 3.
 - **Lists are batch-read.** One request per page for owners (`GET profiles?userIds=`) and one for plans
   (`accounts/lookup`); never a request per row. A failed side request shows "—" and "retry", the table stays.
 - **Generated clients.** `npm run api:gen` reads specs from the dev stand's service ports (organization :3002,
-  subscription :3011, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
+  subscription :3011, ai :3010, analytics :3008, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
   and refuses to overwrite a client when nothing matched (stale image). Add a new operation to `keep()`, then regenerate.
   Auth is hand-written because its login answers are anonymous objects Swagger does not type.
+- **Every change has a reason.** Open `app-reason-dialog` from a button under `*appIfLevel` and pass the change as
+  `[action]="(reason) => Observable"`; the action's own fields are projected and gated by `[ready]`. The server's
+  refusal stays inside the dialog (409 = "changed meanwhile"); `done` fires only after success. Never name a template
+  ref inside `p-dialog` `#content` / `#header` / `#footer` — PrimeNG takes it for its own template.
+- **School card tabs** are child routes of `/schools/:id` (`card/school-tabs.ts`); the overview has no path and an
+  unknown tab redirects to it. `SchoolCardData` is provided by the card page, so the tabs share one read of the school.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.

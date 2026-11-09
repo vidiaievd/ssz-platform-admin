@@ -1,5 +1,9 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+  HttpTestingController,
+  TestRequest,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -188,6 +192,17 @@ describe('CommandPalette', () => {
     // The schools section is a lazy chunk: the navigation ends a little later.
     await vi.waitFor(() => expect(url()).toBe('/schools/b'));
     expect(input()).toBeNull();
+    // The card asks for the school and its plan.
+    let card: TestRequest[] = [];
+    await vi.waitFor(async () => {
+      await stable();
+      card = http.match(`${SCHOOLS}/b`);
+      expect(card).toHaveLength(1);
+    });
+    card[0].flush({ statusCode: 404 }, { status: 404, statusText: 'Not Found' });
+    http
+      .expectOne((r) => r.url.endsWith('/admin/subscriptions/accounts/lookup'))
+      .flush({ items: [] });
   });
 
   it('opens a section on Enter and starts empty next time', async () => {

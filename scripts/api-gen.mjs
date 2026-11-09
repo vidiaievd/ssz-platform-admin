@@ -42,6 +42,21 @@ const SERVICES = [
     keep: (_method, p) => p.startsWith('/api/v1/admin/subscriptions/'),
   },
   {
+    name: 'ai',
+    port: 3010,
+    prefix: 'Ai',
+    // A payer's AI keys and spend, and its policy (school card, "AI & services").
+    keep: (_method, p) =>
+      p.startsWith('/api/v1/admin/ai/usage/') || p.startsWith('/api/v1/admin/ai/payer-policies/'),
+  },
+  {
+    name: 'analytics',
+    port: 3008,
+    prefix: 'Analytics',
+    // The admin journal collected from every service (school card, "Journal").
+    keep: (method, p) => method === 'get' && p === '/api/v1/admin/audit',
+  },
+  {
     name: 'user-profile',
     port: 3001,
     prefix: 'UserProfile',

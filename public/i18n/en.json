@@ -170,8 +170,37 @@
       "generic": "Could not load schools."
     },
     "card": {
-      "title": "School card",
-      "soon": "The school card arrives in phase 3: members, plan and grants, AI, journal."
+      "notFound": "School not found",
+      "notFoundText": "Organization does not know this id. The school may never have existed, or the link is mistyped.",
+      "deletedAt": "Deleted {{ date }}",
+      "tabsLabel": "School sections",
+      "tabs": {
+        "overview": "Overview",
+        "members": "Members",
+        "plan": "Plan",
+        "ai": "AI & services",
+        "journal": "Journal"
+      },
+      "tabSoon": "This tab is built in the next steps of phase 3.",
+      "errors": {
+        "forbidden": "No access to this school.",
+        "generic": "Could not load the school."
+      }
+    }
+  },
+  "reasonDialog": {
+    "label": "Reason",
+    "hint": "Required. Goes to the admin journal.",
+    "required": "Name the reason for this change.",
+    "cancel": "Cancel",
+    "errors": {
+      "network": "The gateway is unreachable. Nothing was changed.",
+      "forbidden": "Your level may not do this.",
+      "notFound": "The object no longer exists.",
+      "conflict": "It has changed meanwhile. Close the dialog and refresh the screen.",
+      "invalid": "The server refused the change.",
+      "unavailable": "The service is unavailable. Try again later.",
+      "generic": "The change failed."
     }
   }
 }

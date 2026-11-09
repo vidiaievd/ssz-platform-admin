@@ -27,3 +27,5 @@ export type { AdminAccountsIssueGrant$Params as AdminAccountsIssueGrant$Params }
 export { adminAccountsIssueGrant as adminAccountsIssueGrant } from './fn/admin-accounts/admin-accounts-issue-grant';
 export type { AdminAccountsRevokeGrant$Params as AdminAccountsRevokeGrant$Params } from './fn/admin-accounts/admin-accounts-revoke-grant';
 export { adminAccountsRevokeGrant as adminAccountsRevokeGrant } from './fn/admin-accounts/admin-accounts-revoke-grant';
+export type { AdminSubscriptionStats$Params as AdminSubscriptionStats$Params } from './fn/admin-accounts/admin-subscription-stats';
+export { adminSubscriptionStats as adminSubscriptionStats } from './fn/admin-accounts/admin-subscription-stats';
