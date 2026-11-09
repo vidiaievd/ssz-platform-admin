@@ -1,59 +1,33 @@
-# SszPlatformAdmin
+# ssz-platform-admin
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.6.
+Platform admin panel for `ssz-platform` (plan 90 — `ssz-platform-web/docs/plan/90-platform-admin-panel.md`).
 
-## Development server
+## Requirements
 
-To start a local development server, run:
+- Node.js **≥ 24.15** (the Angular 22 CLI refuses older 24.x)
+- the `ssz-platform` dev stack running (gateway on `http://localhost`)
 
-```bash
-ng serve
-```
+## Configuration
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Settings are read **at runtime** from `/config.json`, not baked into the build, so one build serves every
+environment (a deployment only drops its own `config.json` next to `index.html`).
 
 ```bash
-ng generate component component-name
+cp public/config.example.json public/config.json   # once; public/config.json is git-ignored
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+| Key | Meaning |
+|---|---|
+| `apiBaseUrl` | gateway origin, no trailing slash (`http://localhost` in dev) |
+| `primeUiLicense` | PrimeUI license key (PrimeNG 22 is licensed; Community license is free). Empty → PrimeNG shows an "Invalid PrimeUI License" notice |
+
+## Commands
 
 ```bash
-ng generate --help
+npm start              # ng serve on http://localhost:4200
+npm run build          # production build into dist/
+npm test -- --no-watch # unit tests (Vitest)
+npm run lint
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Format only the files you touch: `npx prettier --write <file>`.

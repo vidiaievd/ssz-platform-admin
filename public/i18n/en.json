@@ -1,0 +1,5 @@
+{
+  "app": { "title": "SSZ admin panel" },
+  "home": { "placeholder": "Panel skeleton. Sign-in and the menu arrive in the next steps." },
+  "theme": { "light": "Light theme", "dark": "Dark theme", "system": "System theme" }
+}

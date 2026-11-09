@@ -1,3 +1,37 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Layer order: Tailwind's theme and base first, PrimeNG next, Tailwind utilities last —
+ * so utilities can override PrimeNG components. PrimeNG puts its styles into the
+ * `primeng` layer (cssLayer in app.config.ts).
+ */
+@layer theme, base, primeng, components, utilities;
 
 @import 'tailwindcss';
+@import 'primeicons/primeicons.css';
+
+/* Tailwind's dark: variant follows the same class as PrimeNG (ThemeService). */
+@custom-variant dark (&:where(.app-dark, .app-dark *));
+
+@theme inline {
+  --color-muted-color: var(--p-text-muted-color);
+}
+
+html {
+  color-scheme: light;
+}
+
+html.app-dark {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--p-content-background);
+  color: var(--p-text-color);
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}

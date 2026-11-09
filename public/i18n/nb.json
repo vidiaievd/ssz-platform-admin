@@ -1,0 +1,5 @@
+{
+  "app": { "title": "SSZ-adminpanel" },
+  "home": { "placeholder": "Panelskjelett. Innlogging og meny kommer i de neste stegene." },
+  "theme": { "light": "Lyst tema", "dark": "Mørkt tema", "system": "Systemtema" }
+}
