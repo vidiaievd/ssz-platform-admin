@@ -109,5 +109,49 @@
       "network": "Cannot reach the server. Check your connection.",
       "unexpected": "Something went wrong. Try again."
     }
+  },
+  "schools": {
+    "total": "Found: {{ count }}",
+    "search": "Name or slug",
+    "allKinds": "All kinds",
+    "allStatuses": "All statuses",
+    "reset": "Reset filters",
+    "retry": "Retry",
+    "trial": "trial",
+    "ownersFailed": "Could not load owners",
+    "plansFailed": "Could not load plans",
+    "empty": "No schools yet.",
+    "emptyFiltered": "No schools match these filters.",
+    "emptyPage": "There are no schools on this page.",
+    "firstPage": "Go to the first page",
+    "backToList": "Back to schools",
+    "columns": {
+      "name": "Name",
+      "kind": "Kind",
+      "owner": "Owner",
+      "plan": "Plan",
+      "status": "Status",
+      "students": "Students",
+      "teachers": "Teachers",
+      "createdAt": "Created"
+    },
+    "kind": {
+      "SCHOOL": "School",
+      "SOLO": "Tutor"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "errors": {
+      "network": "The gateway is unreachable. Check the connection.",
+      "forbidden": "No access to the schools list.",
+      "generic": "Could not load schools."
+    },
+    "card": {
+      "title": "School card",
+      "soon": "The school card arrives in phase 3: members, plan and grants, AI, journal."
+    }
   }
 }

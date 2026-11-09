@@ -65,11 +65,11 @@ describe('Shell and panel routes', () => {
   });
 
   it('opens a section that is not built yet as "coming soon"', async () => {
-    const { el, text } = await open('/schools');
-    expect(text('[data-testid="page-title"]')).toBe('Schools');
-    expect(
-      el.querySelector('aside [data-testid="nav-schools"]')?.getAttribute('aria-current'),
-    ).toBe('page');
+    const { el, text } = await open('/users');
+    expect(text('[data-testid="page-title"]')).toBe('Users');
+    expect(el.querySelector('aside [data-testid="nav-users"]')?.getAttribute('aria-current')).toBe(
+      'page',
+    );
     expect(
       el.querySelector('aside [data-testid="nav-dashboard"]')?.getAttribute('aria-current'),
     ).toBeNull();
@@ -82,7 +82,7 @@ describe('Shell and panel routes', () => {
   });
 
   it('signs out on the server and goes to sign-in', async () => {
-    const { el, harness } = await open('/schools');
+    const { el, harness } = await open('/users');
     el.querySelector<HTMLButtonElement>('[data-testid="sign-out"]')!.click();
     http.expectOne('http://gw/api/v1/auth/admin/session/logout').flush(null, {
       status: 204,

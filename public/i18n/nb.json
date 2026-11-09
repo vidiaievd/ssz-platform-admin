@@ -109,5 +109,49 @@
       "network": "Får ikke kontakt med serveren. Sjekk nettverket.",
       "unexpected": "Noe gikk galt. Prøv igjen."
     }
+  },
+  "schools": {
+    "total": "Funnet: {{ count }}",
+    "search": "Navn eller slug",
+    "allKinds": "Alle typer",
+    "allStatuses": "Alle statuser",
+    "reset": "Nullstill filtre",
+    "retry": "Prøv igjen",
+    "trial": "prøve",
+    "ownersFailed": "Kunne ikke laste eiere",
+    "plansFailed": "Kunne ikke laste abonnementer",
+    "empty": "Ingen skoler ennå.",
+    "emptyFiltered": "Ingen skoler passer til disse filtrene.",
+    "emptyPage": "Det er ingen skoler på denne siden.",
+    "firstPage": "Til første side",
+    "backToList": "Tilbake til skoler",
+    "columns": {
+      "name": "Navn",
+      "kind": "Type",
+      "owner": "Eier",
+      "plan": "Abonnement",
+      "status": "Status",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "createdAt": "Opprettet"
+    },
+    "kind": {
+      "SCHOOL": "Skole",
+      "SOLO": "Privatlærer"
+    },
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "deleted": "Slettet"
+    },
+    "errors": {
+      "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
+      "forbidden": "Ingen tilgang til skolelisten.",
+      "generic": "Kunne ikke laste skoler."
+    },
+    "card": {
+      "title": "Skolekort",
+      "soon": "Skolekortet kommer i fase 3: medlemmer, abonnement og tildelinger, KI, logg."
+    }
   }
 }
