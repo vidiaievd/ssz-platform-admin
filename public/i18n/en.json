@@ -181,7 +181,6 @@
         "ai": "AI & services",
         "journal": "Journal"
       },
-      "tabSoon": "This tab is built in the next steps of phase 3.",
       "errors": {
         "forbidden": "No access to this school.",
         "generic": "Could not load the school."
@@ -456,6 +455,26 @@
         "regions": "Regions models may run in",
         "regionsRequired": "Pick at least one region, or allow any.",
         "regionsHint": "Only models of providers in these regions are called; a self-hosted model needs “local”."
+      }
+    },
+    "journal": {
+      "title": "Admin journal",
+      "failed": "Could not load the journal",
+      "empty": "No admin actions on this school yet.",
+      "actor": "By",
+      "system": "system",
+      "reason": "Reason: {{ reason }}",
+      "changes": "Before and after",
+      "before": "Before",
+      "after": "After",
+      "more": "Show more",
+      "moreFailed": "Could not load more entries.",
+      "actions": {
+        "subscription.assigned": "Plan assigned",
+        "subscription.canceled": "Subscription canceled",
+        "grant.issued": "Grant issued",
+        "grant.revoked": "Grant revoked",
+        "payer_policy.changed": "Payer policy changed"
       }
     }
   },

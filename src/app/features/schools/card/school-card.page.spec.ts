@@ -16,6 +16,7 @@ import en from '../../../../../public/i18n/en.json';
 
 const ID = '7d3c1b2a-0000-4000-8000-000000000001';
 const SCHOOL = `http://gw/api/v1/admin/schools/${ID}`;
+const AUDIT = 'http://gw/api/v1/admin/audit';
 const LOOKUP = 'http://gw/api/v1/admin/subscriptions/accounts/lookup';
 
 function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetailDto {
@@ -125,11 +126,13 @@ describe('SchoolCardPage', () => {
     el
       .querySelector('[data-testid="school-tabs"] [aria-current="page"]')
       ?.getAttribute('data-testid');
-  /** The tab on screen: a placeholder names itself, the overview is a built tab. */
-  const placeholderTab = () =>
+  /** The tab on screen, by the root element of each built tab. */
+  const shownTab = () =>
     el.querySelector('[data-testid="school-overview"]')
       ? 'overview'
-      : el.querySelector('[data-testid="tab-placeholder"]')?.getAttribute('data-tab');
+      : el.querySelector('[data-testid="journal"]')
+        ? 'journal'
+        : null;
 
   it('shows a skeleton, then the header: name, kind, status, plan', async () => {
     await open(`/schools/${ID}`);
@@ -146,7 +149,7 @@ describe('SchoolCardPage', () => {
     expect(text('school-status')).toBe('Inactive');
     expect(text('school-plan')).toMatch(/^Plan: Pro v3\s*trial$/);
     expect(activeTab()).toBe('tab-overview');
-    expect(placeholderTab()).toBe('overview');
+    expect(shownTab()).toBe('overview');
   });
 
   it('marks a deleted school with its date', async () => {
@@ -157,16 +160,18 @@ describe('SchoolCardPage', () => {
   });
 
   it('keeps the tab in the URL and reads the school once for all tabs', async () => {
-    // The journal is the last placeholder; built tabs read their own data, the card's stays.
+    // A tab reads its own data (the journal its entries); the card's school and plan stay.
     await open(`/schools/${ID}/journal`);
     await answer();
+    http.expectOne((r) => r.url === AUDIT).flush({ items: [], nextCursor: null });
+    await stable();
     expect(activeTab()).toBe('tab-journal');
-    expect(placeholderTab()).toBe('journal');
+    expect(shownTab()).toBe('journal');
 
     el.querySelector<HTMLElement>('[data-testid="tab-overview"]')!.click();
     await vi.waitFor(async () => {
       await stable();
-      expect(placeholderTab()).toBe('overview');
+      expect(shownTab()).toBe('overview');
     });
     expect(url()).toBe(`/schools/${ID}`);
     // afterEach's verify(): switching tabs asked nothing again.

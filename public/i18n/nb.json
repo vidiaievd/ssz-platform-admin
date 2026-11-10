@@ -181,7 +181,6 @@
         "ai": "KI og tjenester",
         "journal": "Logg"
       },
-      "tabSoon": "Denne fanen bygges i de neste stegene av fase 3.",
       "errors": {
         "forbidden": "Ingen tilgang til denne skolen.",
         "generic": "Kunne ikke laste skolen."
@@ -456,6 +455,26 @@
         "regionsRequired": "Velg minst én region, eller tillat alle.",
         "regions": "Regioner modellene kan kjøre i",
         "regionsHint": "Bare modeller fra leverandører i disse regionene kalles; en egen modell trenger «local»."
+      }
+    },
+    "journal": {
+      "title": "Adminjournal",
+      "failed": "Kunne ikke laste journalen",
+      "empty": "Ingen adminhandlinger på denne skolen ennå.",
+      "actor": "Av",
+      "system": "system",
+      "reason": "Begrunnelse: {{ reason }}",
+      "changes": "Før og etter",
+      "before": "Før",
+      "after": "Etter",
+      "more": "Vis flere",
+      "moreFailed": "Kunne ikke laste flere oppføringer.",
+      "actions": {
+        "subscription.assigned": "Plan tildelt",
+        "subscription.canceled": "Abonnement avsluttet",
+        "grant.issued": "Tilskudd utstedt",
+        "grant.revoked": "Tilskudd trukket tilbake",
+        "payer_policy.changed": "Betalerpolicy endret"
       }
     }
   },
