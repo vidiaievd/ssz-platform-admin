@@ -5,9 +5,11 @@ export type SchoolKind = 'SCHOOL' | 'SOLO';
 export type SchoolStatus = 'active' | 'inactive' | 'deleted';
 export type SchoolSort = 'createdAt' | '-createdAt' | 'name' | '-name';
 export type SortableColumn = 'name' | 'createdAt';
+export type SeatsFilter = 'near' | 'over';
 
 export const SCHOOL_KINDS: readonly SchoolKind[] = ['SCHOOL', 'SOLO'];
 export const SCHOOL_STATUSES: readonly SchoolStatus[] = ['active', 'inactive', 'deleted'];
+export const SEATS_FILTERS: readonly SeatsFilter[] = ['near', 'over'];
 const SORTS: readonly SchoolSort[] = ['createdAt', '-createdAt', 'name', '-name'];
 /** Server accepts 1–100; the panel offers these. */
 export const PAGE_SIZES = [10, 25, 50, 100] as const;
@@ -20,6 +22,8 @@ export interface SchoolsQuery {
   readonly kind: SchoolKind | null;
   /** null = every status, deleted schools included (the server's default). */
   readonly status: SchoolStatus | null;
+  /** null = every school; `near` = 90 % of the seat limit or more, `over` = above it. */
+  readonly seats: SeatsFilter | null;
   readonly sort: SchoolSort;
   /** 1-based. */
   readonly page: number;
@@ -30,6 +34,7 @@ export const DEFAULT_SCHOOLS_QUERY: SchoolsQuery = {
   search: '',
   kind: null,
   status: null,
+  seats: null,
   sort: '-createdAt',
   page: 1,
   size: 25,
@@ -46,6 +51,7 @@ export function parseSchoolsQuery(params: ParamMap): SchoolsQuery {
     search: (params.get('q') ?? '').trim().slice(0, SEARCH_MAX),
     kind: oneOf(params.get('kind'), SCHOOL_KINDS) ?? d.kind,
     status: oneOf(params.get('status'), SCHOOL_STATUSES) ?? d.status,
+    seats: oneOf(params.get('seats'), SEATS_FILTERS) ?? d.seats,
     sort: oneOf(params.get('sort'), SORTS) ?? d.sort,
     page: positiveInt(params.get('page')) ?? d.page,
     size: size !== null && (PAGE_SIZES as readonly number[]).includes(size) ? size : d.size,
@@ -60,6 +66,7 @@ export function toSchoolsQueryParams(query: SchoolsQuery): Params {
     q: query.search || null,
     kind: query.kind,
     status: query.status,
+    seats: query.seats,
     sort: unlessDefault(query.sort, d.sort),
     page: unlessDefault(query.page, d.page),
     size: unlessDefault(query.size, d.size),
@@ -72,6 +79,7 @@ export function toListParams(query: SchoolsQuery): AdminSchoolsList$Params {
     ...(query.search ? { search: query.search } : {}),
     ...(query.kind ? { kind: query.kind } : {}),
     ...(query.status ? { status: query.status } : {}),
+    ...(query.seats ? { seats: query.seats } : {}),
     sort: query.sort,
     page: query.page,
     limit: query.size,
@@ -80,7 +88,9 @@ export function toListParams(query: SchoolsQuery): AdminSchoolsList$Params {
 
 /** True when anything but paging and sorting narrows the list. */
 export function hasFilters(query: SchoolsQuery): boolean {
-  return query.search !== '' || query.kind !== null || query.status !== null;
+  return (
+    query.search !== '' || query.kind !== null || query.status !== null || query.seats !== null
+  );
 }
 
 /** A filter change starts again from page 1; paging alone keeps the filters. */

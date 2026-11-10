@@ -191,7 +191,8 @@
       "status": "Status",
       "students": "Students",
       "teachers": "Teachers",
-      "createdAt": "Created"
+      "createdAt": "Created",
+      "seats": "Seats"
     },
     "kind": {
       "SCHOOL": "School",
@@ -397,7 +398,21 @@
         "startsAt": "Starts (optional)",
         "startsHint": "Empty or today = now.",
         "endsAt": "Ends",
-        "periodInvalid": "Pick a day after today and after the start."
+        "periodInvalid": "Pick a day after today and after the start.",
+        "seats": "Seats (limit)",
+        "seatsInvalid": "A whole number from 1.",
+        "seatsHint": "Raises the plan's limit while the grant runs; it never lowers it. Seats cannot be switched off."
+      },
+      "seats": {
+        "title": "Student seats",
+        "used": "active students of the limit",
+        "unlimited": "active students, no limit",
+        "limit": "Limit now",
+        "fromPlan": "From the plan's version",
+        "fromGrant": "Raised by a grant",
+        "ceiling": "Ceiling (limit + 10 %)",
+        "hint": "A seat is an active student on the roster; pending invitations take none. Past the limit the school runs on a 10 % grace with a warning; at the ceiling new students are refused. A grant only raises the plan's limit.",
+        "max": "up to {{ n }}"
       }
     },
     "ai": {
@@ -514,6 +529,11 @@
         "grant.revoked": "Grant revoked",
         "payer_policy.changed": "Payer policy changed"
       }
+    },
+    "allSeats": "All seat levels",
+    "seatsFilter": {
+      "near": "Near the limit (90 %+)",
+      "over": "Over the limit"
     }
   },
   "reasonDialog": {

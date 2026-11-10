@@ -44,6 +44,7 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
     },
     groups: [],
     courses: { count: 0, ids: [] },
+    seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
     ...overrides,
   };
 }
@@ -57,6 +58,7 @@ function account(overrides: Partial<AccountLookupItemDto> = {}): AccountLookupIt
     subscription: { id: 'sub-1', status: 'active', periodStart: '2026-01-01', periodEnd: null },
     activeGrants: 0,
     scheduledGrants: 0,
+    seats: null,
     ...overrides,
   };
 }
@@ -150,6 +152,15 @@ describe('SchoolCardPage', () => {
     expect(text('school-plan')).toMatch(/^Plan: Pro v3\s*trial$/);
     expect(activeTab()).toBe('tab-overview');
     expect(shownTab()).toBe('overview');
+  });
+
+  it('shows seats in the header and links them to the plan tab', async () => {
+    await open(`/schools/${ID}`);
+    await answer(detail({ seats: { used: 103, limit: 100, ceiling: 110, state: 'warning' } }));
+    expect(text('school-seats')).toBe('Seats: 103 / 100');
+    const value = el.querySelector('[data-testid="school-seats-value"]')!;
+    expect(value.getAttribute('data-level')).toBe('warning');
+    expect(value.getAttribute('href')).toContain('/plan');
   });
 
   it('marks a deleted school with its date', async () => {

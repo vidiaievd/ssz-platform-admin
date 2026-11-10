@@ -4,18 +4,18 @@
 export interface IssueGrantDto {
 
   /**
-   * false = switch the key off for the term (no credits, no limits); revoking the grant gives it back to the plan
+   * false = switch the key off for the term (no credits, no limits); revoking the grant gives it back to the plan. seats.students cannot be switched off (422)
    */
   enabled?: boolean;
   endsAt: string;
 
   /**
-   * One of: ai.review_draft, ai.review_direct, ai.student_assist, ai.practice, ai.authoring, ai.voice_review, ai.voice_review_pronunciation, school.review_ai_policy
+   * One of: ai.review_draft, ai.review_direct, ai.student_assist, ai.practice, ai.authoring, ai.voice_review, ai.voice_review_pronunciation, school.review_ai_policy, seats.students
    */
   featureKey: string;
 
   /**
-   * Key-specific limits, as on a plan feature
+   * Key-specific limits, as on a plan feature; they only raise the plan's. seats.students needs { max } (a whole number)
    */
   limits?: {
 };

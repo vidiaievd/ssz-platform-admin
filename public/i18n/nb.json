@@ -191,7 +191,8 @@
       "status": "Status",
       "students": "Elever",
       "teachers": "Lærere",
-      "createdAt": "Opprettet"
+      "createdAt": "Opprettet",
+      "seats": "Plasser"
     },
     "kind": {
       "SCHOOL": "Skole",
@@ -397,7 +398,21 @@
         "startsAt": "Starter (valgfritt)",
         "startsHint": "Tomt eller i dag = nå.",
         "endsAt": "Slutter",
-        "periodInvalid": "Velg en dag etter i dag og etter starten."
+        "periodInvalid": "Velg en dag etter i dag og etter starten.",
+        "seats": "Plasser (grense)",
+        "seatsInvalid": "Et helt tall fra 1.",
+        "seatsHint": "Hever planens grense mens tildelingen varer, senker aldri. Plasser kan ikke slås av."
+      },
+      "seats": {
+        "title": "Elevplasser",
+        "used": "aktive elever av grensen",
+        "unlimited": "aktive elever, ingen grense",
+        "limit": "Grense nå",
+        "fromPlan": "Fra planens versjon",
+        "fromGrant": "Hevet av en tildeling",
+        "ceiling": "Tak (grense + 10 %)",
+        "hint": "En plass er en aktiv elev i rosteren; ventende invitasjoner tar ingen. Over grensen går skolen på 10 % slingringsmonn med advarsel; ved taket avvises nye elever. En tildeling hever bare planens grense.",
+        "max": "opptil {{ n }}"
       }
     },
     "ai": {
@@ -514,6 +529,11 @@
         "grant.revoked": "Tilskudd trukket tilbake",
         "payer_policy.changed": "Betalerpolicy endret"
       }
+    },
+    "allSeats": "Alle plassnivåer",
+    "seatsFilter": {
+      "near": "Nær grensen (90 %+)",
+      "over": "Over grensen"
     }
   },
   "reasonDialog": {

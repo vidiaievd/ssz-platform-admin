@@ -14,7 +14,9 @@ import { IfLevelDirective } from '../../../../core/auth/if-level.directive';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../../shared/local-date.pipe';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
+import { seatCeiling, seatLevel, seatLevelClass, seatsText } from '../../seats';
 import { AssignPlanDialog } from './assign-plan-dialog';
+import { SEATS_KEY } from './feature-keys';
 import { GrantDialog } from './grant-dialog';
 import { PAYER_TYPE, SchoolPlanData } from './school-plan.data';
 
@@ -224,10 +226,7 @@ const GRANT_SEVERITY = {
                                 }}
                               </td>
                               <td class="py-1 tabular-nums">
-                                {{
-                                  creditsText(f.enabled, f.monthlyCredits)
-                                    | transloco: { n: f.monthlyCredits }
-                                }}
+                                {{ valueText(f) | transloco: { n: valueOf(f) } }}
                               </td>
                             </tr>
                           }
@@ -241,6 +240,41 @@ const GRANT_SEVERITY = {
           }
         }
       </section>
+
+      <!-- Student seats -->
+      @if (seats(); as seats) {
+        <section
+          class="border-border flex flex-col gap-2 rounded-md border p-4"
+          data-testid="plan-seats"
+        >
+          <h2 class="text-base font-semibold">{{ 'schools.plan.seats.title' | transloco }}</h2>
+          <p class="text-lg tabular-nums" data-testid="plan-seats-usage">
+            <span [class]="seatClass()" [attr.data-level]="seatLevelOf()">{{ seatsLabel() }}</span>
+            <span class="text-muted-color text-sm">
+              {{
+                'schools.plan.seats.' + (seats.limit === null ? 'unlimited' : 'used') | transloco
+              }}
+            </span>
+          </p>
+          @if (seats.limit !== null) {
+            <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+              <dt class="text-muted-color">{{ 'schools.plan.seats.limit' | transloco }}</dt>
+              <dd class="tabular-nums" data-testid="plan-seats-limit">{{ seats.limit }}</dd>
+              <dt class="text-muted-color">{{ 'schools.plan.seats.fromPlan' | transloco }}</dt>
+              <dd class="tabular-nums" data-testid="plan-seats-plan">
+                {{ planSeatLimit() ?? '—' }}
+              </dd>
+              <dt class="text-muted-color">{{ 'schools.plan.seats.fromGrant' | transloco }}</dt>
+              <dd class="tabular-nums" data-testid="plan-seats-grant">
+                {{ grantSeatLimit() ?? '—' }}
+              </dd>
+              <dt class="text-muted-color">{{ 'schools.plan.seats.ceiling' | transloco }}</dt>
+              <dd class="tabular-nums">{{ ceiling() }}</dd>
+            </dl>
+          }
+          <p class="text-muted-color text-xs">{{ 'schools.plan.seats.hint' | transloco }}</p>
+        </section>
+      }
 
       <!-- Live grants -->
       <section
@@ -402,9 +436,7 @@ const GRANT_SEVERITY = {
                   />
                 </td>
                 <td class="py-1 pr-4 tabular-nums">
-                  {{
-                    creditsText(g.enabled, g.monthlyCredits) | transloco: { n: g.monthlyCredits }
-                  }}
+                  {{ valueText(g) | transloco: { n: valueOf(g) } }}
                 </td>
                 <td class="py-1 pr-4 whitespace-nowrap">
                   {{ g.startsAt | localDate: lang() }} – {{ g.endsAt | localDate: lang() }}
@@ -531,6 +563,36 @@ export class SchoolPlanTab {
       (g) => g.state === 'ended' || g.state === 'revoked',
     );
   });
+  /** The school's seats as organization counts them (the card's read), or nothing before it. */
+  protected readonly seats = computed(() => this.data.card.school()?.seats ?? null);
+  protected readonly seatLevelOf = computed(() => {
+    const seats = this.seats();
+    return seats ? seatLevel(seats.used, seats.limit) : 'none';
+  });
+  protected readonly seatClass = computed(() => seatLevelClass(this.seatLevelOf()));
+  protected readonly seatsLabel = computed(() => {
+    const seats = this.seats();
+    return seats ? seatsText(seats.used, seats.limit) : '—';
+  });
+  protected readonly ceiling = computed(() => {
+    const limit = this.seats()?.limit;
+    return limit === null || limit === undefined ? null : seatCeiling(limit);
+  });
+  /** The applied version's own limit, when the version is read. */
+  protected readonly planSeatLimit = computed(() => {
+    const features = this.data.features();
+    if (features.kind !== 'ready') return null;
+    const row = features.value.find((f) => f.featureKey === SEATS_KEY && f.enabled);
+    return row ? SchoolPlanTab.maxOf(row) : null;
+  });
+  /** The largest limit among live grants that give seats (a grant only raises the plan's). */
+  protected readonly grantSeatLimit = computed(() => {
+    const limits = this.liveGrants()
+      .filter((g) => g.featureKey === SEATS_KEY && g.state === 'active')
+      .map((g) => SchoolPlanTab.maxOf(g))
+      .filter((max): max is number => max !== null);
+    return limits.length === 0 ? null : Math.max(...limits);
+  });
   protected readonly assignable = computed(() => {
     const plans = this.data.plans();
     return plans.kind === 'ready'
@@ -552,6 +614,31 @@ export class SchoolPlanTab {
       grantId: this.revoking()!.id,
       body: { reason },
     });
+
+  /** The seat limit (`limits.max`) of a feature row or grant; `null` when it carries none. */
+  private static maxOf(row: { limits: object }): number | null {
+    const max = (row.limits as { max?: unknown }).max;
+    return typeof max === 'number' ? max : null;
+  }
+
+  /** Translation key of a row's value: seats show their limit, the rest their credits. */
+  protected valueText(row: {
+    featureKey: string;
+    enabled: boolean;
+    monthlyCredits: string | null;
+  }): string {
+    return row.featureKey === SEATS_KEY
+      ? 'schools.plan.seats.max'
+      : this.creditsText(row.enabled, row.monthlyCredits);
+  }
+
+  protected valueOf(row: {
+    featureKey: string;
+    limits: object;
+    monthlyCredits: string | null;
+  }): string | number | null {
+    return row.featureKey === SEATS_KEY ? SchoolPlanTab.maxOf(row) : row.monthlyCredits;
+  }
 
   /** `null` credits: unmetered on a key that is on, nothing on a key that is off. */
   protected creditsText(enabled: boolean, credits: string | null): string {

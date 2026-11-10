@@ -36,6 +36,7 @@ function school(
     ownerId: `owner-${id}`,
     createdAt: '2026-03-05T10:00:00.000Z',
     counts: { students: 12, teachers: 3 },
+    seats: { used: 12, limit: null },
     ...overrides,
   };
 }
@@ -57,6 +58,7 @@ function account(
     },
     activeGrants: 0,
     scheduledGrants: 0,
+    seats: null,
     ...overrides,
   };
 }
@@ -134,6 +136,26 @@ describe('SchoolsListPage', () => {
     (columns.lookup ?? ((r) => r.flush({ items: [] })))(lookup);
     await stable();
   }
+
+  it('sends the seats filter from the URL', async () => {
+    await open('/schools?seats=near');
+    expect(expectSchools().request.params.get('seats')).toBe('near');
+  });
+
+  it('writes the seats column: 87 / 100, a bare number without a limit', async () => {
+    await open('/schools');
+    await answer([
+      school('a', { seats: { used: 87, limit: 100 } }),
+      school('b', { seats: { used: 103, limit: 100 } }),
+      school('c', { seats: { used: 7, limit: 5 } }),
+      school('d', { seats: { used: 12, limit: null } }),
+    ]);
+    expect(all('[data-testid="school-seats"]')).toEqual(['87 / 100', '103 / 100', '7 / 5', '12']);
+    const levels = Array.from(el.querySelectorAll('[data-testid="school-seats"]'), (n) =>
+      n.getAttribute('data-level'),
+    );
+    expect(levels).toEqual(['ok', 'warning', 'full', 'none']);
+  });
 
   it('asks organization for the page the URL describes', async () => {
     await open('/schools?q=oslo&kind=SOLO&status=active&sort=name&page=2&size=50');

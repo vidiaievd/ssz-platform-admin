@@ -56,6 +56,7 @@ const school = {
   },
   groups: [],
   courses: { count: 0, ids: [] },
+  seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
 } satisfies AdminSchoolDetailDto;
 
 const lookup = {
@@ -66,6 +67,7 @@ const lookup = {
   subscription: null,
   activeGrants: 1,
   scheduledGrants: 0,
+  seats: null,
 };
 
 function feature(overrides: Partial<PayerFeatureUsageDto>): PayerFeatureUsageDto {

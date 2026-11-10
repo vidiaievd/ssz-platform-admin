@@ -60,6 +60,7 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
     },
     groups: [group(), group({ id: 'g-2', name: 'Spare', courseId: null, status: 'draft' })],
     courses: { count: 2, ids: [COURSE_A, COURSE_B] },
+    seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
     ...overrides,
   };
 }
@@ -208,6 +209,7 @@ describe('SchoolOverviewTab', () => {
         owner: { userId: 'owner-1', name: null, email: null },
         groups: [],
         courses: { count: 0, ids: [] },
+        seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
       }),
     );
     expect(el.querySelector('[data-testid="overview-description"]')).toBeNull();
@@ -223,6 +225,7 @@ describe('SchoolOverviewTab', () => {
         kind: 'SOLO',
         groups: [group({ isDefault: true, name: 'Default', courseId: null })],
         courses: { count: 0, ids: [] },
+        seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
       }),
     );
     expect(text('count-teachers')).toBe('Teachers —');
@@ -236,6 +239,7 @@ describe('SchoolOverviewTab', () => {
       detail({
         contacts: { email: null, website: 'javascript:alert(1)', city: null },
         courses: { count: 0, ids: [] },
+        seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
         groups: [],
       }),
     );

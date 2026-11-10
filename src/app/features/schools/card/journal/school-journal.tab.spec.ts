@@ -47,6 +47,7 @@ const school = {
   },
   groups: [],
   courses: { count: 0, ids: [] },
+  seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
 } satisfies AdminSchoolDetailDto;
 
 const lookup = {
@@ -57,6 +58,7 @@ const lookup = {
   subscription: null,
   activeGrants: 0,
   scheduledGrants: 0,
+  seats: null,
 };
 
 function entry(overrides: Partial<AdminAuditEntryDto> = {}): AdminAuditEntryDto {
@@ -138,7 +140,9 @@ describe('SchoolJournalTab', () => {
 
   const find = (testId: string) => el.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
   const text = (testId: string) => find(testId)?.textContent?.replace(/\s+/g, ' ').trim() ?? null;
-  const all = (testId: string) => [...el.querySelectorAll<HTMLElement>(`[data-testid="${testId}"]`)];
+  const all = (testId: string) => [
+    ...el.querySelectorAll<HTMLElement>(`[data-testid="${testId}"]`),
+  ];
 
   it('asks for the entries about this school, newest first, and lists them', async () => {
     const req = await open({

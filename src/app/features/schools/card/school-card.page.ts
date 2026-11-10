@@ -7,6 +7,7 @@ import { Tag } from 'primeng/tag';
 import { ApiError } from '../../../core/auth/api-error';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
+import { seatLevel, seatLevelClass, seatsText } from '../seats';
 import { SchoolCardData } from './school-card.data';
 import { SCHOOL_TABS, SchoolTab, schoolTabLink } from './school-tabs';
 
@@ -70,6 +71,17 @@ const STATUS_SEVERITY = { active: 'success', inactive: 'warn', deleted: 'danger'
                 }}
               </span>
             }
+            <span class="flex items-center gap-1" data-testid="school-seats">
+              {{ 'schools.columns.seats' | transloco }}:
+              <a
+                class="hover:underline"
+                [class]="seatClass()"
+                [attr.data-level]="seatLevelOf()"
+                [routerLink]="planLink()"
+                data-testid="school-seats-value"
+                >{{ seatsLabel() }}</a
+              >
+            </span>
             <span class="flex items-center gap-1" data-testid="school-plan">
               {{ 'schools.columns.plan' | transloco }}:
               @switch (data.plan().kind) {
@@ -161,6 +173,15 @@ export class SchoolCardPage {
   protected readonly trial = computed(() => {
     const plan = this.data.plan();
     return plan.kind === 'ready' && plan.value?.subscription?.status === 'trial';
+  });
+  protected readonly seatLevelOf = computed(() => {
+    const seats = this.data.school()?.seats;
+    return seats ? seatLevel(seats.used, seats.limit) : 'none';
+  });
+  protected readonly seatClass = computed(() => seatLevelClass(this.seatLevelOf()));
+  protected readonly seatsLabel = computed(() => {
+    const seats = this.data.school()?.seats;
+    return seats ? seatsText(seats.used, seats.limit) : '—';
   });
   protected readonly planLink = computed(() => schoolTabLink(this.schoolId(), 'plan'));
 

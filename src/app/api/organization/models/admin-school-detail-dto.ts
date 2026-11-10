@@ -6,6 +6,7 @@ import { AdminSchoolCoursesDto } from '../models/admin-school-courses-dto';
 import { AdminSchoolDetailCountsDto } from '../models/admin-school-detail-counts-dto';
 import { AdminSchoolGroupDto } from '../models/admin-school-group-dto';
 import { AdminSchoolOwnerDto } from '../models/admin-school-owner-dto';
+import { AdminSchoolSeatsDto } from '../models/admin-school-seats-dto';
 export interface AdminSchoolDetailDto {
   avatarUrl: string | null;
   contacts: AdminSchoolContactsDto;
@@ -23,6 +24,11 @@ export interface AdminSchoolDetailDto {
   kind: 'SCHOOL' | 'SOLO';
   name: string;
   owner: AdminSchoolOwnerDto;
+
+  /**
+   * Student seats against the projected plan limit
+   */
+  seats: AdminSchoolSeatsDto;
   slug: string;
   status: 'active' | 'inactive' | 'deleted';
   type: 'ONLINE' | 'HYBRID';

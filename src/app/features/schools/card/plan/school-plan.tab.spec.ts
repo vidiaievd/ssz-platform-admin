@@ -56,6 +56,7 @@ const school = {
   },
   groups: [],
   courses: { count: 0, ids: [] },
+  seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
 } satisfies AdminSchoolDetailDto;
 
 function subscription(overrides: Partial<SubscriptionResponseDto> = {}): SubscriptionResponseDto {
@@ -108,6 +109,7 @@ function lookup(overrides: Partial<AccountLookupItemDto> = {}): AccountLookupIte
     },
     activeGrants: 1,
     scheduledGrants: 0,
+    seats: null,
     ...overrides,
   };
 }
@@ -463,8 +465,75 @@ describe('SchoolPlanTab', () => {
 
     // The card's header and the tab read again.
     (await next(LOOKUP, 'POST')).flush({ items: [lookup()] });
+    (await next(SCHOOL)).flush(school);
     await answerReads({}, false);
     expect(inPage('reason-dialog')).toBeNull();
+  });
+
+  it("shows the seats: usage, the limit now, the plan's and the grant's part", async () => {
+    const seatsGrant = grant({
+      id: 'g-seats',
+      featureKey: 'seats.students',
+      monthlyCredits: null,
+      limits: { max: 150 },
+    });
+    await open('admin', {
+      details: {
+        ...proDetails,
+        versions: [
+          {
+            ...version(2, [
+              {
+                featureKey: 'seats.students',
+                enabled: true,
+                monthlyCredits: null,
+                limits: { max: 100 },
+              },
+            ]),
+          },
+        ],
+      },
+      account: {
+        account: { id: 'a-1', type: 'workspace', externalId: ID, createdAt: '2026-01-01' },
+        subscription: subscription(),
+        grants: [seatsGrant],
+      },
+    });
+    expect(text('plan-seats-usage')).toContain('7 / 100');
+    expect(text('plan-seats-limit')).toBe('100');
+    expect(text('plan-seats-plan')).toBe('100');
+    expect(text('plan-seats-grant')).toBe('150');
+    // A grant row shows its limit, not "unmetered".
+    expect(cells('grant-row')[0][2]).toBe('up to 150');
+  });
+
+  it('gives seats a number field instead of credits and an effect, and sends limits.max', async () => {
+    await open();
+    await click('plan-grant');
+    await dialogShown();
+    await pick('grant-key', 'seats.students');
+    expect(inPage('grant-credits')).toBeNull();
+    expect(inPage('grant-effect')).toBeNull();
+    await type('reason-input', 'School grew mid-term');
+    await type('grant-ends', day(30));
+    await type('grant-seats', '12,5');
+    expect(inPage('grant-seats-error')).not.toBeNull();
+    await confirm();
+    expect(http.match((r) => r.method === 'POST')).toHaveLength(0);
+    await type('grant-seats', '150');
+    expect(inPage('grant-seats-error')).toBeNull();
+    await confirm();
+
+    const post = await next(`${ACCOUNT}/grants`, 'POST');
+    expect(post.request.body).toEqual({
+      featureKey: 'seats.students',
+      enabled: true,
+      limits: { max: 150 },
+      endsAt: `${day(30)}T00:00:00.000Z`,
+      reason: 'School grew mid-term',
+    });
+    post.flush({ statusCode: 500 }, { status: 500, statusText: 'Error' });
+    await stable();
   });
 
   it('issues credits on top of the plan from a later start', async () => {
@@ -526,6 +595,7 @@ describe('SchoolPlanTab', () => {
     expect(req.request.params.get('reason')).toBe('School closed its contract');
     req.flush({ account: {}, subscription: null, grants: [] });
     (await next(LOOKUP, 'POST')).flush({ items: [lookup()] });
+    (await next(SCHOOL)).flush(school);
     await answerReads({}, false);
   });
 
@@ -570,6 +640,7 @@ describe('SchoolPlanTab', () => {
     (await next(LOOKUP, 'POST')).flush({
       items: [lookup({ plan: { code: 'school_pro', name: 'School Pro', version: 3 } })],
     });
+    (await next(SCHOOL)).flush(school);
     await answerReads({}, false);
     expect(find('plan-outdated')).toBeNull();
   });

@@ -33,6 +33,7 @@ function school(id: string): AdminSchoolListItemDto {
     ownerId: 'owner',
     createdAt: '2026-01-01T00:00:00Z',
     counts: { students: 0, teachers: 0 },
+    seats: { used: 0, limit: null },
   } as AdminSchoolListItemDto;
 }
 

@@ -18,15 +18,18 @@ import { AccountLookupItemDto } from '../../api/subscription/models/account-look
 import { ApiError } from '../../core/auth/api-error';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
+import { seatLevel, seatLevelClass, seatsText } from './seats';
 import { SchoolsListData } from './schools-list.data';
 import {
   DEFAULT_SCHOOLS_QUERY,
   PAGE_SIZES,
   SCHOOL_KINDS,
   SCHOOL_STATUSES,
+  SEATS_FILTERS,
   SchoolKind,
   SchoolStatus,
   SchoolsQuery,
+  SeatsFilter,
   SortableColumn,
   ariaSort,
   hasFilters,
@@ -124,6 +127,23 @@ const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
             {{ 'schools.status.' + status | transloco }}
           </ng-template>
         </p-select>
+        <p-select
+          class="w-full sm:w-44"
+          [options]="seatFilters"
+          [ngModel]="query().seats"
+          (ngModelChange)="setSeats($event)"
+          [showClear]="true"
+          [placeholder]="'schools.allSeats' | transloco"
+          [ariaLabel]="'schools.columns.seats' | transloco"
+          data-testid="schools-seats"
+        >
+          <ng-template #item let-seats>{{
+            'schools.seatsFilter.' + seats | transloco
+          }}</ng-template>
+          <ng-template #selectedItem let-seats>
+            {{ 'schools.seatsFilter.' + seats | transloco }}
+          </ng-template>
+        </p-select>
         @if (filtered()) {
           <button
             pButton
@@ -205,6 +225,7 @@ const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
                 <th>{{ 'schools.columns.plan' | transloco }}</th>
                 <th>{{ 'schools.columns.status' | transloco }}</th>
                 <th class="text-right">{{ 'schools.columns.students' | transloco }}</th>
+                <th class="text-right">{{ 'schools.columns.seats' | transloco }}</th>
                 <th class="text-right">{{ 'schools.columns.teachers' | transloco }}</th>
                 <th [attr.aria-sort]="sortState('createdAt')">
                   <button
@@ -283,6 +304,14 @@ const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
                   />
                 </td>
                 <td class="text-right tabular-nums">{{ school.counts.students }}</td>
+                <td
+                  class="text-right whitespace-nowrap tabular-nums"
+                  [class]="seatClass(school)"
+                  data-testid="school-seats"
+                  [attr.data-level]="seatLevelOf(school)"
+                >
+                  {{ seatsOf(school) }}
+                </td>
                 <!-- A tutor's workspace has no teacher rows: its only teacher is the owner. -->
                 <td class="text-right tabular-nums" data-testid="school-teachers">
                   {{ school.kind === 'SOLO' ? '—' : school.counts.teachers }}
@@ -293,7 +322,7 @@ const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
 
             <ng-template #emptymessage>
               <tr>
-                <td colspan="8" class="py-8 text-center" data-testid="schools-empty">
+                <td colspan="9" class="py-8 text-center" data-testid="schools-empty">
                   @if (page.total > 0) {
                     <p class="mb-2">{{ 'schools.emptyPage' | transloco }}</p>
                     <button pButton type="button" [outlined]="true" (click)="goToPage(1)">
@@ -344,6 +373,7 @@ export class SchoolsListPage {
 
   protected readonly kinds = [...SCHOOL_KINDS];
   protected readonly statuses = [...SCHOOL_STATUSES];
+  protected readonly seatFilters = [...SEATS_FILTERS];
   protected readonly pageSizes = [...PAGE_SIZES];
   protected readonly statusSeverity = STATUS_SEVERITY;
   protected readonly skeletonRows = SKELETON_ROWS;
@@ -393,6 +423,22 @@ export class SchoolsListPage {
 
   protected setStatus(status: SchoolStatus | null): void {
     this.navigate(withFilter(this.query(), { status: status ?? null }));
+  }
+
+  protected setSeats(seats: SeatsFilter | null): void {
+    this.navigate(withFilter(this.query(), { seats: seats ?? null }));
+  }
+
+  protected seatsOf(school: AdminSchoolListItemDto): string {
+    return seatsText(school.seats.used, school.seats.limit);
+  }
+
+  protected seatLevelOf(school: AdminSchoolListItemDto) {
+    return seatLevel(school.seats.used, school.seats.limit);
+  }
+
+  protected seatClass(school: AdminSchoolListItemDto): string {
+    return seatLevelClass(this.seatLevelOf(school));
   }
 
   protected resetFilters(): void {

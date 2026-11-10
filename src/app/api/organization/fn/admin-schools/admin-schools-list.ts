@@ -27,6 +27,11 @@ export interface AdminSchoolsList$Params {
   status?: 'active' | 'inactive' | 'deleted';
 
 /**
+ * `near` = 90 % of the student limit or more, not over it; `over` = more active students than the limit. Schools without a numeric limit match neither.
+ */
+  seats?: 'near' | 'over';
+
+/**
  * `-` = descending
  */
   sort?: 'createdAt' | '-createdAt' | 'name' | '-name';
@@ -40,6 +45,7 @@ export function adminSchoolsList(http: HttpClient, rootUrl: string, params?: Adm
     rb.query('search', params.search, {});
     rb.query('kind', params.kind, {});
     rb.query('status', params.status, {});
+    rb.query('seats', params.seats, {});
     rb.query('sort', params.sort, {});
     rb.query('page', params.page, {});
     rb.query('limit', params.limit, {});
