@@ -6,6 +6,7 @@ import { NAV_SECTIONS, NavSection, NavSectionId } from './layout/nav-sections';
 
 /** Sections that are built: their own lazy routes. Every other one is "coming soon". */
 const SECTION_ROUTES: Partial<Record<NavSectionId, LoadChildren>> = {
+  dashboard: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
   schools: () => import('./features/schools/schools.routes').then((m) => m.SCHOOLS_ROUTES),
 };
 

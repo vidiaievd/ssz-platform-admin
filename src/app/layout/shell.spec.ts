@@ -44,7 +44,16 @@ describe('Shell and panel routes', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(url);
     harness.detectChanges();
+    // The dashboard at `/` reads its widgets; the shell tests do not care about their numbers.
+    for (let i = 0; i < 4; i++) {
+      await settle();
+      TestBed.tick();
+    }
+    for (const req of http.match((r) => r.url.includes('/api/v1/admin/'))) {
+      req.flush(null, { status: 503, statusText: 'Unavailable' });
+    }
     await harness.fixture.whenStable();
+    harness.detectChanges();
     const el = harness.fixture.nativeElement as HTMLElement;
     const text = (selector: string) => el.querySelector(selector)?.textContent?.trim() ?? null;
     return { harness, el, text };

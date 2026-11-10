@@ -54,6 +54,44 @@
     "audit": "Every admin action across all services.",
     "payments": "Payments arrive with billing; until then plans are assigned by hand."
   },
+  "dashboard": {
+    "period": "Period",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "Year"
+    },
+    "refresh": "Refresh",
+    "loadedAt": "Data as of {{ time }}",
+    "queue": {
+      "title": "Needs attention",
+      "failed": "Could not load the queue",
+      "empty": "All in order: nothing ends within 7 days.",
+      "until": "until {{ date }}",
+      "open": "Plan",
+      "truncated": "The list is cut; the soonest ones are shown.",
+      "kinds": {
+        "grantEnds": "Grant ends",
+        "grantOffEnds": "Switch-off ends",
+        "trialEnds": "Trial ends",
+        "subscriptionEnds": "Subscription ends"
+      }
+    },
+    "kpi": {
+      "failed": "Could not load the numbers",
+      "schools": "Schools",
+      "students": "Students",
+      "teachers": "Teachers",
+      "delta": "+{{ n }} in the period",
+      "byKind": "Schools {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "active",
+        "inactive": "inactive",
+        "deleted": "deleted"
+      }
+    }
+  },
   "comingSoon": {
     "text": "This section is still being built."
   },

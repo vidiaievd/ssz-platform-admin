@@ -54,6 +54,44 @@
     "audit": "Alle admin-handlinger i alle tjenester.",
     "payments": "Betalinger kommer med fakturering; inntil da tildeles abonnementer manuelt."
   },
+  "dashboard": {
+    "period": "Periode",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "År"
+    },
+    "refresh": "Oppdater",
+    "loadedAt": "Data per {{ time }}",
+    "queue": {
+      "title": "Krever oppmerksomhet",
+      "failed": "Kunne ikke laste køen",
+      "empty": "Alt er i orden: ingenting utløper innen 7 dager.",
+      "until": "til {{ date }}",
+      "open": "Plan",
+      "truncated": "Listen er kuttet; de nærmeste vises.",
+      "kinds": {
+        "grantEnds": "Tilskudd utløper",
+        "grantOffEnds": "Avslåing utløper",
+        "trialEnds": "Prøveperiode utløper",
+        "subscriptionEnds": "Abonnement utløper"
+      }
+    },
+    "kpi": {
+      "failed": "Kunne ikke laste tallene",
+      "schools": "Skoler",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "delta": "+{{ n }} i perioden",
+      "byKind": "Skoler {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "aktive",
+        "inactive": "inaktive",
+        "deleted": "slettet"
+      }
+    }
+  },
   "comingSoon": {
     "text": "Denne seksjonen er under arbeid."
   },
