@@ -75,7 +75,9 @@
         "grantEnds": "Grant ends",
         "grantOffEnds": "Switch-off ends",
         "trialEnds": "Trial ends",
-        "subscriptionEnds": "Subscription ends"
+        "subscriptionEnds": "Subscription ends",
+        "seats_full": "At the ceiling: new students refused",
+        "seats_warning": "Over the limit, in the 10 % grace"
       }
     },
     "kpi": {
@@ -89,7 +91,13 @@
         "active": "active",
         "inactive": "inactive",
         "deleted": "deleted"
-      }
+      },
+      "seats": "Student seats",
+      "seatsNone": "No school has a seat limit.",
+      "seatsShare": "{{ n }} % taken",
+      "seatsSchools": "in {{ n }} schools with a limit",
+      "seatsNear": "{{ n }} near the limit",
+      "seatsOver": "{{ n }} over the limit"
     }
   },
   "comingSoon": {

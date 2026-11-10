@@ -75,7 +75,9 @@
         "grantEnds": "Спливає грант",
         "grantOffEnds": "Спливає вимкнення",
         "trialEnds": "Спливає пробний період",
-        "subscriptionEnds": "Спливає підписка"
+        "subscriptionEnds": "Спливає підписка",
+        "seats_full": "На стелі: нових учнів не приймають",
+        "seats_warning": "Понад ліміт, у запасі 10 %"
       }
     },
     "kpi": {
@@ -89,7 +91,13 @@
         "active": "активні",
         "inactive": "неактивні",
         "deleted": "видалені"
-      }
+      },
+      "seats": "Місця учнів",
+      "seatsNone": "Жодна школа не має ліміту місць.",
+      "seatsShare": "зайнято {{ n }} %",
+      "seatsSchools": "у {{ n }} школах із лімітом",
+      "seatsNear": "{{ n }} біля ліміту",
+      "seatsOver": "{{ n }} понад ліміт"
     }
   },
   "comingSoon": {

@@ -31,6 +31,13 @@ const stats = {
   },
   students: { total: 1280, newInPeriod: 112 },
   teachers: { total: 96, newInPeriod: 7 },
+  seats: {
+    used: 90,
+    limit: 150,
+    schoolsLimited: 3,
+    near: { total: 1, items: [], truncated: false },
+    over: { total: 0, items: [], truncated: false },
+  },
   daily: [
     { date: '2026-11-09', schools: 41, students: 1200, teachers: 95 },
     { date: '2026-11-10', schools: 42, students: 1280, teachers: 96 },
@@ -112,6 +119,49 @@ describe('DashboardPage', () => {
   const find = (id: string) => el.querySelector<HTMLElement>(`[data-testid="${id}"]`);
   const text = (id: string) => find(id)?.textContent?.replace(/\s+/g, ' ').trim() ?? null;
   const all = (id: string) => [...el.querySelectorAll<HTMLElement>(`[data-testid="${id}"]`)];
+
+  it('shows the seats KPI and the schools over their limit, ceiling first', async () => {
+    await open({
+      stats: {
+        ...stats,
+        seats: {
+          ...stats.seats,
+          over: {
+            total: 2,
+            truncated: false,
+            items: [
+              { schoolId: 's-warn', name: 'Grace', slug: 'grace', used: 103, limit: 100 },
+              { schoolId: 's-full', name: 'Full', slug: 'full', used: 7, limit: 5 },
+            ],
+          },
+        },
+      },
+    });
+    expect(text('kpi-seats')).toContain('90 / 150');
+    expect(text('kpi-seats-share')).toBe('60 % taken');
+    expect(text('kpi-seats-over')).toContain('2');
+    const rows = all('queue-seat');
+    expect(rows.map((r) => r.getAttribute('data-level'))).toEqual(['full', 'warning']);
+    expect(rows[0].textContent).toContain('7 / 5');
+    expect(rows[0].querySelector('a')?.getAttribute('href')).toBe('/schools/s-full/plan');
+  });
+
+  it('keeps the seats KPI quiet when no school has a limit', async () => {
+    await open({
+      stats: {
+        ...stats,
+        seats: {
+          used: 0,
+          limit: 0,
+          schoolsLimited: 0,
+          near: { total: 0, items: [], truncated: false },
+          over: { total: 0, items: [], truncated: false },
+        },
+      },
+    });
+    expect(text('kpi-seats')).toContain('No school has a seat limit');
+    expect(all('queue-seat')).toHaveLength(0);
+  });
 
   it('shows the key numbers of the default 30 days', async () => {
     await open();

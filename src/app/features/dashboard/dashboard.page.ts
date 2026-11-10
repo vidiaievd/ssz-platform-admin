@@ -8,6 +8,8 @@ import { Tag } from 'primeng/tag';
 import { AdminStatsPeopleDto } from '../../api/organization/models/admin-stats-people-dto';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
+import { schoolTabLink } from '../schools/card/school-tabs';
+import { seatLevel } from '../schools/seats';
 import { DEFAULT_PERIOD, PERIODS, Period, attentionItems } from './dashboard-model';
 import { DashboardData } from './dashboard.data';
 import { Sparkline } from './sparkline';
@@ -87,13 +89,37 @@ import { Sparkline } from './sparkline';
             </p>
           }
           @default {
-            @if (items().length === 0) {
+            @if (items().length === 0 && seatItems().length === 0) {
               <p class="text-sm" data-testid="queue-empty">
                 <i class="pi pi-check-circle text-green-600" aria-hidden="true"></i>
                 {{ 'dashboard.queue.empty' | transloco }}
               </p>
             } @else {
               <ul class="flex flex-col" data-testid="queue-list">
+                @for (seat of seatItems(); track seat.schoolId) {
+                  <li
+                    class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
+                    data-testid="queue-seat"
+                    [attr.data-level]="seat.level"
+                  >
+                    <p-tag
+                      [severity]="seat.level === 'full' ? 'danger' : 'warn'"
+                      [value]="'dashboard.queue.kinds.seats_' + seat.level | transloco"
+                    />
+                    <span>{{ seat.name }}</span>
+                    <span class="text-muted-color font-mono text-xs">{{ seat.slug }}</span>
+                    <span class="text-xs tabular-nums" data-testid="queue-seat-count">
+                      {{ seat.used }} / {{ seat.limit }}
+                    </span>
+                    <a
+                      [routerLink]="seat.link"
+                      class="text-primary ml-auto underline"
+                      data-testid="queue-seat-link"
+                    >
+                      {{ 'dashboard.queue.open' | transloco }}
+                    </a>
+                  </li>
+                }
                 @for (item of items(); track item.id) {
                   <li
                     class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
@@ -135,15 +161,15 @@ import { Sparkline } from './sparkline';
       </section>
 
       <!-- KPI -->
-      <section class="grid gap-3 md:grid-cols-3" data-testid="kpis">
+      <section class="grid gap-3 md:grid-cols-2 xl:grid-cols-4" data-testid="kpis">
         @switch (data.stats().kind) {
           @case ('loading') {
-            @for (n of [1, 2, 3]; track n) {
+            @for (n of [1, 2, 3, 4]; track n) {
               <p-skeleton height="8rem" />
             }
           }
           @case ('error') {
-            <p class="text-sm md:col-span-3" role="alert" data-testid="kpi-failed">
+            <p class="text-sm md:col-span-2 xl:col-span-4" role="alert" data-testid="kpi-failed">
               {{ 'dashboard.kpi.failed' | transloco }} ·
               <button type="button" class="text-primary underline" (click)="data.reloadStats()">
                 {{ 'schools.retry' | transloco }}
@@ -186,6 +212,47 @@ import { Sparkline } from './sparkline';
                   }}
                 </p>
                 <app-sparkline [values]="series().schools" />
+              </article>
+
+              <article
+                class="border-border flex flex-col gap-1 rounded-md border p-4"
+                data-testid="kpi-seats"
+              >
+                <h2 class="text-muted-color text-sm">{{ 'dashboard.kpi.seats' | transloco }}</h2>
+                @if (s.seats.schoolsLimited === 0) {
+                  <span class="text-3xl font-semibold" data-testid="kpi-value">—</span>
+                  <p class="text-muted-color text-sm">
+                    {{ 'dashboard.kpi.seatsNone' | transloco }}
+                  </p>
+                } @else {
+                  <span class="text-3xl font-semibold tabular-nums" data-testid="kpi-value">
+                    {{ s.seats.used | number }} / {{ s.seats.limit | number }}
+                  </span>
+                  <p class="text-sm tabular-nums" data-testid="kpi-seats-share">
+                    {{ 'dashboard.kpi.seatsShare' | transloco: { n: seatShare() } }}
+                  </p>
+                  <p class="text-muted-color text-xs">
+                    {{ 'dashboard.kpi.seatsSchools' | transloco: { n: s.seats.schoolsLimited } }}
+                  </p>
+                  <p class="flex flex-wrap gap-x-3 text-xs" data-testid="kpi-seats-flags">
+                    <a
+                      routerLink="/schools"
+                      [queryParams]="{ seats: 'near' }"
+                      class="text-muted-color underline"
+                      data-testid="kpi-seats-near"
+                    >
+                      {{ 'dashboard.kpi.seatsNear' | transloco: { n: s.seats.near.total } }}
+                    </a>
+                    <a
+                      routerLink="/schools"
+                      [queryParams]="{ seats: 'over' }"
+                      class="text-muted-color underline"
+                      data-testid="kpi-seats-over"
+                    >
+                      {{ 'dashboard.kpi.seatsOver' | transloco: { n: s.seats.over.total } }}
+                    </a>
+                  </p>
+                }
               </article>
 
               @for (card of people(); track card.id) {
@@ -250,6 +317,23 @@ export class DashboardPage {
   protected readonly items = computed(() => {
     const q = this.data.queue();
     return q.kind === 'ready' ? attentionItems(q.value.endingSoon) : [];
+  });
+  /** Schools over their limit: at the ceiling (red) first, then in the grace (yellow). */
+  protected readonly seatItems = computed(() => {
+    const over = this.stats()?.seats.over;
+    if (!over) return [];
+    return over.items
+      .map((i) => ({
+        ...i,
+        level: seatLevel(i.used, i.limit),
+        link: schoolTabLink(i.schoolId, 'plan'),
+      }))
+      .filter((i) => i.level === 'full' || i.level === 'warning')
+      .sort((a, b) => (a.level === b.level ? 0 : a.level === 'full' ? -1 : 1));
+  });
+  protected readonly seatShare = computed(() => {
+    const seats = this.stats()?.seats;
+    return seats && seats.limit > 0 ? Math.round((seats.used / seats.limit) * 100) : 0;
   });
   protected readonly truncated = computed(() => {
     const q = this.data.queue();

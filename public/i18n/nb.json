@@ -75,7 +75,9 @@
         "grantEnds": "Tilskudd utløper",
         "grantOffEnds": "Avslåing utløper",
         "trialEnds": "Prøveperiode utløper",
-        "subscriptionEnds": "Abonnement utløper"
+        "subscriptionEnds": "Abonnement utløper",
+        "seats_full": "Ved taket: nye elever avvises",
+        "seats_warning": "Over grensen, innenfor 10 % slingringsmonn"
       }
     },
     "kpi": {
@@ -89,7 +91,13 @@
         "active": "aktive",
         "inactive": "inaktive",
         "deleted": "slettet"
-      }
+      },
+      "seats": "Elevplasser",
+      "seatsNone": "Ingen skole har plassgrense.",
+      "seatsShare": "{{ n }} % tatt",
+      "seatsSchools": "i {{ n }} skoler med grense",
+      "seatsNear": "{{ n }} nær grensen",
+      "seatsOver": "{{ n }} over grensen"
     }
   },
   "comingSoon": {
