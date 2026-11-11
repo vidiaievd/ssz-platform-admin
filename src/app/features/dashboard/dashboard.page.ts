@@ -379,7 +379,7 @@ export class DashboardPage {
         days,
         urgent: kind === 'purging' && days <= PURGE_URGENT_DAYS,
         at: i.at,
-        link: schoolTabLink(i.schoolId),
+        link: schoolTabLink(i.schoolId, 'danger'),
       };
     };
     return [

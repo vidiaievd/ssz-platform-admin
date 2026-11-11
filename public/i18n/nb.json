@@ -234,7 +234,8 @@
         "members": "Medlemmer",
         "plan": "Abonnement",
         "ai": "KI og tjenester",
-        "journal": "Logg"
+        "journal": "Logg",
+        "danger": "Faresone"
       },
       "errors": {
         "forbidden": "Ingen tilgang til denne skolen.",
@@ -543,13 +544,62 @@
         "subscription.canceled": "Abonnement avsluttet",
         "grant.issued": "Tilskudd utstedt",
         "grant.revoked": "Tilskudd trukket tilbake",
-        "payer_policy.changed": "Betalerpolicy endret"
+        "payer_policy.changed": "Betalerpolicy endret",
+        "school.suspended": "Skolen sperret",
+        "school.reactivated": "Skolen gjenåpnet",
+        "school.closed": "Skolen stengt",
+        "school.restored": "Skolen gjenopprettet",
+        "school.purge_requested": "Tidlig sletting forespurt"
       }
     },
     "allSeats": "Alle plassnivåer",
     "seatsFilter": {
       "near": "Nær grensen (90 %+)",
       "over": "Over grensen"
+    },
+    "danger": {
+      "title": "Skolens livssyklus",
+      "since": "i denne statusen siden {{ date }}",
+      "lastReason": "Siste grunn",
+      "none": "Ingen handlinger: skolen er slettet for godt.",
+      "stage": {
+        "active": "Åpen: elever jobber, ansatte redigerer.",
+        "suspended": "Skrivebeskyttet. Stenger av seg selv på datoen under.",
+        "closed": "I arkivet: ansatte har mistet rollene, kursene vedlikeholdes ikke, elevene beholder historikken. Slettes på datoen under.",
+        "purged": "Bare gravstenen er igjen; elevene beholder historikken."
+      },
+      "needsLevel": {
+        "admin": "Krever nivå admin",
+        "super": "Krever nivå super"
+      },
+      "confirmName": "Skriv skolens navn «{{ name }}» for å bekrefte",
+      "transitions": {
+        "suspend": {
+          "title": "Sperr",
+          "button": "Sperr",
+          "text": "Skolen blir skrivebeskyttet: ingen nye forsøk, vurdering eller endringer, og skolen betaler ikke for KI. Den stenger av seg selv etter 30 dager; gjenåpning bringer den tilbake."
+        },
+        "reactivate": {
+          "title": "Gjenåpne",
+          "button": "Gjenåpne",
+          "text": "Skolen er aktiv igjen, som før sperringen."
+        },
+        "close": {
+          "title": "Steng umiddelbart",
+          "button": "Steng nå",
+          "text": "Hopper over de 30 dagene: ansatte mister rollene, abonnementet sies opp, kursene blir uvedlikeholdt. Arkivet varer i 6 måneder; bare super kan gjenopprette."
+        },
+        "restore": {
+          "title": "Gjenopprett fra arkivet",
+          "button": "Gjenopprett",
+          "text": "Skolen er aktiv igjen. Abonnementet kommer ikke tilbake: tildel en plan manuelt."
+        },
+        "purge": {
+          "title": "Slett nå",
+          "button": "Slett nå",
+          "text": "Sletter skolens materiell, medlemmer og innstillinger ved neste kjøring av timeren; bare gravstenen blir igjen. Elevene beholder historikken. Kan ikke angres etter kjøring."
+        }
+      }
     }
   },
   "reasonDialog": {

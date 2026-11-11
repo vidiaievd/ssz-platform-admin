@@ -180,7 +180,7 @@ describe('DashboardPage', () => {
     expect(rows[0].textContent).toContain('deleted in 0 d');
     expect(rows[1].getAttribute('data-urgent')).toBe('true');
     expect(rows[2].textContent).toContain('closes in 3 d');
-    expect(rows[2].querySelector('a')?.getAttribute('href')).toBe('/schools/s-c');
+    expect(rows[2].querySelector('a')?.getAttribute('href')).toBe('/schools/s-c/danger');
     expect(find('queue-empty')).toBeNull();
   });
 

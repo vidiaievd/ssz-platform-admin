@@ -234,7 +234,8 @@
         "members": "Members",
         "plan": "Plan",
         "ai": "AI & services",
-        "journal": "Journal"
+        "journal": "Journal",
+        "danger": "Danger zone"
       },
       "errors": {
         "forbidden": "No access to this school.",
@@ -543,13 +544,62 @@
         "subscription.canceled": "Subscription canceled",
         "grant.issued": "Grant issued",
         "grant.revoked": "Grant revoked",
-        "payer_policy.changed": "Payer policy changed"
+        "payer_policy.changed": "Payer policy changed",
+        "school.suspended": "School suspended",
+        "school.reactivated": "School reactivated",
+        "school.closed": "School closed",
+        "school.restored": "School restored",
+        "school.purge_requested": "Early purge requested"
       }
     },
     "allSeats": "All seat levels",
     "seatsFilter": {
       "near": "Near the limit (90 %+)",
       "over": "Over the limit"
+    },
+    "danger": {
+      "title": "School lifecycle",
+      "since": "in this status since {{ date }}",
+      "lastReason": "Last reason",
+      "none": "No moves are available: the school is purged.",
+      "stage": {
+        "active": "Open: students work, staff edit.",
+        "suspended": "Read only. It closes by itself on the date below.",
+        "closed": "In the archive: staff lost their roles, courses are not maintained, students keep their history. It is purged on the date below.",
+        "purged": "Only the tombstone is left; students keep their history."
+      },
+      "needsLevel": {
+        "admin": "Needs level admin",
+        "super": "Needs level super"
+      },
+      "confirmName": "Type the school name «{{ name }}» to confirm",
+      "transitions": {
+        "suspend": {
+          "title": "Suspend",
+          "button": "Suspend",
+          "text": "The school becomes read only: no new attempts, no review, no edits, AI is not paid by the school. It closes by itself after 30 days; reactivate returns it."
+        },
+        "reactivate": {
+          "title": "Reactivate",
+          "button": "Reactivate",
+          "text": "The school is active again, as before the suspension."
+        },
+        "close": {
+          "title": "Close at once",
+          "button": "Close now",
+          "text": "Skips the 30 days: staff lose their roles, the subscription is cancelled, courses become unmaintained. The archive lasts 6 months; only a super can restore it."
+        },
+        "restore": {
+          "title": "Restore from the archive",
+          "button": "Restore",
+          "text": "The school is active again. The subscription is not returned: assign a plan by hand."
+        },
+        "purge": {
+          "title": "Purge now",
+          "button": "Purge now",
+          "text": "Deletes the school’s materials, roster and settings at the next timer run; only the tombstone stays. Students keep their history. Cannot be undone once it has run."
+        }
+      }
     }
   },
   "reasonDialog": {
