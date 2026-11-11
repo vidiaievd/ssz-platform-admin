@@ -31,6 +31,8 @@ function school(
     kind: 'SCHOOL',
     city: null,
     status: 'active',
+    closesAt: null,
+    purgeAt: null,
     ownerId: `owner-${id}`,
     createdAt: '2026-03-05T10:00:00.000Z',
     counts: { students: 1, teachers: 1 },
@@ -160,7 +162,7 @@ describe('CommandPalette', () => {
     expect(req.request.params.get('search')).toBe('nord');
     expect(req.request.params.get('limit')).toBe('8');
     req.flush({
-      items: [school('a'), school('b', { status: 'deleted', kind: 'SOLO' })],
+      items: [school('a'), school('b', { status: 'closed', kind: 'SOLO' })],
       total: 14,
       page: 1,
       limit: 8,
@@ -169,7 +171,7 @@ describe('CommandPalette', () => {
 
     expect(labels()).toEqual([
       'Nord a · nord-a School',
-      'Nord b · nord-b Tutor Deleted',
+      'Nord b · nord-b Tutor Closed',
       'All 14 results in the schools list',
     ]);
   });

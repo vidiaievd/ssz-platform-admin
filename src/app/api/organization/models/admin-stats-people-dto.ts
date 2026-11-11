@@ -9,7 +9,7 @@ export interface AdminStatsPeopleDto {
   newInPeriod: number;
 
   /**
-   * Distinct people now, schools not deleted
+   * Distinct people now, schools not closed or purged
    */
   total: number;
 }

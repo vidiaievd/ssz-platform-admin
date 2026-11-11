@@ -3,6 +3,7 @@
 
 export interface AdminStatsByStatusDto {
   active: number;
-  deleted: number;
-  inactive: number;
+  closed: number;
+  purged: number;
+  suspended: number;
 }

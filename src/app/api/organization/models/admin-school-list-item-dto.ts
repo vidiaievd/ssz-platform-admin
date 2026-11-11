@@ -5,6 +5,11 @@ import { AdminSchoolCountsDto } from '../models/admin-school-counts-dto';
 import { AdminSchoolListSeatsDto } from '../models/admin-school-list-seats-dto';
 export interface AdminSchoolListItemDto {
   city: string | null;
+
+  /**
+   * When a suspended school closes by itself
+   */
+  closesAt: string | null;
   counts: AdminSchoolCountsDto;
   createdAt: string;
   id: string;
@@ -15,7 +20,12 @@ export interface AdminSchoolListItemDto {
    * userId of the owner
    */
   ownerId: string;
+
+  /**
+   * When a closed school is purged
+   */
+  purgeAt: string | null;
   seats: AdminSchoolListSeatsDto;
   slug: string;
-  status: 'active' | 'inactive' | 'deleted';
+  status: 'active' | 'suspended' | 'closed' | 'purged';
 }

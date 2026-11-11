@@ -9,7 +9,7 @@ export interface AdminStatsSchoolsDto {
   createdInPeriod: number;
 
   /**
-   * Every workspace row, deleted ones included
+   * Every workspace row, closed and purged ones included
    */
   total: number;
 }

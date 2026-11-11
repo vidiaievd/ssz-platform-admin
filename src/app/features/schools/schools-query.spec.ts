@@ -18,7 +18,7 @@ describe('schools query', () => {
       parse({
         q: ' oslo ',
         kind: 'SOLO',
-        status: 'deleted',
+        status: 'closed',
         seats: 'over',
         sort: 'name',
         page: '3',
@@ -27,7 +27,7 @@ describe('schools query', () => {
     ).toEqual({
       search: 'oslo',
       kind: 'SOLO',
-      status: 'deleted',
+      status: 'closed',
       seats: 'over',
       sort: 'name',
       page: 3,
@@ -39,7 +39,7 @@ describe('schools query', () => {
     expect(
       parse({
         kind: 'school',
-        status: 'suspended',
+        status: 'deleted',
         seats: 'full',
         sort: 'city',
         page: '0',
@@ -86,7 +86,7 @@ describe('schools query', () => {
     const query = {
       search: 'å',
       kind: null,
-      status: 'inactive',
+      status: 'suspended',
       seats: 'over',
       sort: '-name',
       page: 4,

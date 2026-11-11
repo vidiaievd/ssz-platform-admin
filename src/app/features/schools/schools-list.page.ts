@@ -37,15 +37,10 @@ import {
   toSchoolsQueryParams,
   withFilter,
 } from './schools-query';
+import { STATUS_SEVERITY } from './school-lifecycle';
 
 const SEARCH_DEBOUNCE_MS = 300;
 const SKELETON_ROWS = Array.from({ length: 8 }, (_, i) => i);
-
-const STATUS_SEVERITY: Record<SchoolStatus, 'success' | 'warn' | 'danger'> = {
-  active: 'success',
-  inactive: 'warn',
-  deleted: 'danger',
-};
 
 /**
  * `/schools` — every school of the platform, read only (plan 90, phase 2, step 6). The whole

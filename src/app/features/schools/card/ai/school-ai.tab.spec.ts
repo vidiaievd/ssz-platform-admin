@@ -44,6 +44,10 @@ const school = {
   createdAt: '2026-03-05T10:00:00.000Z',
   updatedAt: '2026-03-05T10:00:00.000Z',
   deletedAt: null,
+  closesAt: null,
+  purgeAt: null,
+  statusChangedAt: null,
+  statusReason: null,
   contacts: { email: null, website: null, city: null },
   owner: { userId: 'owner-1', name: 'Kari Nordmann', email: 'kari@nordick.no' },
   counts: {

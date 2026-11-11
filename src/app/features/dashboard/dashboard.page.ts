@@ -5,10 +5,12 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonDirective } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
+import { AdminLifecycleAttentionItemDto } from '../../api/organization/models/admin-lifecycle-attention-item-dto';
 import { AdminStatsPeopleDto } from '../../api/organization/models/admin-stats-people-dto';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { schoolTabLink } from '../schools/card/school-tabs';
+import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
 import { DEFAULT_PERIOD, PERIODS, Period, attentionItems } from './dashboard-model';
 import { DashboardData } from './dashboard.data';
@@ -89,7 +91,9 @@ import { Sparkline } from './sparkline';
             </p>
           }
           @default {
-            @if (items().length === 0 && seatItems().length === 0) {
+            @if (
+              items().length === 0 && seatItems().length === 0 && lifecycleItems().length === 0
+            ) {
               <p class="text-sm" data-testid="queue-empty">
                 <i class="pi pi-check-circle text-green-600" aria-hidden="true"></i>
                 {{ 'dashboard.queue.empty' | transloco }}
@@ -117,6 +121,36 @@ import { Sparkline } from './sparkline';
                       data-testid="queue-seat-link"
                     >
                       {{ 'dashboard.queue.open' | transloco }}
+                    </a>
+                  </li>
+                }
+                @for (row of lifecycleItems(); track row.id) {
+                  <li
+                    class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
+                    data-testid="queue-lifecycle"
+                    [attr.data-kind]="row.kind"
+                    [attr.data-urgent]="row.urgent"
+                  >
+                    <p-tag
+                      [severity]="row.kind === 'closing' ? 'warn' : row.urgent ? 'danger' : 'info'"
+                      [value]="'dashboard.queue.kinds.' + row.kind | transloco"
+                    />
+                    <span>{{ row.name }}</span>
+                    <span class="text-muted-color font-mono text-xs">{{ row.slug }}</span>
+                    <span class="text-xs tabular-nums" data-testid="queue-lifecycle-days">
+                      {{
+                        (row.kind === 'closing'
+                          ? 'dashboard.queue.closesIn'
+                          : 'dashboard.queue.purgesIn'
+                        ) | transloco: { n: row.days }
+                      }}
+                    </span>
+                    <a
+                      [routerLink]="row.link"
+                      class="text-primary ml-auto underline"
+                      data-testid="queue-lifecycle-link"
+                    >
+                      {{ 'dashboard.queue.openSchool' | transloco }}
                     </a>
                   </li>
                 }
@@ -286,7 +320,7 @@ export class DashboardPage {
   protected readonly lang = inject(LanguageService).current;
 
   protected readonly periods = PERIODS;
-  protected readonly statuses = ['active', 'inactive', 'deleted'] as const;
+  protected readonly statuses = ['active', 'suspended', 'closed'] as const;
 
   protected readonly stats = computed(() => {
     const s = this.data.stats();
@@ -330,6 +364,28 @@ export class DashboardPage {
       }))
       .filter((i) => i.level === 'full' || i.level === 'warning')
       .sort((a, b) => (a.level === b.level ? 0 : a.level === 'full' ? -1 : 1));
+  });
+  /** Suspended schools about to close and closed ones about to be purged (organization stats). */
+  protected readonly lifecycleItems = computed(() => {
+    const lc = this.stats()?.lifecycle;
+    if (!lc) return [];
+    const row = (kind: 'closing' | 'purging', i: AdminLifecycleAttentionItemDto) => {
+      const days = daysUntil(i.at);
+      return {
+        id: `${kind}:${i.schoolId}`,
+        kind,
+        name: i.name,
+        slug: i.slug,
+        days,
+        urgent: kind === 'purging' && days <= PURGE_URGENT_DAYS,
+        at: i.at,
+        link: schoolTabLink(i.schoolId),
+      };
+    };
+    return [
+      ...lc.closingSoon.items.map((i) => row('closing', i)),
+      ...lc.purgingSoon.items.map((i) => row('purging', i)),
+    ].sort((a, b) => a.at.localeCompare(b.at));
   });
   protected readonly seatShare = computed(() => {
     const seats = this.stats()?.seats;

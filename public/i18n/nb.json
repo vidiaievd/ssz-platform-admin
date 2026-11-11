@@ -71,13 +71,18 @@
       "until": "til {{ date }}",
       "open": "Plan",
       "truncated": "Listen er kuttet; de nærmeste vises.",
+      "closesIn": "stenger om {{ n }} d",
+      "purgesIn": "slettes om {{ n }} d",
+      "openSchool": "Skole",
       "kinds": {
         "grantEnds": "Tilskudd utløper",
         "grantOffEnds": "Avslåing utløper",
         "trialEnds": "Prøveperiode utløper",
         "subscriptionEnds": "Abonnement utløper",
         "seats_full": "Ved taket: nye elever avvises",
-        "seats_warning": "Over grensen, innenfor 10 % slingringsmonn"
+        "seats_warning": "Over grensen, innenfor 10 % slingringsmonn",
+        "closing": "Sperret: stenger snart",
+        "purging": "I arkivet: slettes snart"
       }
     },
     "kpi": {
@@ -89,8 +94,8 @@
       "byKind": "Skoler {{ school }} · solo {{ solo }}",
       "status": {
         "active": "aktive",
-        "inactive": "inaktive",
-        "deleted": "slettet"
+        "suspended": "sperret",
+        "closed": "stengt"
       },
       "seats": "Elevplasser",
       "seatsNone": "Ingen skole har plassgrense.",
@@ -208,8 +213,9 @@
     },
     "status": {
       "active": "Aktiv",
-      "inactive": "Inaktiv",
-      "deleted": "Slettet"
+      "suspended": "Sperret",
+      "closed": "Stengt",
+      "purged": "Slettet for godt"
     },
     "errors": {
       "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
@@ -219,7 +225,9 @@
     "card": {
       "notFound": "Fant ikke skolen",
       "notFoundText": "Organization kjenner ikke denne id-en. Skolen har kanskje aldri fantes, eller lenken er feilskrevet.",
-      "deletedAt": "Slettet {{ date }}",
+      "closesAt": "Stenger {{ date }} · {{ n }} d igjen",
+      "purgeAt": "I arkivet til {{ date }} · {{ n }} d til sletting",
+      "purged": "Slettet for godt: bare gravstenen er igjen",
       "tabsLabel": "Skolens deler",
       "tabs": {
         "overview": "Oversikt",

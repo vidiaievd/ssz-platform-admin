@@ -32,6 +32,10 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
     createdAt: '2026-03-05T10:00:00.000Z',
     updatedAt: '2026-03-05T10:00:00.000Z',
     deletedAt: null,
+    closesAt: null,
+    purgeAt: null,
+    statusChangedAt: null,
+    statusReason: null,
     contacts: { email: null, website: null, city: null },
     owner: { userId: 'owner-1', name: 'Kari Nordmann', email: null },
     counts: {
@@ -140,7 +144,7 @@ describe('SchoolCardPage', () => {
     await open(`/schools/${ID}`);
     expect(el.querySelector('[data-testid="school-skeleton"]')).not.toBeNull();
     await answer(
-      detail({ kind: 'SOLO', status: 'inactive' }),
+      detail({ kind: 'SOLO', status: 'suspended' }),
       account({
         subscription: { id: 's', status: 'trial', periodStart: '2026-01-01', periodEnd: null },
       }),
@@ -148,7 +152,7 @@ describe('SchoolCardPage', () => {
     expect(el.querySelector('[data-testid="school-skeleton"]')).toBeNull();
     expect(text('page-title')).toBe('Nordick');
     expect(text('school-kind')).toBe('Tutor');
-    expect(text('school-status')).toBe('Inactive');
+    expect(text('school-status')).toBe('Suspended');
     expect(text('school-plan')).toMatch(/^Plan: Pro v3\s*trial$/);
     expect(activeTab()).toBe('tab-overview');
     expect(shownTab()).toBe('overview');
@@ -163,11 +167,27 @@ describe('SchoolCardPage', () => {
     expect(value.getAttribute('href')).toContain('/plan');
   });
 
-  it('marks a deleted school with its date', async () => {
+  it('shows when a suspended school closes and when a closed one is purged', async () => {
     await open(`/schools/${ID}`);
-    await answer(detail({ status: 'deleted', deletedAt: '2026-10-01T12:00:00.000Z' }));
-    expect(text('school-status')).toBe('Deleted');
-    expect(text('school-deleted-at')).toMatch(/^Deleted .*2026/);
+    await answer(detail({ status: 'suspended', closesAt: '2099-10-01T12:00:00.000Z' }));
+    expect(text('school-status')).toBe('Suspended');
+    expect(text('school-closes-at')).toMatch(/^Closes .*2099.* · \d+ d left$/);
+    expect(text('school-purge-at')).toBeNull();
+  });
+
+  it('marks a closed school with its purge date', async () => {
+    await open(`/schools/${ID}`);
+    await answer(detail({ status: 'closed', purgeAt: '2099-10-01T12:00:00.000Z' }));
+    expect(text('school-status')).toBe('Closed');
+    expect(text('school-purge-at')).toMatch(/^In the archive until .*2099.* · \d+ d to deletion$/);
+    expect(text('school-closes-at')).toBeNull();
+  });
+
+  it('marks a purged school as a tombstone', async () => {
+    await open(`/schools/${ID}`);
+    await answer(detail({ status: 'purged' }));
+    expect(text('school-status')).toBe('Purged');
+    expect(text('school-purged')).toContain('tombstone');
   });
 
   it('keeps the tab in the URL and reads the school once for all tabs', async () => {

@@ -2,13 +2,13 @@ import { ParamMap, Params } from '@angular/router';
 import { AdminSchoolsList$Params } from '../../api/organization/fn/admin-schools/admin-schools-list';
 
 export type SchoolKind = 'SCHOOL' | 'SOLO';
-export type SchoolStatus = 'active' | 'inactive' | 'deleted';
+export type SchoolStatus = 'active' | 'suspended' | 'closed' | 'purged';
 export type SchoolSort = 'createdAt' | '-createdAt' | 'name' | '-name';
 export type SortableColumn = 'name' | 'createdAt';
 export type SeatsFilter = 'near' | 'over';
 
 export const SCHOOL_KINDS: readonly SchoolKind[] = ['SCHOOL', 'SOLO'];
-export const SCHOOL_STATUSES: readonly SchoolStatus[] = ['active', 'inactive', 'deleted'];
+export const SCHOOL_STATUSES: readonly SchoolStatus[] = ['active', 'suspended', 'closed', 'purged'];
 export const SEATS_FILTERS: readonly SeatsFilter[] = ['near', 'over'];
 const SORTS: readonly SchoolSort[] = ['createdAt', '-createdAt', 'name', '-name'];
 /** Server accepts 1–100; the panel offers these. */
@@ -20,7 +20,7 @@ export interface SchoolsQuery {
   readonly search: string;
   /** null = every kind. */
   readonly kind: SchoolKind | null;
-  /** null = every status, deleted schools included (the server's default). */
+  /** null = every status, closed and purged schools included (the server's default). */
   readonly status: SchoolStatus | null;
   /** null = every school; `near` = 90 % of the seat limit or more, `over` = above it. */
   readonly seats: SeatsFilter | null;

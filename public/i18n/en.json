@@ -71,13 +71,18 @@
       "until": "until {{ date }}",
       "open": "Plan",
       "truncated": "The list is cut; the soonest ones are shown.",
+      "closesIn": "closes in {{ n }} d",
+      "purgesIn": "deleted in {{ n }} d",
+      "openSchool": "School",
       "kinds": {
         "grantEnds": "Grant ends",
         "grantOffEnds": "Switch-off ends",
         "trialEnds": "Trial ends",
         "subscriptionEnds": "Subscription ends",
         "seats_full": "At the ceiling: new students refused",
-        "seats_warning": "Over the limit, in the 10 % grace"
+        "seats_warning": "Over the limit, in the 10 % grace",
+        "closing": "Suspended: closing soon",
+        "purging": "In the archive: deletion soon"
       }
     },
     "kpi": {
@@ -89,8 +94,8 @@
       "byKind": "Schools {{ school }} · solo {{ solo }}",
       "status": {
         "active": "active",
-        "inactive": "inactive",
-        "deleted": "deleted"
+        "suspended": "suspended",
+        "closed": "closed"
       },
       "seats": "Student seats",
       "seatsNone": "No school has a seat limit.",
@@ -208,8 +213,9 @@
     },
     "status": {
       "active": "Active",
-      "inactive": "Inactive",
-      "deleted": "Deleted"
+      "suspended": "Suspended",
+      "closed": "Closed",
+      "purged": "Purged"
     },
     "errors": {
       "network": "The gateway is unreachable. Check the connection.",
@@ -219,7 +225,9 @@
     "card": {
       "notFound": "School not found",
       "notFoundText": "Organization does not know this id. The school may never have existed, or the link is mistyped.",
-      "deletedAt": "Deleted {{ date }}",
+      "closesAt": "Closes {{ date }} · {{ n }} d left",
+      "purgeAt": "In the archive until {{ date }} · {{ n }} d to deletion",
+      "purged": "Purged: only the tombstone is left",
       "tabsLabel": "School sections",
       "tabs": {
         "overview": "Overview",
