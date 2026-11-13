@@ -15,9 +15,14 @@ export type { AdminSchoolDetailCountsDto } from './models/admin-school-detail-co
 export type { AdminSchoolDetailDto } from './models/admin-school-detail-dto';
 export type { AdminSchoolGroupDto } from './models/admin-school-group-dto';
 export type { AdminSchoolListItemDto } from './models/admin-school-list-item-dto';
+export type { AdminSchoolListSeatsDto } from './models/admin-school-list-seats-dto';
 export type { AdminSchoolOwnerDto } from './models/admin-school-owner-dto';
 export type { AdminSchoolPageDto } from './models/admin-school-page-dto';
+export type { AdminSchoolSeatsDto } from './models/admin-school-seats-dto';
 export type { AdminSchoolSettingsDto } from './models/admin-school-settings-dto';
+export type { AdminSeatsAttentionDto } from './models/admin-seats-attention-dto';
+export type { AdminSeatsAttentionItemDto } from './models/admin-seats-attention-item-dto';
+export type { AdminSeatsStatsDto } from './models/admin-seats-stats-dto';
 export type { AdminStatsByKindDto } from './models/admin-stats-by-kind-dto';
 export type { AdminStatsByStatusDto } from './models/admin-stats-by-status-dto';
 export type { AdminStatsDayDto } from './models/admin-stats-day-dto';

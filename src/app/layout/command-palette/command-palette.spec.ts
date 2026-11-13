@@ -34,6 +34,7 @@ function school(
     ownerId: `owner-${id}`,
     createdAt: '2026-03-05T10:00:00.000Z',
     counts: { students: 1, teachers: 1 },
+    seats: { used: 1, limit: null },
     ...overrides,
   };
 }

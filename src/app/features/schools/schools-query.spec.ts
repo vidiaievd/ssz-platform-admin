@@ -15,13 +15,36 @@ const parse = (params: Record<string, string>) => parseSchoolsQuery(convertToPar
 describe('schools query', () => {
   it('reads a full URL', () => {
     expect(
-      parse({ q: ' oslo ', kind: 'SOLO', status: 'deleted', sort: 'name', page: '3', size: '50' }),
-    ).toEqual({ search: 'oslo', kind: 'SOLO', status: 'deleted', sort: 'name', page: 3, size: 50 });
+      parse({
+        q: ' oslo ',
+        kind: 'SOLO',
+        status: 'deleted',
+        seats: 'over',
+        sort: 'name',
+        page: '3',
+        size: '50',
+      }),
+    ).toEqual({
+      search: 'oslo',
+      kind: 'SOLO',
+      status: 'deleted',
+      seats: 'over',
+      sort: 'name',
+      page: 3,
+      size: 50,
+    });
   });
 
   it('falls back to defaults on anything malformed', () => {
     expect(
-      parse({ kind: 'school', status: 'suspended', sort: 'city', page: '0', size: '30' }),
+      parse({
+        kind: 'school',
+        status: 'suspended',
+        seats: 'full',
+        sort: 'city',
+        page: '0',
+        size: '30',
+      }),
     ).toEqual(DEFAULT_SCHOOLS_QUERY);
     expect(parse({ page: '-2' }).page).toBe(1);
     expect(parse({ page: '2.5' }).page).toBe(1);
@@ -34,6 +57,7 @@ describe('schools query', () => {
       q: null,
       kind: null,
       status: null,
+      seats: null,
       sort: null,
       page: null,
       size: null,
@@ -42,6 +66,7 @@ describe('schools query', () => {
       search: 'bergen',
       kind: 'SCHOOL',
       status: 'active',
+      seats: 'near',
       sort: 'name',
       page: 2,
       size: 10,
@@ -50,6 +75,7 @@ describe('schools query', () => {
       q: 'bergen',
       kind: 'SCHOOL',
       status: 'active',
+      seats: 'near',
       sort: 'name',
       page: 2,
       size: 10,
@@ -61,6 +87,7 @@ describe('schools query', () => {
       search: 'å',
       kind: null,
       status: 'inactive',
+      seats: 'over',
       sort: '-name',
       page: 4,
       size: 100,
@@ -82,6 +109,7 @@ describe('schools query', () => {
       page: 1,
       limit: 25,
     });
+    expect(toListParams({ ...DEFAULT_SCHOOLS_QUERY, seats: 'near' }).seats).toBe('near');
   });
 
   it('starts a filter change from page 1 and knows when the list is filtered', () => {
@@ -94,6 +122,7 @@ describe('schools query', () => {
     expect(hasFilters(onPage3)).toBe(false);
     expect(hasFilters({ ...onPage3, sort: 'name', size: 50 })).toBe(false);
     expect(hasFilters({ ...onPage3, kind: 'SCHOOL' })).toBe(true);
+    expect(hasFilters({ ...onPage3, seats: 'over' })).toBe(true);
   });
 
   it('sorts names A→Z first, dates newest first, and flips on a second click', () => {

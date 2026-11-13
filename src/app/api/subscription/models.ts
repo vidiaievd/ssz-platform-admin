@@ -18,6 +18,7 @@ export type { GrantResponseDto } from './models/grant-response-dto';
 export type { IssueGrantDto } from './models/issue-grant-dto';
 export type { LookupAccountsDto } from './models/lookup-accounts-dto';
 export type { LookupPlanDto } from './models/lookup-plan-dto';
+export type { LookupSeatsDto } from './models/lookup-seats-dto';
 export type { LookupSubscriptionDto } from './models/lookup-subscription-dto';
 export type { PayersStatsDto } from './models/payers-stats-dto';
 export type { PayerStatsDto } from './models/payer-stats-dto';

@@ -22,6 +22,9 @@ import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
 import { FEATURE_KEYS, featureKind } from './feature-keys';
 import { dayStartUtc, isFutureDay, todayUtc } from './plan-dates';
 
+/** Seats as subscription accepts them: a whole number, at least 1. */
+const SEATS = /^[1-9]\d{0,8}$/;
+
 /** Credits as subscription accepts them (`plan.ts`): a decimal string, never a float. */
 const CREDITS = /^\d{1,12}(\.\d{1,6})?$/;
 
@@ -67,33 +70,61 @@ const EFFECTS = [
         />
       </div>
 
-      <div class="flex flex-col gap-1">
-        <span class="text-sm font-medium" id="grant-effect-label">
-          {{ 'schools.plan.grantDialog.effect' | transloco }}
-        </span>
-        <p-selectbutton
-          [options]="effects"
-          optionLabel="key"
-          optionValue="value"
-          [allowEmpty]="false"
-          [ngModel]="enabled()"
-          (ngModelChange)="enabled.set($event)"
-          [ngModelOptions]="{ standalone: true }"
-          ariaLabelledBy="grant-effect-label"
-          data-testid="grant-effect"
-        >
-          <ng-template #item let-option>
-            {{ 'schools.plan.effect.' + option.key | transloco }}
-          </ng-template>
-        </p-selectbutton>
-        <span class="text-muted-color text-xs">
-          @if (enabled()) {
-            {{ 'schools.plan.grantDialog.onHint' | transloco }}
+      @if (!isSeats()) {
+        <div class="flex flex-col gap-1">
+          <span class="text-sm font-medium" id="grant-effect-label">
+            {{ 'schools.plan.grantDialog.effect' | transloco }}
+          </span>
+          <p-selectbutton
+            [options]="effects"
+            optionLabel="key"
+            optionValue="value"
+            [allowEmpty]="false"
+            [ngModel]="enabled()"
+            (ngModelChange)="enabled.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            ariaLabelledBy="grant-effect-label"
+            data-testid="grant-effect"
+          >
+            <ng-template #item let-option>
+              {{ 'schools.plan.effect.' + option.key | transloco }}
+            </ng-template>
+          </p-selectbutton>
+          <span class="text-muted-color text-xs">
+            @if (enabled()) {
+              {{ 'schools.plan.grantDialog.onHint' | transloco }}
+            } @else {
+              {{ 'schools.plan.grantDialog.offHint' | transloco }}
+            }
+          </span>
+        </div>
+      } @else {
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium" for="grant-seats">
+            {{ 'schools.plan.grantDialog.seats' | transloco }}
+          </label>
+          <input
+            pInputText
+            id="grant-seats"
+            inputmode="numeric"
+            class="w-full"
+            [ngModel]="seats()"
+            (ngModelChange)="seats.set($event)"
+            [ngModelOptions]="{ standalone: true }"
+            [attr.aria-invalid]="seatsInvalid() ? 'true' : null"
+            data-testid="grant-seats"
+          />
+          @if (seatsInvalid()) {
+            <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-seats-error">
+              {{ 'schools.plan.grantDialog.seatsInvalid' | transloco }}
+            </span>
           } @else {
-            {{ 'schools.plan.grantDialog.offHint' | transloco }}
+            <span class="text-muted-color text-xs">
+              {{ 'schools.plan.grantDialog.seatsHint' | transloco }}
+            </span>
           }
-        </span>
-      </div>
+        </div>
+      }
 
       @if (takesCredits()) {
         <div class="flex flex-col gap-1">
@@ -188,10 +219,20 @@ export class GrantDialog {
   protected readonly featureKey = signal<string | null>(null);
   protected readonly enabled = signal(true);
   protected readonly credits = signal('');
+  protected readonly seats = signal('');
   protected readonly startsAt = signal('');
   protected readonly endsAt = signal('');
 
   protected readonly effects = [...EFFECTS];
+
+  /** A seats key is a limit: it is never switched off and takes `max` instead of credits. */
+  protected readonly isSeats = computed(() => {
+    const key = this.featureKey();
+    return !!key && featureKind(key) === 'seats';
+  });
+  protected readonly seatsInvalid = computed(
+    () => this.isSeats() && this.seats().trim() !== '' && !SEATS.test(this.seats().trim()),
+  );
 
   /** Credits only add to an AI key that is switched on; a switch-off carries none. */
   protected readonly takesCredits = computed(() => {
@@ -216,6 +257,7 @@ export class GrantDialog {
       !!this.endsAt() &&
       !this.periodInvalid() &&
       !this.creditsInvalid() &&
+      (!this.isSeats() || SEATS.test(this.seats().trim())) &&
       (!this.startsAt() || dayStartUtc(this.startsAt()) !== null),
   );
 
@@ -227,6 +269,7 @@ export class GrantDialog {
         this.featureKey.set(this.presetKey());
         this.enabled.set(this.presetEnabled());
         this.credits.set('');
+        this.seats.set('');
         this.startsAt.set('');
         this.endsAt.set('');
       });
@@ -243,13 +286,14 @@ export class GrantDialog {
   private body(reason: string): IssueGrantDto {
     const body: IssueGrantDto = {
       featureKey: this.featureKey()!,
-      enabled: this.enabled(),
+      enabled: this.isSeats() ? true : this.enabled(),
       endsAt: dayStartUtc(this.endsAt())!,
       reason,
     };
     // A start today or earlier is "now"; the server takes an omitted start as now.
     const starts = this.startsAt();
     if (starts && isFutureDay(starts)) body.startsAt = dayStartUtc(starts)!;
+    if (this.isSeats()) body.limits = { max: Number(this.seats().trim()) };
     if (this.takesCredits()) {
       const credits = this.credits().trim();
       body.monthlyCredits = credits === '' ? null : credits;

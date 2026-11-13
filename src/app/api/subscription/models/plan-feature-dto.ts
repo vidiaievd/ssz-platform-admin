@@ -5,7 +5,7 @@ export interface PlanFeatureDto {
   enabled: boolean;
 
   /**
-   * One of: ai.review_draft, ai.review_direct, ai.student_assist, ai.practice, ai.authoring, ai.voice_review, ai.voice_review_pronunciation, school.review_ai_policy. Anything else is 422
+   * One of: ai.review_draft, ai.review_direct, ai.student_assist, ai.practice, ai.authoring, ai.voice_review, ai.voice_review_pronunciation, school.review_ai_policy, seats.students. Anything else is 422
    */
   featureKey: string;
 

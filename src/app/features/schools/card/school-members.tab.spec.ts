@@ -60,6 +60,7 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
       },
     ],
     courses: { count: 0, ids: [] },
+    seats: { used: 7, limit: 100, ceiling: 110, state: 'ok' },
     ...overrides,
   };
 }

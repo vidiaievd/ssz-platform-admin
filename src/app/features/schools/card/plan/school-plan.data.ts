@@ -136,5 +136,7 @@ export class SchoolPlanData {
     this.accountResource.reload();
     this.historyResource.reload();
     this.card.reloadPlan();
+    // A seat grant moves the limit; organization's projection follows the snapshot event.
+    this.card.reload();
   }
 }
