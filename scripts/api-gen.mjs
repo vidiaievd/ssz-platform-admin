@@ -42,6 +42,29 @@ const SERVICES = [
     keep: (_method, p) => p.startsWith('/api/v1/admin/subscriptions/'),
   },
   {
+    name: 'ai',
+    port: 3010,
+    prefix: 'Ai',
+    // A payer's AI keys and spend, and its policy (school card, "AI & services").
+    keep: (_method, p) =>
+      p.startsWith('/api/v1/admin/ai/usage/') || p.startsWith('/api/v1/admin/ai/payer-policies/'),
+  },
+  {
+    name: 'analytics',
+    port: 3008,
+    prefix: 'Analytics',
+    // The admin journal collected from every service (school card, "Journal").
+    keep: (method, p) => method === 'get' && p === '/api/v1/admin/audit',
+  },
+  {
+    name: 'content',
+    port: 3003,
+    prefix: 'Content',
+    // Course titles on the school card. Content has no batch read: one GET per course of the
+    // school (a handful), platform_admin passes the visibility check of any course.
+    keep: (method, p) => method === 'get' && p === '/api/v1/containers/{id}',
+  },
+  {
     name: 'user-profile',
     port: 3001,
     prefix: 'UserProfile',

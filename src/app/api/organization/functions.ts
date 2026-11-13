@@ -5,5 +5,9 @@ export type { AdminSchoolsList$Params as AdminSchoolsList$Params } from './fn/ad
 export { adminSchoolsList as adminSchoolsList } from './fn/admin-schools/admin-schools-list';
 export type { AdminSchoolsGet$Params as AdminSchoolsGet$Params } from './fn/admin-schools/admin-schools-get';
 export { adminSchoolsGet as adminSchoolsGet } from './fn/admin-schools/admin-schools-get';
+export type { AdminSchoolsMembers$Params as AdminSchoolsMembers$Params } from './fn/admin-schools/admin-schools-members';
+export { adminSchoolsMembers as adminSchoolsMembers } from './fn/admin-schools/admin-schools-members';
+export type { AdminSchoolsSettings$Params as AdminSchoolsSettings$Params } from './fn/admin-schools/admin-schools-settings';
+export { adminSchoolsSettings as adminSchoolsSettings } from './fn/admin-schools/admin-schools-settings';
 export type { AdminStatsGet$Params as AdminStatsGet$Params } from './fn/admin-schools/admin-stats-get';
 export { adminStatsGet as adminStatsGet } from './fn/admin-schools/admin-stats-get';

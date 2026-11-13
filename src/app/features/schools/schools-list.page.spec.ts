@@ -62,6 +62,7 @@ function account(
 }
 
 const serverError = { status: 500, statusText: 'Server Error' };
+const notFound = { status: 404, statusText: 'Not Found' };
 
 describe('SchoolsListPage', () => {
   let http: HttpTestingController;
@@ -313,10 +314,18 @@ describe('SchoolsListPage', () => {
     await open('/schools');
     await answer([school('a')]);
     el.querySelector<HTMLElement>('[data-testid="school-row"] td:nth-child(5)')!.click();
-    // Nothing is pending here, so waiting for stability also covers the lazy card chunk.
-    await harness.fixture.whenStable();
-    await stable();
+    // The card is a lazy chunk; it asks for the school and its plan once loaded.
+    let card: TestRequest[] = [];
+    await vi.waitFor(async () => {
+      await stable();
+      card = http.match(`${SCHOOLS}/a`);
+      expect(card).toHaveLength(1);
+    });
     expect(url()).toBe('/schools/a');
-    expect(text('[data-testid="school-id"]')).toBe('a');
+    card[0].flush({ statusCode: 404 }, notFound);
+    http.expectOne(LOOKUP).flush({ items: [] });
+    await stable();
+    await stable();
+    expect(text('[data-testid="school-not-found"]')).toContain('School not found');
   });
 });

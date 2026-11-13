@@ -54,6 +54,44 @@
     "audit": "Every admin action across all services.",
     "payments": "Payments arrive with billing; until then plans are assigned by hand."
   },
+  "dashboard": {
+    "period": "Period",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "Year"
+    },
+    "refresh": "Refresh",
+    "loadedAt": "Data as of {{ time }}",
+    "queue": {
+      "title": "Needs attention",
+      "failed": "Could not load the queue",
+      "empty": "All in order: nothing ends within 7 days.",
+      "until": "until {{ date }}",
+      "open": "Plan",
+      "truncated": "The list is cut; the soonest ones are shown.",
+      "kinds": {
+        "grantEnds": "Grant ends",
+        "grantOffEnds": "Switch-off ends",
+        "trialEnds": "Trial ends",
+        "subscriptionEnds": "Subscription ends"
+      }
+    },
+    "kpi": {
+      "failed": "Could not load the numbers",
+      "schools": "Schools",
+      "students": "Students",
+      "teachers": "Teachers",
+      "delta": "+{{ n }} in the period",
+      "byKind": "Schools {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "active",
+        "inactive": "inactive",
+        "deleted": "deleted"
+      }
+    }
+  },
   "comingSoon": {
     "text": "This section is still being built."
   },
@@ -170,8 +208,327 @@
       "generic": "Could not load schools."
     },
     "card": {
-      "title": "School card",
-      "soon": "The school card arrives in phase 3: members, plan and grants, AI, journal."
+      "notFound": "School not found",
+      "notFoundText": "Organization does not know this id. The school may never have existed, or the link is mistyped.",
+      "deletedAt": "Deleted {{ date }}",
+      "tabsLabel": "School sections",
+      "tabs": {
+        "overview": "Overview",
+        "members": "Members",
+        "plan": "Plan",
+        "ai": "AI & services",
+        "journal": "Journal"
+      },
+      "errors": {
+        "forbidden": "No access to this school.",
+        "generic": "Could not load the school."
+      }
+    },
+    "overview": {
+      "details": "Details",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Online",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Updated",
+      "contacts": "Contacts",
+      "email": "Email",
+      "website": "Website",
+      "city": "City",
+      "noContacts": "The school has given no contacts.",
+      "ownerNoName": "Name unavailable",
+      "ownerHint": "The owner is not on the roster and is not counted among the people below.",
+      "people": "People",
+      "counts": {
+        "students": "Students",
+        "archivedStudents": "Archived students",
+        "teachers": "Teachers",
+        "staff": "Staff",
+        "pendingApplications": "Pending applications",
+        "pendingInvitations": "Pending invitations"
+      },
+      "groups": "Groups",
+      "noGroups": "The school has no groups.",
+      "level": "Level",
+      "course": "Course",
+      "defaultGroup": "all learners, hidden",
+      "groupStatus": {
+        "draft": "Draft",
+        "active": "Active",
+        "archived": "Archived"
+      },
+      "courses": "Courses",
+      "noCourses": "No group of the school uses a course.",
+      "coursesFailed": "Could not load course titles.",
+      "courseUnknown": "Not found in content",
+      "courseArchived": "archived"
+    },
+    "members": {
+      "role": "Role",
+      "allRoles": "All roles",
+      "allStatuses": "All statuses",
+      "group": "Group",
+      "allGroups": "All groups",
+      "roles": {
+        "student": "Student",
+        "teacher": "Teacher",
+        "staff": "Staff"
+      },
+      "statuses": {
+        "active": "On the roster",
+        "archived": "Archived"
+      },
+      "as": {
+        "trial": "trial",
+        "observer": "observer"
+      },
+      "joinedAt": "Joined",
+      "owner": "owner",
+      "ownerHint": "Not a roster row: the owner is not counted in the list.",
+      "filterByGroup": "Show this group only",
+      "namesFailed": "Could not load some names",
+      "empty": "The roster is empty.",
+      "emptyFiltered": "Nobody matches these filters.",
+      "errors": {
+        "generic": "Could not load the roster."
+      },
+      "rosterRoles": {
+        "OWNER": "Owner",
+        "ADMIN": "Admin",
+        "MANAGER": "Manager",
+        "CONTENT_ADMIN": "Content admin",
+        "TEACHER": "Teacher",
+        "STUDENT": "Student",
+        "SCHEDULER": "Scheduler"
+      }
+    },
+    "plan": {
+      "current": "Current plan",
+      "assign": "Change plan",
+      "cancel": "Cancel subscription",
+      "freeByDefault": "free plan by default",
+      "since": "Since {{ date }}",
+      "until": "until {{ date }}",
+      "openEnded": "open-ended",
+      "noAccount": "Subscription service has not seen this school yet: it is on the free plan. Assigning a plan or issuing a grant opens its account.",
+      "freeHint": "No subscription runs: the school is on its audience's free plan.",
+      "outdated": "The school is on v{{ version }}; the plan's latest version is v{{ latest }}. Plan edits do not move subscribers.",
+      "moveTo": "Move to v{{ version }}",
+      "featuresFailed": "Could not load the keys of this version",
+      "noFeatures": "This version gives no keys.",
+      "key": "Key",
+      "effectColumn": "Effect",
+      "credits": "Credits / month",
+      "effect": {
+        "on": "On",
+        "off": "Off"
+      },
+      "noCredits": "—",
+      "unmetered": "unmetered",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Grants",
+      "issueGrant": "Issue grant",
+      "accountFailed": "Could not load the account",
+      "noGrants": "No active or scheduled grants.",
+      "history": "History",
+      "historyFailed": "Could not load the history",
+      "subscriptions": "Subscriptions",
+      "noSubscriptions": "The school has never had a subscription.",
+      "term": "Term",
+      "endedAt": "Ended",
+      "pastGrants": "Past grants",
+      "noPastGrants": "No ended or revoked grants.",
+      "actions": "Actions",
+      "grantEffect": {
+        "on": "switches on",
+        "off": "switches off"
+      },
+      "grantState": {
+        "scheduled": "Scheduled",
+        "active": "Active",
+        "ended": "Ended",
+        "revoked": "Revoked"
+      },
+      "revoke": "Revoke",
+      "subscriptionStatus": {
+        "trial": "Trial",
+        "active": "Active",
+        "canceled": "Canceled",
+        "expired": "Expired"
+      },
+      "dayHint": "Ends as this day begins (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Cancel subscription",
+        "confirm": "Cancel subscription",
+        "text": "The school leaves “{{ plan }}” now and falls back to the free plan. Grants stay."
+      },
+      "revokeDialog": {
+        "title": "Revoke grant",
+        "confirm": "Revoke",
+        "textOn": "{{ key }} goes back to what the plan gives, now.",
+        "textOff": "{{ key }} is no longer switched off; the plan decides again, now."
+      },
+      "assignDialog": {
+        "title": "Change plan",
+        "confirm": "Assign",
+        "plan": "Plan",
+        "planPlaceholder": "Choose a plan",
+        "plansFailed": "Could not load plans",
+        "samePlan": "The school is on this plan already: assigning it moves the school to v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Trial ends",
+        "periodEnd": "Ends (optional)",
+        "periodInvalid": "Pick a day after today.",
+        "trialHint": "Required for a trial. Ends as this day begins (00:00 UTC).",
+        "periodHint": "Empty = open-ended. Ends as this day begins (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Issue grant",
+        "confirm": "Issue",
+        "key": "Key",
+        "keyPlaceholder": "Choose a key",
+        "effect": "Effect",
+        "onHint": "The key is on for the term, even where the plan has it off.",
+        "offHint": "The key is off for the term, even where the plan gives it. Revoking gives it back to the plan.",
+        "credits": "Credits per month, added to the plan's",
+        "creditsInvalid": "A number, for example 500 or 12.5.",
+        "creditsHint": "Empty = unmetered while the grant runs.",
+        "startsAt": "Starts (optional)",
+        "startsHint": "Empty or today = now.",
+        "endsAt": "Ends",
+        "periodInvalid": "Pick a day after today and after the start."
+      }
+    },
+    "ai": {
+      "keys": "AI keys",
+      "keysHint": "State is what the tariff gives (plan, then grants; a switch-off grant applies last). Switching a key on or off issues a grant for a term.",
+      "policyOffBanner": "The payer policy switches all AI of this school off: every agent refuses, whatever the keys below say.",
+      "usageFailed": "Could not load the AI keys and spend",
+      "grantsFailed": "Could not load the grants: the source of each key is unknown",
+      "state": "State",
+      "source": "Source",
+      "used": "Spent this period",
+      "periodEnd": "Period ends",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "grant · on",
+        "grant_off": "grant · off",
+        "none": "not in plan"
+      },
+      "scheduledOn": "switch-on grant from {{ date }}",
+      "scheduledOff": "switch-off grant from {{ date }}",
+      "usedUnmetered": "{{ used }} · unmetered",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over the period's credits",
+      "switchOff": "Switch off",
+      "switchOn": "Switch on",
+      "revokeOff": "Revoke switch-off",
+      "grantReason": "Switched off because: {{ reason }}",
+      "policy": "Payer policy",
+      "changePolicy": "Change policy",
+      "policyFailed": "Could not load the payer policy",
+      "allAi": "All AI",
+      "regions": "Model regions",
+      "policySource": "Set",
+      "storedAt": "{{ date }} by",
+      "policyDefault": "never set — the default applies (on, any region)",
+      "anyRegion": "any region",
+      "region": {
+        "eu": "EU",
+        "us": "US",
+        "global": "global",
+        "local": "self-hosted (local)"
+      },
+      "settings": "School settings",
+      "settingsHint": "Set by the school on its own screens; read only here.",
+      "settingsFailed": "Could not load the school's settings",
+      "noLimit": "no limit",
+      "hours": "{{ n }} h",
+      "precheck": {
+        "title": "Pre-hand-in check",
+        "enabled": "Enabled",
+        "perExercise": "Checks per exercise",
+        "perLearner": "Credits per learner / month"
+      },
+      "assistant": {
+        "title": "Student assistant on the school's account",
+        "mode": "Who may use it",
+        "modes": {
+          "off": "nobody",
+          "all_students": "all students",
+          "selected_groups": "selected groups",
+          "selected_students": "selected students"
+        },
+        "groups": "groups: {{ n }}",
+        "students": "students: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Who answers a work first",
+        "mode": "Mode",
+        "modes": {
+          "teacher_only": "teacher only",
+          "ai_then_teacher": "AI, then teacher",
+          "ai_with_sampling": "AI, teacher samples"
+        },
+        "sample": "Teacher samples",
+        "autoAccept": "AI answer accepted after"
+      },
+      "review": {
+        "title": "Response time",
+        "respond": "Answer within",
+        "escalate": "Escalate after",
+        "escalateTo": {
+          "school_admins": "school admins",
+          "owner": "owner",
+          "primary_teacher": "primary teacher"
+        }
+      },
+      "policyDialog": {
+        "title": "Change payer policy",
+        "confirm": "Save",
+        "aiEnabled": "All AI of the school",
+        "onHint": "Agents work as the keys allow.",
+        "offHint": "Every agent refuses this school, whatever its keys.",
+        "regions": "Regions models may run in",
+        "regionsRequired": "Pick at least one region, or allow any.",
+        "regionsHint": "Only models of providers in these regions are called; a self-hosted model needs “local”."
+      }
+    },
+    "journal": {
+      "title": "Admin journal",
+      "failed": "Could not load the journal",
+      "empty": "No admin actions on this school yet.",
+      "actor": "By",
+      "system": "system",
+      "reason": "Reason: {{ reason }}",
+      "changes": "Before and after",
+      "before": "Before",
+      "after": "After",
+      "more": "Show more",
+      "moreFailed": "Could not load more entries.",
+      "actions": {
+        "subscription.assigned": "Plan assigned",
+        "subscription.canceled": "Subscription canceled",
+        "grant.issued": "Grant issued",
+        "grant.revoked": "Grant revoked",
+        "payer_policy.changed": "Payer policy changed"
+      }
+    }
+  },
+  "reasonDialog": {
+    "label": "Reason",
+    "hint": "Required. Goes to the admin journal.",
+    "required": "Name the reason for this change.",
+    "cancel": "Cancel",
+    "errors": {
+      "network": "The gateway is unreachable. Nothing was changed.",
+      "forbidden": "Your level may not do this.",
+      "notFound": "The object no longer exists.",
+      "conflict": "It has changed meanwhile. Close the dialog and refresh the screen.",
+      "invalid": "The server refused the change.",
+      "unavailable": "The service is unavailable. Try again later.",
+      "generic": "The change failed."
     }
   }
 }

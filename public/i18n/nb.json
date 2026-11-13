@@ -54,6 +54,44 @@
     "audit": "Alle admin-handlinger i alle tjenester.",
     "payments": "Betalinger kommer med fakturering; inntil da tildeles abonnementer manuelt."
   },
+  "dashboard": {
+    "period": "Periode",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "År"
+    },
+    "refresh": "Oppdater",
+    "loadedAt": "Data per {{ time }}",
+    "queue": {
+      "title": "Krever oppmerksomhet",
+      "failed": "Kunne ikke laste køen",
+      "empty": "Alt er i orden: ingenting utløper innen 7 dager.",
+      "until": "til {{ date }}",
+      "open": "Plan",
+      "truncated": "Listen er kuttet; de nærmeste vises.",
+      "kinds": {
+        "grantEnds": "Tilskudd utløper",
+        "grantOffEnds": "Avslåing utløper",
+        "trialEnds": "Prøveperiode utløper",
+        "subscriptionEnds": "Abonnement utløper"
+      }
+    },
+    "kpi": {
+      "failed": "Kunne ikke laste tallene",
+      "schools": "Skoler",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "delta": "+{{ n }} i perioden",
+      "byKind": "Skoler {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "aktive",
+        "inactive": "inaktive",
+        "deleted": "slettet"
+      }
+    }
+  },
   "comingSoon": {
     "text": "Denne seksjonen er under arbeid."
   },
@@ -170,8 +208,327 @@
       "generic": "Kunne ikke laste skoler."
     },
     "card": {
-      "title": "Skolekort",
-      "soon": "Skolekortet kommer i fase 3: medlemmer, abonnement og tildelinger, KI, logg."
+      "notFound": "Fant ikke skolen",
+      "notFoundText": "Organization kjenner ikke denne id-en. Skolen har kanskje aldri fantes, eller lenken er feilskrevet.",
+      "deletedAt": "Slettet {{ date }}",
+      "tabsLabel": "Skolens deler",
+      "tabs": {
+        "overview": "Oversikt",
+        "members": "Medlemmer",
+        "plan": "Abonnement",
+        "ai": "KI og tjenester",
+        "journal": "Logg"
+      },
+      "errors": {
+        "forbidden": "Ingen tilgang til denne skolen.",
+        "generic": "Kunne ikke laste skolen."
+      }
+    },
+    "overview": {
+      "details": "Detaljer",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Nett",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Oppdatert",
+      "contacts": "Kontakt",
+      "email": "E-post",
+      "website": "Nettsted",
+      "city": "By",
+      "noContacts": "Skolen har ikke oppgitt kontaktinformasjon.",
+      "ownerNoName": "Navn utilgjengelig",
+      "ownerHint": "Eieren står ikke i medlemslisten og telles ikke blant personene nedenfor.",
+      "people": "Personer",
+      "counts": {
+        "students": "Elever",
+        "archivedStudents": "Arkiverte elever",
+        "teachers": "Lærere",
+        "staff": "Ansatte",
+        "pendingApplications": "Ventende søknader",
+        "pendingInvitations": "Ventende invitasjoner"
+      },
+      "groups": "Grupper",
+      "noGroups": "Skolen har ingen grupper.",
+      "level": "Nivå",
+      "course": "Kurs",
+      "defaultGroup": "alle elever, skjult",
+      "groupStatus": {
+        "draft": "Utkast",
+        "active": "Aktiv",
+        "archived": "Arkivert"
+      },
+      "courses": "Kurs",
+      "noCourses": "Ingen av skolens grupper bruker et kurs.",
+      "coursesFailed": "Kunne ikke laste kursnavn.",
+      "courseUnknown": "Finnes ikke i content",
+      "courseArchived": "arkivert"
+    },
+    "members": {
+      "role": "Rolle",
+      "allRoles": "Alle roller",
+      "allStatuses": "Alle statuser",
+      "group": "Gruppe",
+      "allGroups": "Alle grupper",
+      "roles": {
+        "student": "Elev",
+        "teacher": "Lærer",
+        "staff": "Ansatt"
+      },
+      "statuses": {
+        "active": "I medlemslisten",
+        "archived": "Arkivert"
+      },
+      "as": {
+        "trial": "prøve",
+        "observer": "observatør"
+      },
+      "joinedAt": "Ble med",
+      "owner": "eier",
+      "ownerHint": "Ikke en rad i medlemslisten: eieren telles ikke i listen.",
+      "filterByGroup": "Vis bare denne gruppen",
+      "namesFailed": "Kunne ikke laste noen navn",
+      "empty": "Medlemslisten er tom.",
+      "emptyFiltered": "Ingen passer til disse filtrene.",
+      "errors": {
+        "generic": "Kunne ikke laste medlemslisten."
+      },
+      "rosterRoles": {
+        "OWNER": "Eier",
+        "ADMIN": "Administrator",
+        "MANAGER": "Leder",
+        "CONTENT_ADMIN": "Innholdsansvarlig",
+        "TEACHER": "Lærer",
+        "STUDENT": "Elev",
+        "SCHEDULER": "Timeplanansvarlig"
+      }
+    },
+    "plan": {
+      "current": "Gjeldende plan",
+      "assign": "Bytt plan",
+      "cancel": "Avslutt abonnement",
+      "freeByDefault": "gratisplan som standard",
+      "since": "Fra {{ date }}",
+      "until": "til {{ date }}",
+      "openEnded": "uten sluttdato",
+      "noAccount": "Abonnementstjenesten har ikke sett denne skolen ennå: den er på gratisplanen. En plan eller et tillegg åpner kontoen.",
+      "freeHint": "Ingen abonnement løper: skolen er på gratisplanen for sin målgruppe.",
+      "outdated": "Skolen er på v{{ version }}; planens nyeste versjon er v{{ latest }}. Endringer i planen flytter ikke abonnenter.",
+      "moveTo": "Flytt til v{{ version }}",
+      "featuresFailed": "Kunne ikke laste nøklene i denne versjonen",
+      "noFeatures": "Denne versjonen gir ingen nøkler.",
+      "key": "Nøkkel",
+      "effectColumn": "Virkning",
+      "credits": "Kreditter / mnd.",
+      "effect": {
+        "on": "På",
+        "off": "Av"
+      },
+      "noCredits": "—",
+      "unmetered": "ubegrenset",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Tillegg",
+      "issueGrant": "Gi tillegg",
+      "accountFailed": "Kunne ikke laste kontoen",
+      "noGrants": "Ingen aktive eller planlagte tillegg.",
+      "history": "Historikk",
+      "historyFailed": "Kunne ikke laste historikken",
+      "subscriptions": "Abonnementer",
+      "noSubscriptions": "Skolen har aldri hatt et abonnement.",
+      "term": "Periode",
+      "endedAt": "Avsluttet",
+      "pastGrants": "Tidligere tillegg",
+      "noPastGrants": "Ingen utløpte eller tilbakekalte tillegg.",
+      "actions": "Handlinger",
+      "grantEffect": {
+        "on": "slår på",
+        "off": "slår av"
+      },
+      "grantState": {
+        "scheduled": "Planlagt",
+        "active": "Aktiv",
+        "ended": "Utløpt",
+        "revoked": "Tilbakekalt"
+      },
+      "revoke": "Tilbakekall",
+      "subscriptionStatus": {
+        "trial": "Prøve",
+        "active": "Aktiv",
+        "canceled": "Avsluttet",
+        "expired": "Utløpt"
+      },
+      "dayHint": "Slutter når denne dagen begynner (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Avslutt abonnement",
+        "confirm": "Avslutt abonnement",
+        "text": "Skolen forlater «{{ plan }}» nå og går tilbake til gratisplanen. Tillegg blir stående."
+      },
+      "revokeDialog": {
+        "title": "Tilbakekall tillegg",
+        "confirm": "Tilbakekall",
+        "textOn": "{{ key }} går tilbake til det planen gir, nå.",
+        "textOff": "{{ key }} er ikke lenger slått av; planen bestemmer igjen, nå."
+      },
+      "assignDialog": {
+        "title": "Bytt plan",
+        "confirm": "Tildel",
+        "plan": "Plan",
+        "planPlaceholder": "Velg en plan",
+        "plansFailed": "Kunne ikke laste planer",
+        "samePlan": "Skolen er allerede på denne planen: tildeling flytter den til v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Prøveperioden slutter",
+        "periodEnd": "Slutter (valgfritt)",
+        "periodInvalid": "Velg en dag etter i dag.",
+        "trialHint": "Påkrevd for prøve. Slutter når denne dagen begynner (00:00 UTC).",
+        "periodHint": "Tomt = uten sluttdato. Slutter når denne dagen begynner (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Gi tillegg",
+        "confirm": "Gi",
+        "key": "Nøkkel",
+        "keyPlaceholder": "Velg en nøkkel",
+        "effect": "Virkning",
+        "onHint": "Nøkkelen er på i perioden, også der planen har den av.",
+        "offHint": "Nøkkelen er av i perioden, også der planen gir den. Tilbakekalling gir den tilbake til planen.",
+        "credits": "Kreditter per måned, i tillegg til planens",
+        "creditsInvalid": "Et tall, for eksempel 500 eller 12.5.",
+        "creditsHint": "Tomt = ubegrenset mens tillegget gjelder.",
+        "startsAt": "Starter (valgfritt)",
+        "startsHint": "Tomt eller i dag = nå.",
+        "endsAt": "Slutter",
+        "periodInvalid": "Velg en dag etter i dag og etter starten."
+      }
+    },
+    "ai": {
+      "keys": "KI-nøkler",
+      "keysHint": "Tilstanden er det abonnementet gir (plan, så tildelinger; en avslående tildeling gjelder sist). Å slå en nøkkel på eller av gir en tildeling for en periode.",
+      "policyOffBanner": "Betalerpolicyen slår av all KI for denne skolen: alle agenter avviser, uansett hva nøklene under sier.",
+      "usageFailed": "Kunne ikke laste KI-nøkler og forbruk",
+      "grantsFailed": "Kunne ikke laste tildelingene: kilden til hver nøkkel er ukjent",
+      "state": "Tilstand",
+      "source": "Kilde",
+      "used": "Brukt denne perioden",
+      "periodEnd": "Perioden slutter",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "tildeling · på",
+        "grant_off": "tildeling · av",
+        "none": "ikke i planen"
+      },
+      "scheduledOn": "påslående tildeling fra {{ date }}",
+      "scheduledOff": "avslående tildeling fra {{ date }}",
+      "usedUnmetered": "{{ used }} · uten grense",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over periodens kreditter",
+      "switchOff": "Slå av",
+      "switchOn": "Slå på",
+      "revokeOff": "Opphev avslåing",
+      "grantReason": "Slått av fordi: {{ reason }}",
+      "policy": "Betalerpolicy",
+      "changePolicy": "Endre policy",
+      "policyFailed": "Kunne ikke laste betalerpolicyen",
+      "allAi": "All KI",
+      "regions": "Modellregioner",
+      "policySource": "Satt",
+      "storedAt": "{{ date }} av",
+      "policyDefault": "aldri satt — standard gjelder (på, alle regioner)",
+      "anyRegion": "alle regioner",
+      "region": {
+        "eu": "EU",
+        "us": "USA",
+        "global": "global",
+        "local": "egen drift (local)"
+      },
+      "settings": "Skolens innstillinger",
+      "settingsHint": "Skolen endrer dem på egne skjermer; her kun visning.",
+      "settingsFailed": "Kunne ikke laste skolens innstillinger",
+      "noLimit": "ingen grense",
+      "hours": "{{ n }} t",
+      "precheck": {
+        "title": "Sjekk før innlevering",
+        "enabled": "Slått på",
+        "perExercise": "Sjekker per oppgave",
+        "perLearner": "Kreditter per elev / måned"
+      },
+      "assistant": {
+        "title": "Elevassistent på skolens regning",
+        "mode": "Hvem kan bruke den",
+        "modes": {
+          "off": "ingen",
+          "all_students": "alle elever",
+          "selected_groups": "valgte grupper",
+          "selected_students": "valgte elever"
+        },
+        "groups": "grupper: {{ n }}",
+        "students": "elever: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Hvem svarer først på en innlevering",
+        "mode": "Modus",
+        "modes": {
+          "teacher_only": "bare lærer",
+          "ai_then_teacher": "KI, så lærer",
+          "ai_with_sampling": "KI, lærer stikkprøver"
+        },
+        "sample": "Lærerens stikkprøver",
+        "autoAccept": "KI-svar godtas etter"
+      },
+      "review": {
+        "title": "Svartid",
+        "respond": "Svar innen",
+        "escalate": "Eskaler etter",
+        "escalateTo": {
+          "school_admins": "skoleadministratorer",
+          "owner": "eier",
+          "primary_teacher": "hovedlærer"
+        }
+      },
+      "policyDialog": {
+        "title": "Endre betalerpolicy",
+        "confirm": "Lagre",
+        "aiEnabled": "All KI for skolen",
+        "onHint": "Agentene virker slik nøklene tillater.",
+        "offHint": "Alle agenter avviser denne skolen, uansett nøkler.",
+        "regionsRequired": "Velg minst én region, eller tillat alle.",
+        "regions": "Regioner modellene kan kjøre i",
+        "regionsHint": "Bare modeller fra leverandører i disse regionene kalles; en egen modell trenger «local»."
+      }
+    },
+    "journal": {
+      "title": "Adminjournal",
+      "failed": "Kunne ikke laste journalen",
+      "empty": "Ingen adminhandlinger på denne skolen ennå.",
+      "actor": "Av",
+      "system": "system",
+      "reason": "Begrunnelse: {{ reason }}",
+      "changes": "Før og etter",
+      "before": "Før",
+      "after": "Etter",
+      "more": "Vis flere",
+      "moreFailed": "Kunne ikke laste flere oppføringer.",
+      "actions": {
+        "subscription.assigned": "Plan tildelt",
+        "subscription.canceled": "Abonnement avsluttet",
+        "grant.issued": "Tilskudd utstedt",
+        "grant.revoked": "Tilskudd trukket tilbake",
+        "payer_policy.changed": "Betalerpolicy endret"
+      }
+    }
+  },
+  "reasonDialog": {
+    "label": "Begrunnelse",
+    "hint": "Påkrevd. Lagres i administratorloggen.",
+    "required": "Oppgi en begrunnelse for endringen.",
+    "cancel": "Avbryt",
+    "errors": {
+      "network": "Gatewayen svarer ikke. Ingenting ble endret.",
+      "forbidden": "Nivået ditt tillater ikke dette.",
+      "notFound": "Objektet finnes ikke lenger.",
+      "conflict": "Noe er endret i mellomtiden. Lukk dialogen og oppdater skjermen.",
+      "invalid": "Serveren avviste endringen.",
+      "unavailable": "Tjenesten er utilgjengelig. Prøv igjen senere.",
+      "generic": "Endringen mislyktes."
     }
   }
 }
