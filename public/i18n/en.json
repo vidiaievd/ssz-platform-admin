@@ -1,0 +1,177 @@
+{
+  "app": {
+    "title": "SSZ admin panel"
+  },
+  "nav": {
+    "label": "Panel sections",
+    "dashboard": "Overview",
+    "schools": "Schools",
+    "users": "Users",
+    "plans": "Plans",
+    "ai": "AI",
+    "platform": "Platform",
+    "audit": "Audit log",
+    "payments": "Payments"
+  },
+  "level": {
+    "super": "Super admin",
+    "admin": "Admin",
+    "support": "Support",
+    "hint": "Your access level in the panel"
+  },
+  "shell": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "signOut": "Sign out"
+  },
+  "palette": {
+    "open": "Search",
+    "title": "Go to",
+    "close": "Close search",
+    "placeholder": "Section, or a school's name or slug",
+    "sections": "Sections",
+    "schools": "Schools",
+    "hint": "Type a section, or a school's name or slug.",
+    "minChars": "Type at least {{ min }} characters to find a school.",
+    "searching": "Searching…",
+    "noSchools": "No schools found.",
+    "failed": "Could not search schools.",
+    "retry": "Retry",
+    "allResults": "All {{ total }} results in the schools list",
+    "keys": {
+      "move": "move",
+      "open": "open",
+      "close": "close"
+    }
+  },
+  "sections": {
+    "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
+    "schools": "Schools with their plan and status; the school card: members, plan and grants, AI, audit log.",
+    "users": "Search by email, roles and schools, blocking, MFA reset, deletion requests.",
+    "plans": "Catalogue of plans and feature keys, versions and subscribers on each.",
+    "ai": "Providers, models and prices, agent bindings, credit usage, eval runs.",
+    "platform": "Token lifetimes and media cleanup.",
+    "audit": "Every admin action across all services.",
+    "payments": "Payments arrive with billing; until then plans are assigned by hand."
+  },
+  "comingSoon": {
+    "text": "This section is still being built."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page does not exist or is not available at your level.",
+    "home": "Go to overview"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "signIn": "Sign in",
+    "fillBoth": "Enter your email and password.",
+    "codeFormat": "The code is 6 digits.",
+    "back": "Back",
+    "retry": "Try again",
+    "copy": "Copy",
+    "copied": "Copied",
+    "titles": {
+      "password": "Sign in",
+      "mfa": "Two-factor verification",
+      "setup": "Set up two-factor sign-in",
+      "backup-codes": "Backup codes"
+    },
+    "mfa": {
+      "codeHint": "Enter the 6-digit code from your authenticator app.",
+      "code": "Code",
+      "verify": "Verify",
+      "useBackup": "Use a backup code",
+      "useAuthenticator": "Use the app code",
+      "backupHint": "Each backup code works once.",
+      "backupCode": "Backup code",
+      "backupFormat": "A backup code looks like XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Two-factor sign-in is required for the admin panel. Set it up now — it takes a minute.",
+      "scan": "Scan the QR code with an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, …).",
+      "qrAlt": "QR code for the authenticator app",
+      "orEnter": "Or enter the key by hand:",
+      "openApp": "Open in the authenticator app",
+      "enterCode": "Enter the code the app shows:",
+      "confirm": "Turn on and sign in"
+    },
+    "codes": {
+      "once": "These codes are shown only once.",
+      "explain": "If you lose access to your authenticator app, sign in with one of these codes. Each code works once. Keep them somewhere safe.",
+      "download": "Download .txt",
+      "copyFailed": "The browser did not allow copying — download the file.",
+      "saved": "I have saved the backup codes",
+      "continue": "Continue",
+      "fileTitle": "SSZ admin panel backup codes",
+      "fileNote": "Each code works once. Keep this file somewhere safe."
+    },
+    "messages": {
+      "invalidCredentials": "Wrong email or password.",
+      "invalidCode": "Wrong code. Check the time on your device and try again.",
+      "invalidBackupCode": "Wrong or already used backup code.",
+      "lockedUntil": "The account is temporarily locked. Try again after {{time}}.",
+      "tooManyAttempts": "Too many failed attempts. Try again in about 15 minutes.",
+      "accessDenied": "This account has no access to the admin panel.",
+      "emailNotVerified": "The email address is not verified. Check your inbox.",
+      "expired": "This step timed out. Sign in again.",
+      "mfaAlreadyEnabled": "Two-factor sign-in is already on. Sign in again with a code.",
+      "setupRequired": "Two-factor sign-in has to be set up first. Sign in again.",
+      "invalidInput": "Check what you entered.",
+      "unavailable": "The service is temporarily unavailable. Try again in a minute.",
+      "network": "Cannot reach the server. Check your connection.",
+      "unexpected": "Something went wrong. Try again."
+    }
+  },
+  "schools": {
+    "total": "Found: {{ count }}",
+    "search": "Name or slug",
+    "allKinds": "All kinds",
+    "allStatuses": "All statuses",
+    "reset": "Reset filters",
+    "retry": "Retry",
+    "trial": "trial",
+    "ownersFailed": "Could not load owners",
+    "plansFailed": "Could not load plans",
+    "empty": "No schools yet.",
+    "emptyFiltered": "No schools match these filters.",
+    "emptyPage": "There are no schools on this page.",
+    "firstPage": "Go to the first page",
+    "backToList": "Back to schools",
+    "columns": {
+      "name": "Name",
+      "kind": "Kind",
+      "owner": "Owner",
+      "plan": "Plan",
+      "status": "Status",
+      "students": "Students",
+      "teachers": "Teachers",
+      "createdAt": "Created"
+    },
+    "kind": {
+      "SCHOOL": "School",
+      "SOLO": "Tutor"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleted": "Deleted"
+    },
+    "errors": {
+      "network": "The gateway is unreachable. Check the connection.",
+      "forbidden": "No access to the schools list.",
+      "generic": "Could not load schools."
+    },
+    "card": {
+      "title": "School card",
+      "soon": "The school card arrives in phase 3: members, plan and grants, AI, journal."
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "app": {
+    "title": "SSZ-adminpanel"
+  },
+  "nav": {
+    "label": "Seksjoner i panelet",
+    "dashboard": "Oversikt",
+    "schools": "Skoler",
+    "users": "Brukere",
+    "plans": "Abonnementer",
+    "ai": "KI",
+    "platform": "Plattform",
+    "audit": "Logg",
+    "payments": "Betalinger"
+  },
+  "level": {
+    "super": "Superadmin",
+    "admin": "Admin",
+    "support": "Brukerstøtte",
+    "hint": "Ditt tilgangsnivå i panelet"
+  },
+  "shell": {
+    "openMenu": "Åpne meny",
+    "closeMenu": "Lukk meny",
+    "signOut": "Logg ut"
+  },
+  "palette": {
+    "open": "Søk",
+    "title": "Gå til",
+    "close": "Lukk søk",
+    "placeholder": "Seksjon, eller skolens navn eller slug",
+    "sections": "Seksjoner",
+    "schools": "Skoler",
+    "hint": "Skriv en seksjon, eller skolens navn eller slug.",
+    "minChars": "Skriv minst {{ min }} tegn for å finne en skole.",
+    "searching": "Søker …",
+    "noSchools": "Fant ingen skoler.",
+    "failed": "Kunne ikke søke etter skoler.",
+    "retry": "Prøv igjen",
+    "allResults": "Alle {{ total }} treff i skolelisten",
+    "keys": {
+      "move": "flytt",
+      "open": "åpne",
+      "close": "lukk"
+    }
+  },
+  "sections": {
+    "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
+    "schools": "Skoler med abonnement og status; skolekortet: medlemmer, abonnement og tildelinger, KI, logg.",
+    "users": "Søk på e-post, roller og skoler, sperring, nullstilling av MFA, slettingsforespørsler.",
+    "plans": "Katalog over abonnementer og funksjonsnøkler, versjoner og antall abonnenter på hver.",
+    "ai": "Leverandører, modeller og priser, agentkoblinger, kredittforbruk, eval-kjøringer.",
+    "platform": "Levetid for tokener og opprydding i media.",
+    "audit": "Alle admin-handlinger i alle tjenester.",
+    "payments": "Betalinger kommer med fakturering; inntil da tildeles abonnementer manuelt."
+  },
+  "comingSoon": {
+    "text": "Denne seksjonen er under arbeid."
+  },
+  "notFound": {
+    "title": "Fant ikke siden",
+    "text": "Siden finnes ikke, eller den er ikke tilgjengelig på ditt nivå.",
+    "home": "Til oversikten"
+  },
+  "theme": {
+    "light": "Lyst tema",
+    "dark": "Mørkt tema",
+    "system": "Systemtema"
+  },
+  "login": {
+    "email": "E-post",
+    "password": "Passord",
+    "showPassword": "Vis passord",
+    "signIn": "Logg inn",
+    "fillBoth": "Skriv inn e-post og passord.",
+    "codeFormat": "Koden består av 6 sifre.",
+    "back": "Tilbake",
+    "retry": "Prøv igjen",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "titles": {
+      "password": "Logg inn",
+      "mfa": "Tofaktorbekreftelse",
+      "setup": "Sett opp tofaktorinnlogging",
+      "backup-codes": "Reservekoder"
+    },
+    "mfa": {
+      "codeHint": "Skriv inn den 6-sifrede koden fra autentiseringsappen.",
+      "code": "Kode",
+      "verify": "Bekreft",
+      "useBackup": "Bruk en reservekode",
+      "useAuthenticator": "Bruk kode fra appen",
+      "backupHint": "Hver reservekode kan brukes én gang.",
+      "backupCode": "Reservekode",
+      "backupFormat": "En reservekode ser slik ut: XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Tofaktorinnlogging er påkrevd for adminpanelet. Sett den opp nå – det tar et minutt.",
+      "scan": "Skann QR-koden med en autentiseringsapp (Google Authenticator, Microsoft Authenticator, 1Password o.l.).",
+      "qrAlt": "QR-kode for autentiseringsappen",
+      "orEnter": "Eller skriv inn nøkkelen manuelt:",
+      "openApp": "Åpne i autentiseringsappen",
+      "enterCode": "Skriv inn koden appen viser:",
+      "confirm": "Slå på og logg inn"
+    },
+    "codes": {
+      "once": "Disse kodene vises bare én gang.",
+      "explain": "Hvis du mister tilgangen til autentiseringsappen, logger du inn med en av disse kodene. Hver kode kan brukes én gang. Oppbevar dem et trygt sted.",
+      "download": "Last ned .txt",
+      "copyFailed": "Nettleseren tillot ikke kopiering – last ned filen.",
+      "saved": "Jeg har lagret reservekodene",
+      "continue": "Fortsett",
+      "fileTitle": "Reservekoder for SSZ-adminpanelet",
+      "fileNote": "Hver kode kan brukes én gang. Oppbevar filen et trygt sted."
+    },
+    "messages": {
+      "invalidCredentials": "Feil e-post eller passord.",
+      "invalidCode": "Feil kode. Sjekk klokken på enheten og prøv igjen.",
+      "invalidBackupCode": "Feil eller allerede brukt reservekode.",
+      "lockedUntil": "Kontoen er midlertidig sperret. Prøv igjen etter {{time}}.",
+      "tooManyAttempts": "For mange mislykkede forsøk. Prøv igjen om omtrent 15 minutter.",
+      "accessDenied": "Denne kontoen har ikke tilgang til adminpanelet.",
+      "emailNotVerified": "E-postadressen er ikke bekreftet. Sjekk innboksen.",
+      "expired": "Tiden for dette steget gikk ut. Logg inn på nytt.",
+      "mfaAlreadyEnabled": "Tofaktorinnlogging er allerede slått på. Logg inn på nytt med en kode.",
+      "setupRequired": "Tofaktorinnlogging må settes opp først. Logg inn på nytt.",
+      "invalidInput": "Sjekk det du skrev inn.",
+      "unavailable": "Tjenesten er midlertidig utilgjengelig. Prøv igjen om et minutt.",
+      "network": "Får ikke kontakt med serveren. Sjekk nettverket.",
+      "unexpected": "Noe gikk galt. Prøv igjen."
+    }
+  },
+  "schools": {
+    "total": "Funnet: {{ count }}",
+    "search": "Navn eller slug",
+    "allKinds": "Alle typer",
+    "allStatuses": "Alle statuser",
+    "reset": "Nullstill filtre",
+    "retry": "Prøv igjen",
+    "trial": "prøve",
+    "ownersFailed": "Kunne ikke laste eiere",
+    "plansFailed": "Kunne ikke laste abonnementer",
+    "empty": "Ingen skoler ennå.",
+    "emptyFiltered": "Ingen skoler passer til disse filtrene.",
+    "emptyPage": "Det er ingen skoler på denne siden.",
+    "firstPage": "Til første side",
+    "backToList": "Tilbake til skoler",
+    "columns": {
+      "name": "Navn",
+      "kind": "Type",
+      "owner": "Eier",
+      "plan": "Abonnement",
+      "status": "Status",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "createdAt": "Opprettet"
+    },
+    "kind": {
+      "SCHOOL": "Skole",
+      "SOLO": "Privatlærer"
+    },
+    "status": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "deleted": "Slettet"
+    },
+    "errors": {
+      "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
+      "forbidden": "Ingen tilgang til skolelisten.",
+      "generic": "Kunne ikke laste skoler."
+    },
+    "card": {
+      "title": "Skolekort",
+      "soon": "Skolekortet kommer i fase 3: medlemmer, abonnement og tildelinger, KI, logg."
+    }
+  }
+}
