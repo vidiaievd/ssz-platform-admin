@@ -3,6 +3,9 @@
 
 export type { AdminAiPrecheckSettingsDto } from './models/admin-ai-precheck-settings-dto';
 export type { AdminAssistantSettingsDto } from './models/admin-assistant-settings-dto';
+export type { AdminLifecycleAttentionDto } from './models/admin-lifecycle-attention-dto';
+export type { AdminLifecycleAttentionItemDto } from './models/admin-lifecycle-attention-item-dto';
+export type { AdminLifecycleStatsDto } from './models/admin-lifecycle-stats-dto';
 export type { AdminMemberDto } from './models/admin-member-dto';
 export type { AdminMemberGroupDto } from './models/admin-member-group-dto';
 export type { AdminMemberPageDto } from './models/admin-member-page-dto';
@@ -29,3 +32,5 @@ export type { AdminStatsDayDto } from './models/admin-stats-day-dto';
 export type { AdminStatsDto } from './models/admin-stats-dto';
 export type { AdminStatsPeopleDto } from './models/admin-stats-people-dto';
 export type { AdminStatsSchoolsDto } from './models/admin-stats-schools-dto';
+export type { SchoolLifecycleDto } from './models/school-lifecycle-dto';
+export type { SchoolTransitionRequestDto } from './models/school-transition-request-dto';

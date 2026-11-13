@@ -25,12 +25,16 @@ const stats = {
   to: '2026-11-10',
   schools: {
     total: 42,
-    byStatus: { active: 38, inactive: 3, deleted: 1 },
+    byStatus: { active: 38, suspended: 3, closed: 1, purged: 0 },
     byKind: { SCHOOL: 30, SOLO: 12 },
     createdInPeriod: 3,
   },
   students: { total: 1280, newInPeriod: 112 },
   teachers: { total: 96, newInPeriod: 7 },
+  lifecycle: {
+    closingSoon: { total: 0, items: [], truncated: false },
+    purgingSoon: { total: 0, items: [], truncated: false },
+  },
   seats: {
     used: 90,
     limit: 150,
@@ -146,6 +150,40 @@ describe('DashboardPage', () => {
     expect(rows[0].querySelector('a')?.getAttribute('href')).toBe('/schools/s-full/plan');
   });
 
+  it('lists closing and purging schools in the queue, soonest first, red when purge is near', async () => {
+    const soon = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
+    await open({
+      stats: {
+        ...stats,
+        lifecycle: {
+          closingSoon: {
+            total: 1,
+            truncated: false,
+            items: [
+              { schoolId: 's-c', name: 'Closing', slug: 'closing', kind: 'SCHOOL', at: soon(3) },
+            ],
+          },
+          purgingSoon: {
+            total: 2,
+            truncated: false,
+            items: [
+              { schoolId: 's-p', name: 'Purging', slug: 'purging', kind: 'SCHOOL', at: soon(2) },
+              { schoolId: 's-p2', name: 'Late', slug: 'late', kind: 'SOLO', at: soon(-1) },
+            ],
+          },
+        },
+      },
+    });
+    const rows = all('queue-lifecycle');
+    expect(rows.map((r) => r.getAttribute('data-kind'))).toEqual(['purging', 'purging', 'closing']);
+    expect(rows[0].textContent).toContain('Late');
+    expect(rows[0].textContent).toContain('deleted in 0 d');
+    expect(rows[1].getAttribute('data-urgent')).toBe('true');
+    expect(rows[2].textContent).toContain('closes in 3 d');
+    expect(rows[2].querySelector('a')?.getAttribute('href')).toBe('/schools/s-c/danger');
+    expect(find('queue-empty')).toBeNull();
+  });
+
   it('keeps the seats KPI quiet when no school has a limit', async () => {
     await open({
       stats: {
@@ -177,7 +215,7 @@ describe('DashboardPage', () => {
   it('asks for the period in the URL and links the counts to the filtered list', async () => {
     await open({}, '/?period=7');
     expect(find('period-7')!.getAttribute('aria-pressed')).toBe('true');
-    expect(find('kpi-status-inactive')!.getAttribute('href')).toBe('/schools?status=inactive');
+    expect(find('kpi-status-suspended')!.getAttribute('href')).toBe('/schools?status=suspended');
   });
 
   it('switches the period for the whole page, keeping the queue as it is', async () => {

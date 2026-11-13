@@ -12,13 +12,17 @@ Backend: monorepo `ssz-platform`, reached through the nginx gateway (`/api/v1/..
 - `ng-openapi-gen` for API clients, Playwright for e2e, Vitest for unit tests, angular-eslint for lint
 - Keep PrimeNG on the same major as Angular. The global Angular CLI decides the version `ng new` scaffolds; Node must satisfy the CLI's minimum (≥ 24.15)
 
-## Status (plan 90, phase 3 — school card, branch `feature/admin-school-card`)
+## Status (plan 90, phase 5 — school lifecycle, branch `feature/admin-lifecycle`)
 
 Built: runtime config, theme and language, sign-in with MFA, session and refresh, layout with guards, generated
 API clients (organization, subscription, ai, analytics, content, user-profile), Ctrl+K palette, schools list, the school
-card with five tabs (Overview, Members, Plan, AI & services, Journal), the reason dialog, a simple dashboard.
-Sections other than Dashboard and Schools are a lazy "coming soon" page. Not run against a live panel token yet
-(no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
+card with six tabs (Overview, Members, Plan, AI & services, Journal, Danger zone), the reason dialog, the dashboard (KPIs,
+attention queue, seats KPI). Phase 4 added student seats («Места» column, `seats=near|over`, `GrantDialog` for
+`seats.students`). Phase 5 adds the lifecycle: the stored status `active / suspended / closed / purged` in the list filter,
+the card header (`closesAt` / `purgeAt` with days left), the dashboard's "Needs attention" queue (a suspended school
+closing in N days; a closed school purged within 7 days in red; each row links to the Danger zone) and the **Danger zone** tab — current status and date scale, moves by level, school name typed
+to close at once or purge early. Sections other than Dashboard and Schools are a lazy "coming soon" page. Not run against a
+live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`
 
@@ -77,6 +81,15 @@ Sections other than Dashboard and Schools are a lazy "coming soon" page. Not run
   follow the period switch (`?period=7|30|90|365`, default 30, a bad value falls back; one switch per page); the
   attention queue from subscription `admin/subscriptions/stats?withinDays=7` does not follow it. Each queue row links to
   the school's Plan tab (a `user` payer has no link — no user card until phase 6). No auto-refresh; "refresh" reads both.
+- **Seats are one rule, copied.** `features/schools/seats.ts` mirrors organization's `seat-policy.vo.ts`: `none` (no
+  limit) / `ok` / `near` (≥ 90 %, not over) / `warning` (in the +10 % margin) / `full` (at the ceiling). The list reads
+  `seats { used, limit }`; a school without a projected limit shows `87` alone, never a made-up limit. Seats come only
+  from organization (the projection), never from subscription directly. `seats=near` and `seats=over` do not overlap.
+- **Lifecycle moves are one table, copied.** `features/schools/school-lifecycle.ts` mirrors organization's status rule
+  (stored status, days to `closesAt` / `purgeAt`, `PURGE_URGENT_DAYS`). `card/danger/lifecycle-transitions.ts` decides what
+  a level may press: suspend / reactivate — `admin`; close at once, restore, early purge — `super`. The tab hides what the
+  level cannot do; the server still answers 403 (level) or 409 (wrong move, `SCHOOL_TRANSITION_NOT_ALLOWED`), shown in the
+  dialog. Close and early purge ask for the school's name typed in full. The Journal tab knows the `school.*` actions.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.

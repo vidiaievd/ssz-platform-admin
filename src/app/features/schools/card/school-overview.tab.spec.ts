@@ -48,6 +48,10 @@ function detail(overrides: Partial<AdminSchoolDetailDto> = {}): AdminSchoolDetai
     createdAt: '2026-03-05T10:00:00.000Z',
     updatedAt: '2026-04-01T10:00:00.000Z',
     deletedAt: null,
+    closesAt: null,
+    purgeAt: null,
+    statusChangedAt: null,
+    statusReason: null,
     contacts: { email: 'post@nordick.no', website: 'nordick.no', city: 'Oslo' },
     owner: { userId: 'owner-1', name: 'Kari Nordmann', email: 'kari@nordick.no' },
     counts: {

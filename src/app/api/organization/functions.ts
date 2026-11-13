@@ -11,3 +11,13 @@ export type { AdminSchoolsSettings$Params as AdminSchoolsSettings$Params } from 
 export { adminSchoolsSettings as adminSchoolsSettings } from './fn/admin-schools/admin-schools-settings';
 export type { AdminStatsGet$Params as AdminStatsGet$Params } from './fn/admin-schools/admin-stats-get';
 export { adminStatsGet as adminStatsGet } from './fn/admin-schools/admin-stats-get';
+export type { AdminSchoolLifecycleSuspend$Params as AdminSchoolLifecycleSuspend$Params } from './fn/admin-schools/admin-school-lifecycle-suspend';
+export { adminSchoolLifecycleSuspend as adminSchoolLifecycleSuspend } from './fn/admin-schools/admin-school-lifecycle-suspend';
+export type { AdminSchoolLifecycleReactivate$Params as AdminSchoolLifecycleReactivate$Params } from './fn/admin-schools/admin-school-lifecycle-reactivate';
+export { adminSchoolLifecycleReactivate as adminSchoolLifecycleReactivate } from './fn/admin-schools/admin-school-lifecycle-reactivate';
+export type { AdminSchoolLifecycleClose$Params as AdminSchoolLifecycleClose$Params } from './fn/admin-schools/admin-school-lifecycle-close';
+export { adminSchoolLifecycleClose as adminSchoolLifecycleClose } from './fn/admin-schools/admin-school-lifecycle-close';
+export type { AdminSchoolLifecycleRestore$Params as AdminSchoolLifecycleRestore$Params } from './fn/admin-schools/admin-school-lifecycle-restore';
+export { adminSchoolLifecycleRestore as adminSchoolLifecycleRestore } from './fn/admin-schools/admin-school-lifecycle-restore';
+export type { AdminSchoolLifecyclePurge$Params as AdminSchoolLifecyclePurge$Params } from './fn/admin-schools/admin-school-lifecycle-purge';
+export { adminSchoolLifecyclePurge as adminSchoolLifecyclePurge } from './fn/admin-schools/admin-school-lifecycle-purge';

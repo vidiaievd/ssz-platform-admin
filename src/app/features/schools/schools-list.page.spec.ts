@@ -33,6 +33,8 @@ function school(
     kind: 'SCHOOL',
     city: 'Oslo',
     status: 'active',
+    closesAt: null,
+    purgeAt: null,
     ownerId: `owner-${id}`,
     createdAt: '2026-03-05T10:00:00.000Z',
     counts: { students: 12, teachers: 3 },
@@ -181,7 +183,7 @@ describe('SchoolsListPage', () => {
   it('fills owners and plans for exactly the page, in one request each', async () => {
     await open('/schools');
     const a = school('a', { ownerId: 'u-1' });
-    const b = school('b', { ownerId: 'u-1', kind: 'SOLO', status: 'deleted', city: null });
+    const b = school('b', { ownerId: 'u-1', kind: 'SOLO', status: 'closed', city: null });
     const c = school('c', { ownerId: 'u-2' });
     expectSchools().flush({ items: [a, b, c], total: 3, page: 1, limit: 25 });
     await stable();
@@ -211,7 +213,7 @@ describe('SchoolsListPage', () => {
     const rows = all('[data-testid="school-row"]');
     expect(rows[0]).toContain('school-a · Oslo');
     expect(rows[1]).toContain('Tutor');
-    expect(rows[1]).toContain('Deleted');
+    expect(rows[1]).toContain('Closed');
     // The owner of a SOLO workspace is its teacher but not on the roster: no misleading 0.
     expect(all('[data-testid="school-teachers"]')).toEqual(['3', '—', '3']);
     expect(text('[data-testid="schools-total"]')).toBe('Found: 3');

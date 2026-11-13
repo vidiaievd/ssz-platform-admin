@@ -252,7 +252,7 @@ const LISTBOX_ID = 'palette-listbox';
             @if (option.school.status !== 'active') {
               <p-tag
                 [value]="'schools.status.' + option.school.status | transloco"
-                [severity]="option.school.status === 'deleted' ? 'danger' : 'warn'"
+                [severity]="option.school.status === 'suspended' ? 'warn' : 'danger'"
               />
             }
           }

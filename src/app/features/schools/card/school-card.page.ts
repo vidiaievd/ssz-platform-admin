@@ -9,9 +9,8 @@ import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
 import { seatLevel, seatLevelClass, seatsText } from '../seats';
 import { SchoolCardData } from './school-card.data';
+import { STATUS_SEVERITY, daysUntil } from '../school-lifecycle';
 import { SCHOOL_TABS, SchoolTab, schoolTabLink } from './school-tabs';
-
-const STATUS_SEVERITY = { active: 'success', inactive: 'warn', deleted: 'danger' } as const;
 
 /**
  * `/schools/:schoolId[/:tab]` — the school card (plan 90, phase 3): a header with the name, kind,
@@ -63,13 +62,32 @@ const STATUS_SEVERITY = { active: 'success', inactive: 'warn', deleted: 'danger'
           </div>
           <div class="text-muted-color flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             <span class="font-mono" data-testid="school-slug">{{ school.slug }}</span>
-            @if (school.deletedAt) {
-              <span data-testid="school-deleted-at">
+            @if (school.status === 'suspended' && school.closesAt) {
+              <span data-testid="school-closes-at">
                 {{
-                  'schools.card.deletedAt'
-                    | transloco: { date: (school.deletedAt | localDate: lang()) }
+                  'schools.card.closesAt'
+                    | transloco
+                      : {
+                          date: (school.closesAt | localDate: lang()),
+                          n: daysLeft(school.closesAt),
+                        }
                 }}
               </span>
+            }
+            @if (school.status === 'closed' && school.purgeAt) {
+              <span data-testid="school-purge-at">
+                {{
+                  'schools.card.purgeAt'
+                    | transloco
+                      : {
+                          date: (school.purgeAt | localDate: lang()),
+                          n: daysLeft(school.purgeAt),
+                        }
+                }}
+              </span>
+            }
+            @if (school.status === 'purged') {
+              <span data-testid="school-purged">{{ 'schools.card.purged' | transloco }}</span>
             }
             <span class="flex items-center gap-1" data-testid="school-seats">
               {{ 'schools.columns.seats' | transloco }}:
@@ -165,6 +183,7 @@ export class SchoolCardPage {
   protected readonly lang = inject(LanguageService).current;
   protected readonly tabs = SCHOOL_TABS;
   protected readonly statusSeverity = STATUS_SEVERITY;
+  protected readonly daysLeft = (iso: string) => daysUntil(iso);
 
   protected readonly planOf = computed(() => {
     const plan = this.data.plan();

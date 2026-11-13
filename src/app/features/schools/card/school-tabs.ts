@@ -3,7 +3,7 @@
  * link reproduces the screen. The overview is the default and, like the list's defaults, is not
  * written: it lives at `/schools/:id`, and an unknown tab falls back to it.
  */
-export const SCHOOL_TABS = ['overview', 'members', 'plan', 'ai', 'journal'] as const;
+export const SCHOOL_TABS = ['overview', 'members', 'plan', 'ai', 'journal', 'danger'] as const;
 
 export type SchoolTab = (typeof SCHOOL_TABS)[number];
 

@@ -7,6 +7,11 @@ export const KNOWN_ACTIONS = [
   'grant.issued',
   'grant.revoked',
   'payer_policy.changed',
+  'school.suspended',
+  'school.reactivated',
+  'school.closed',
+  'school.restored',
+  'school.purge_requested',
 ] as const;
 
 export function isKnownAction(action: string): boolean {

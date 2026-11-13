@@ -9,10 +9,19 @@ import { AdminSchoolOwnerDto } from '../models/admin-school-owner-dto';
 import { AdminSchoolSeatsDto } from '../models/admin-school-seats-dto';
 export interface AdminSchoolDetailDto {
   avatarUrl: string | null;
+
+  /**
+   * When a suspended school closes by itself
+   */
+  closesAt: string | null;
   contacts: AdminSchoolContactsDto;
   counts: AdminSchoolDetailCountsDto;
   courses: AdminSchoolCoursesDto;
   createdAt: string;
+
+  /**
+   * Mirrors the status: when the school was closed (set while closed or purged)
+   */
   deletedAt: string | null;
   description: string | null;
 
@@ -26,11 +35,22 @@ export interface AdminSchoolDetailDto {
   owner: AdminSchoolOwnerDto;
 
   /**
+   * When a closed school is purged
+   */
+  purgeAt: string | null;
+
+  /**
    * Student seats against the projected plan limit
    */
   seats: AdminSchoolSeatsDto;
   slug: string;
-  status: 'active' | 'inactive' | 'deleted';
+  status: 'active' | 'suspended' | 'closed' | 'purged';
+  statusChangedAt: string | null;
+
+  /**
+   * The admin's reason for the current status; null when the owner or the timer moved it
+   */
+  statusReason: string | null;
   type: 'ONLINE' | 'HYBRID';
   updatedAt: string;
 }

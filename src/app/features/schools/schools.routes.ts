@@ -8,6 +8,7 @@ const TAB_COMPONENTS: Record<SchoolTab, Route['loadComponent']> = {
   plan: () => import('./card/plan/school-plan.tab').then((m) => m.SchoolPlanTab),
   ai: () => import('./card/ai/school-ai.tab').then((m) => m.SchoolAiTab),
   journal: () => import('./card/journal/school-journal.tab').then((m) => m.SchoolJournalTab),
+  danger: () => import('./card/danger/school-danger.tab').then((m) => m.SchoolDangerTab),
 };
 
 /** One tab of the card. */

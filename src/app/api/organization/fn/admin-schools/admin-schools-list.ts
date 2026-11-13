@@ -22,9 +22,9 @@ export interface AdminSchoolsList$Params {
   kind?: 'SCHOOL' | 'SOLO';
 
 /**
- * None = every row, soft-deleted ones included
+ * None = every row, closed and purged ones included
  */
-  status?: 'active' | 'inactive' | 'deleted';
+  status?: 'active' | 'suspended' | 'closed' | 'purged';
 
 /**
  * `near` = 90 % of the student limit or more, not over it; `over` = more active students than the limit. Schools without a numeric limit match neither.
