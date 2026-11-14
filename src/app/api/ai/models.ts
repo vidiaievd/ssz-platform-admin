@@ -62,6 +62,7 @@ export type { SpendDayModelDto } from './models/spend-day-model-dto';
 export type { SpendModelInfoDto } from './models/spend-model-info-dto';
 export type { SpendProviderDto } from './models/spend-provider-dto';
 export type { SpendUsageDto } from './models/spend-usage-dto';
+export type { TestModelDto } from './models/test-model-dto';
 export type { TestModelResponseDto } from './models/test-model-response-dto';
 export type { TtsFeaturesDto } from './models/tts-features-dto';
 export type { UnprocessableBindingDto } from './models/unprocessable-binding-dto';

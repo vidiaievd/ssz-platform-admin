@@ -623,6 +623,7 @@
     "tabsLabel": "KI-seksjoner",
     "tabs": {
       "models": "Agentmodeller",
+      "providers": "Leverandører",
       "spend": "Kostnader"
     },
     "models": {
@@ -693,6 +694,118 @@
         "timeoutHint": "Reservemodellen får sitt eget tidsavbrudd.",
         "temperatureRange": "Et tall fra 0 til {{ max }}.",
         "temperatureHint": "Tomt = leverandørens standard."
+      }
+    },
+    "providers": {
+      "title": "Leverandører og modeller",
+      "hint": "Alle leverandørene ai-service kan kalle, med modellene deres. Er en leverandør slått av, går ruteren til hver agents reservemodell; endringen gjelder fra neste kall og føres i administratorloggen.",
+      "refresh": "Oppdater",
+      "failed": "Kunne ikke laste leverandørene",
+      "modelsFailed": "Kunne ikke laste modellene: kortene viser bare leverandørene",
+      "breakersFailed": "Kunne ikke laste sikringene: kolonnen er tom, og bryterne kan ikke varsle på forhånd",
+      "empty": "Ingen leverandør er registrert.",
+      "noModels": "Ingen modell fra denne leverandøren er registrert.",
+      "usedBy": "Brukes av:",
+      "region": {
+        "eu": "EU",
+        "us": "USA",
+        "global": "global",
+        "local": "lokal"
+      },
+      "key": {
+        "present": "nøkkel finnes",
+        "missing": "ikke konfigurert, mangler",
+        "variable": "nøkkel i"
+      },
+      "toggle": {
+        "on": "Slå på",
+        "off": "Slå av",
+        "titleOn": "Slå på {{ provider }}",
+        "titleOff": "Slå av {{ provider }}",
+        "explainOn": "Ruteren kan kalle leverandørens modeller igjen fra neste kall.",
+        "explainOff": "Ruteren slutter å kalle leverandørens modeller og går til hver agents reservemodell. En agent uten noe annet igjen avviser hvert kall.",
+        "needsKey": "Ikke konfigurert: sett variablene som mangler først"
+      },
+      "col": {
+        "model": "Modell",
+        "status": "Status",
+        "price": "Gjeldende pris",
+        "breaker": "Sikring"
+      },
+      "price": {
+        "input": "inn {{ amount }} / 1M tokens",
+        "output": "ut {{ amount }} / 1M tokens",
+        "cacheRead": "cache-lesing {{ amount }} / 1M",
+        "cacheWrite": "cache-skriving {{ amount }} / 1M",
+        "audioHour": "{{ amount }} / lydtime",
+        "millionChars": "{{ amount }} / 1M tegn",
+        "none": "ingen pris: kallene prises ikke"
+      },
+      "prices": {
+        "toggle": "Priser",
+        "failed": "Kunne ikke laste prishistorikken",
+        "empty": "Ingen pris registrert.",
+        "from": "fra {{ moment }}",
+        "latest": "(siste)"
+      },
+      "status": {
+        "change": "Status",
+        "title": "Status for {{ model }}",
+        "confirm": "Lagre",
+        "current": "nå",
+        "same": "Velg en annen status enn den nåværende.",
+        "explain": {
+          "active": "Betjener agentene som er bundet til den.",
+          "deprecated": "En merkelapp: den betjener fortsatt, nye bindinger bør velge en annen modell.",
+          "disabled": "Ut av alle bindinger med en gang: ruteren går til reserven, nye bindinger avviser den."
+        }
+      },
+      "breaker": {
+        "settings": "En sikring går etter {{ failures }} feil som kan prøves igjen innen {{ window }} s og står åpen i {{ open }} s; mens den er åpen, hopper ruteren over modellen.",
+        "storeDown": "Sikringslageret (Redis) kan ikke leses: tilstandene er ukjente, og ruteren kaller hver modell som om sikringen var lukket.",
+        "open": "åpen",
+        "closed": "lukket",
+        "unknown": "ukjent",
+        "until": "til {{ moment }}",
+        "failures": "feil {{ count }} av {{ max }}",
+        "reset": "Tilbakestill",
+        "resetTitle": "Tilbakestill sikringen for {{ model }}",
+        "resetExplain": "Ruteren kaller modellen igjen med en gang, og feiltellingen starter på null. Er årsaken der fortsatt, går sikringen igjen."
+      },
+      "test": {
+        "button": "Test",
+        "title": "Test {{ model }}",
+        "hint": "Ett kort strukturert kall: sjekker nøkkelen, modell-id-en og strukturert svar. Det kjører også på en avslått leverandør, betales av plattformen og føres i kall-loggen og administratorloggen.",
+        "reason": "Begrunnelse",
+        "reasonHint": "Valgfritt: en test endrer ingenting.",
+        "run": "Kjør test",
+        "again": "Kjør igjen",
+        "close": "Lukk",
+        "outcome": {
+          "ok": "virker",
+          "invalid_response": "ugyldig svar",
+          "error": "kallet feilet"
+        },
+        "retryable": "ruteren ville prøvd reserven",
+        "final": "ruteren ville ikke prøvd igjen",
+        "latency": "Svartid",
+        "ms": "{{ ms }} ms",
+        "cost": "Kostnad",
+        "credits": "{{ credits }} kreditter",
+        "noPrice": "ingen gjeldende pris",
+        "tokens": "Tokens inn / ut",
+        "callId": "Rad i kall-loggen",
+        "output": "Svar",
+        "blocked": {
+          "notLlm": "Bare språkmodeller kan testes",
+          "notConfigured": "Leverandøren er ikke konfigurert"
+        }
+      },
+      "stranded": {
+        "before": "Agenter uten en modell som betjener: {{ count }}. De vil avvise hvert kall:",
+        "after": "Etter endringen av {{ subject }} har disse agentene ingen modell som betjener og avviser hvert kall:",
+        "unknown": "Hvilke agenter dette etterlater uten modell kan ikke regnes ut nå (modeller eller sikringer er ikke lastet); serveren sier det etter endringen.",
+        "dismiss": "Lukk"
       }
     },
     "spend": {

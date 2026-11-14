@@ -7,16 +7,19 @@ import { filter, map } from 'rxjs/operators';
 import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import { TestModelDto } from '../../models/test-model-dto';
 import { TestModelResponseDto } from '../../models/test-model-response-dto';
 
 export interface AdminRegistryTestModel$Params {
   id: string;
+      body?: TestModelDto
 }
 
 export function adminRegistryTestModel(http: HttpClient, rootUrl: string, params: AdminRegistryTestModel$Params, context?: HttpContext): Observable<StrictHttpResponse<TestModelResponseDto>> {
   const rb = new RequestBuilder(rootUrl, adminRegistryTestModel.PATH, 'post');
   if (params) {
     rb.path('id', params.id, {});
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(

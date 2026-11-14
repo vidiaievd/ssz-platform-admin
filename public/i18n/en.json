@@ -623,6 +623,7 @@
     "tabsLabel": "AI sections",
     "tabs": {
       "models": "Agent models",
+      "providers": "Providers",
       "spend": "Spend"
     },
     "models": {
@@ -693,6 +694,118 @@
         "timeoutHint": "The fallback gets its own timeout.",
         "temperatureRange": "A number from 0 to {{ max }}.",
         "temperatureHint": "Empty = the provider's default."
+      }
+    },
+    "providers": {
+      "title": "Providers and models",
+      "hint": "Every provider ai-service can call, with its models. Switching a provider off makes the router step to each agent's fallback; the change takes effect on the next call and goes to the admin journal.",
+      "refresh": "Refresh",
+      "failed": "Could not load the providers",
+      "modelsFailed": "Could not load the models: cards show providers only",
+      "breakersFailed": "Could not load the breakers: their column is empty and switches cannot warn in advance",
+      "empty": "No provider is registered.",
+      "noModels": "No model of this provider is registered.",
+      "usedBy": "Used by:",
+      "region": {
+        "eu": "EU",
+        "us": "US",
+        "global": "global",
+        "local": "local"
+      },
+      "key": {
+        "present": "key present",
+        "missing": "not configured, missing",
+        "variable": "key in"
+      },
+      "toggle": {
+        "on": "Switch on",
+        "off": "Switch off",
+        "titleOn": "Switch on {{ provider }}",
+        "titleOff": "Switch off {{ provider }}",
+        "explainOn": "The router may call the provider's models again from the next call.",
+        "explainOff": "The router stops calling the provider's models and steps to each agent's fallback. An agent with nothing else left refuses every call.",
+        "needsKey": "Not configured: set the missing variables first"
+      },
+      "col": {
+        "model": "Model",
+        "status": "Status",
+        "price": "Price in effect",
+        "breaker": "Breaker"
+      },
+      "price": {
+        "input": "in {{ amount }} / 1M tokens",
+        "output": "out {{ amount }} / 1M tokens",
+        "cacheRead": "cache read {{ amount }} / 1M",
+        "cacheWrite": "cache write {{ amount }} / 1M",
+        "audioHour": "{{ amount }} / audio hour",
+        "millionChars": "{{ amount }} / 1M characters",
+        "none": "no price: calls are not costed"
+      },
+      "prices": {
+        "toggle": "Prices",
+        "failed": "Could not load the price history",
+        "empty": "No price recorded.",
+        "from": "from {{ moment }}",
+        "latest": "(latest)"
+      },
+      "status": {
+        "change": "Status",
+        "title": "Status of {{ model }}",
+        "confirm": "Save",
+        "current": "now",
+        "same": "Choose a status other than the current one.",
+        "explain": {
+          "active": "Serves the agents bound to it.",
+          "deprecated": "A label: it still serves, new bindings should pick another model.",
+          "disabled": "Out of every binding at once: the router steps to the fallback, new bindings refuse it."
+        }
+      },
+      "breaker": {
+        "settings": "A breaker opens after {{ failures }} retryable failures within {{ window }} s and stays open {{ open }} s; while open the router skips the model.",
+        "storeDown": "The breaker store (Redis) cannot be read: states are unknown, and the router calls every model as if closed.",
+        "open": "open",
+        "closed": "closed",
+        "unknown": "unknown",
+        "until": "until {{ moment }}",
+        "failures": "failures {{ count }} of {{ max }}",
+        "reset": "Reset",
+        "resetTitle": "Reset the breaker of {{ model }}",
+        "resetExplain": "The router calls the model again at once and the failure count starts from zero. If the cause is still there, the breaker opens again."
+      },
+      "test": {
+        "button": "Test",
+        "title": "Test {{ model }}",
+        "hint": "One short structured call: checks the key, the model id and structured output. It runs on a switched-off provider too, is paid by the platform and goes to the call ledger and the admin journal.",
+        "reason": "Reason",
+        "reasonHint": "Optional: a test changes nothing.",
+        "run": "Run test",
+        "again": "Run again",
+        "close": "Close",
+        "outcome": {
+          "ok": "works",
+          "invalid_response": "invalid answer",
+          "error": "call failed"
+        },
+        "retryable": "the router would try the fallback",
+        "final": "the router would not retry",
+        "latency": "Latency",
+        "ms": "{{ ms }} ms",
+        "cost": "Cost",
+        "credits": "{{ credits }} credits",
+        "noPrice": "no price in effect",
+        "tokens": "Tokens in / out",
+        "callId": "Ledger row",
+        "output": "Answer",
+        "blocked": {
+          "notLlm": "Only language models can be tested",
+          "notConfigured": "The provider is not configured"
+        }
+      },
+      "stranded": {
+        "before": "Agents left with no model that serves: {{ count }}. Every call of theirs will be refused:",
+        "after": "After the change of {{ subject }} these agents have no model that serves and refuse every call:",
+        "unknown": "Which agents this leaves without a model cannot be worked out now (models or breakers not loaded); the server will say after the change.",
+        "dismiss": "Dismiss"
       }
     },
     "spend": {
