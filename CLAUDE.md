@@ -21,8 +21,8 @@ attention queue, seats KPI). Phase 4 added student seats («Места» column,
 `seats.students`). Phase 5 adds the lifecycle: the stored status `active / suspended / closed / purged` in the list filter,
 the card header (`closesAt` / `purgeAt` with days left), the dashboard's "Needs attention" queue (a suspended school
 closing in N days; a closed school purged within 7 days in red; each row links to the Danger zone) and the **Danger zone** tab — current status and date scale, moves by level, school name typed
-to close at once or purge early. Phase 7, part 1 adds the **AI** section (`features/ai`, `/ai`, tabs in `ai-tabs.ts`, unknown tab → `/ai/models`): *Agent models*
-(`/ai/models`) and *Spend* (`/ai/spend`). Sections other than Dashboard, Schools and AI are a lazy "coming soon" page. Not run against a
+to close at once or purge early. Phase 7 adds the **AI** section (`features/ai`, `/ai`, tabs in `ai-tabs.ts`, unknown tab → `/ai/models`): *Agent models*
+(`/ai/models`), *Providers* (`/ai/providers`), *Eval* (`/ai/evals`), *Q2 gate* (`/ai/gate`) and *Spend* (`/ai/spend`). Sections other than Dashboard, Schools and AI are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`
@@ -102,6 +102,21 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   micros, shown in USD with other currencies apart; a model without a price is "—", never `$0`, and the unpriced calls are a
   yellow card; the chart is stacked by model (8 colours checked for colour-blindness, own set for dark, the rest "Others",
   colour keyed by model id). Data is ai-service `admin/spend` (from `ai_calls`).
+  Below the chart, a block of credits per payer (same period; `?payer=workspace|user|platform`): top payers, by capability and
+  by ISO week from analytics `admin/ai/usage` (three independent reads, each with its own retry); school names come from
+  organization `admin/schools?ids=` (a failed read shows ids plus a note); the spend read is not repeated when only `?payer=` changes.
+- *Providers* (`/ai/providers`): three independent reads (providers, models, breaker board). Switch a provider / model status
+  (`super`, `ReasonDialog`); the "stranded bindings" warning before the switch is computed in `provider-cards.ts` (`strandedBy`,
+  a copy of the server rule — no models or board → "cannot calculate"), after it the server's `strandedCapabilities` is shown.
+  A provider without a key cannot be enabled (`missing` listed). Breaker reset (`admin`) is offered for an open breaker or one with
+  failures, not for `unknown`. Model test has its own dialog (reason optional); speech / tts and keyless providers — button off.
+- *Eval* (`/ai/evals`, `?set=`, `?run=`): three sets as tabs, last 50 runs, run card, "new run" (`admin`, no reason). A model
+  without a key or a needed capability stays in the list but disabled (copy of `capabilityGaps`). While any run is `running`
+  the list and card reread every `EVAL_POLL_MS` (5 s). `skipped` is read as `Record<string, number>`.
+- *Q2 gate* (`/ai/gate`, `?from=&to=&bound=1`): analytics `review-gate` + ai-service bindings + registry, read separately.
+  Thresholds are checked in the panel on exact counts, like the server verdict; "not measurable" gets no colour. There is no
+  switch (plan 90 §7, Q6) and the banner "do not enable `ai.review_direct` in plans" is always shown.
+- Tailwind theme has `surface-*` and `primary-contrast` from `--p-surface-*`; without them `bg-surface-*` classes draw nothing.
 - **PrimeNG 22 `pButton` does not draw the `icon` attribute** — put `<i class="pi …">` inside the button.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
