@@ -17,6 +17,23 @@
   --color-border: var(--p-content-border-color);
   --color-emphasis: var(--p-content-hover-background);
   --color-primary: var(--p-primary-color);
+  --color-primary-contrast: var(--p-primary-contrast-color);
+  /*
+   * PrimeNG's surface scale, so `bg-surface-50 dark:bg-surface-900` and the like draw at all —
+   * without these, Tailwind generated no such utilities and the classes were silently empty.
+   */
+  --color-surface-0: var(--p-surface-0);
+  --color-surface-50: var(--p-surface-50);
+  --color-surface-100: var(--p-surface-100);
+  --color-surface-200: var(--p-surface-200);
+  --color-surface-300: var(--p-surface-300);
+  --color-surface-400: var(--p-surface-400);
+  --color-surface-500: var(--p-surface-500);
+  --color-surface-600: var(--p-surface-600);
+  --color-surface-700: var(--p-surface-700);
+  --color-surface-800: var(--p-surface-800);
+  --color-surface-900: var(--p-surface-900);
+  --color-surface-950: var(--p-surface-950);
 }
 
 html {
