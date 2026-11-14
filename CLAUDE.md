@@ -21,7 +21,8 @@ attention queue, seats KPI). Phase 4 added student seats («Места» column,
 `seats.students`). Phase 5 adds the lifecycle: the stored status `active / suspended / closed / purged` in the list filter,
 the card header (`closesAt` / `purgeAt` with days left), the dashboard's "Needs attention" queue (a suspended school
 closing in N days; a closed school purged within 7 days in red; each row links to the Danger zone) and the **Danger zone** tab — current status and date scale, moves by level, school name typed
-to close at once or purge early. Sections other than Dashboard and Schools are a lazy "coming soon" page. Not run against a
+to close at once or purge early. Phase 7, part 1 adds the **AI** section (`features/ai`, `/ai`, tabs in `ai-tabs.ts`, unknown tab → `/ai/models`): *Agent models*
+(`/ai/models`) and *Spend* (`/ai/spend`). Sections other than Dashboard, Schools and AI are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`
@@ -90,6 +91,18 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   a level may press: suspend / reactivate — `admin`; close at once, restore, early purge — `super`. The tab hides what the
   level cannot do; the server still answers 403 (level) or 409 (wrong move, `SCHOOL_TRANSITION_NOT_ALLOWED`), shown in the
   dialog. Close and early purge ask for the school's name typed in full. The Journal tab knows the `school.*` actions.
+- **AI section** (`features/ai`). *Agent models*: two independent reads (bindings and registry — models + providers); without
+  the registry rows show model ids and editing waits. Edit goes through `ReasonDialog` (level `super`): only models of the
+  right modality and not `disabled`, a fallback may be another provider's; for speech / tts the token and temperature fields
+  are absent and the saved values go back; `maxOutputTokens` is checked against the smaller `maxOutput` of the two models;
+  prompt version is free text (the server rejects an unknown one, 422). `expectedVersion` = the row's version, 0 for a new
+  one; 409 → "changed, reload"; 422 `missing` is a list in `ApiError.details`, shown under the error in `ReasonDialog`.
+  *Spend*: the period lives in the URL (`from`, `to`; presets 7 / 30 / 90 days and this month; 30 days = no params; a bad or
+  > 366-day range silently falls back, a hand-typed reversed range shows a message and sends nothing). Money is summed in whole
+  micros, shown in USD with other currencies apart; a model without a price is "—", never `$0`, and the unpriced calls are a
+  yellow card; the chart is stacked by model (8 colours checked for colour-blindness, own set for dark, the rest "Others",
+  colour keyed by model id). Data is ai-service `admin/spend` (from `ai_calls`).
+- **PrimeNG 22 `pButton` does not draw the `icon` attribute** — put `<i class="pi …">` inside the button.
 - **All texts in three languages** (`public/i18n/{uk,en,nb}.json`); dynamic keys only via explicit branches.
 - **PrimeNG is licensed.** No key in `config.json` → "Invalid PrimeUI License" banner. `public/config.json` is git-ignored
   (public repo); the template is `public/config.example.json`.
