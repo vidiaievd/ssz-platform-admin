@@ -49,10 +49,11 @@ const EFFECTS = [
       level="admin"
       [ready]="ready()"
       [action]="issue"
+      [(attempted)]="attempted"
       (done)="done.emit($event)"
     >
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium" for="grant-key">
+        <label class="field-required text-sm font-medium" for="grant-key">
           {{ 'schools.plan.grantDialog.key' | transloco }}
         </label>
         <p-select
@@ -66,8 +67,14 @@ const EFFECTS = [
           (ngModelChange)="featureKey.set($event)"
           [ngModelOptions]="{ standalone: true }"
           [placeholder]="'schools.plan.grantDialog.keyPlaceholder' | transloco"
+          [invalid]="keyMissing()"
           data-testid="grant-key"
         />
+        @if (keyMissing()) {
+          <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-key-error">
+            {{ 'reasonDialog.fieldRequired' | transloco }}
+          </span>
+        }
       </div>
 
       @if (!isSeats()) {
@@ -100,7 +107,7 @@ const EFFECTS = [
         </div>
       } @else {
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium" for="grant-seats">
+          <label class="field-required text-sm font-medium" for="grant-seats">
             {{ 'schools.plan.grantDialog.seats' | transloco }}
           </label>
           <input
@@ -111,10 +118,16 @@ const EFFECTS = [
             [ngModel]="seats()"
             (ngModelChange)="seats.set($event)"
             [ngModelOptions]="{ standalone: true }"
-            [attr.aria-invalid]="seatsInvalid() ? 'true' : null"
+            aria-required="true"
+            [invalid]="seatsMissing() || seatsInvalid()"
+            [attr.aria-invalid]="seatsMissing() || seatsInvalid() ? 'true' : null"
             data-testid="grant-seats"
           />
-          @if (seatsInvalid()) {
+          @if (seatsMissing()) {
+            <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-seats-required">
+              {{ 'reasonDialog.fieldRequired' | transloco }}
+            </span>
+          } @else if (seatsInvalid()) {
             <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-seats-error">
               {{ 'schools.plan.grantDialog.seatsInvalid' | transloco }}
             </span>
@@ -139,6 +152,7 @@ const EFFECTS = [
             [ngModel]="credits()"
             (ngModelChange)="credits.set($event)"
             [ngModelOptions]="{ standalone: true }"
+            [invalid]="creditsInvalid()"
             [attr.aria-invalid]="creditsInvalid() ? 'true' : null"
             data-testid="grant-credits"
           />
@@ -174,7 +188,7 @@ const EFFECTS = [
           </span>
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium" for="grant-ends">
+          <label class="field-required text-sm font-medium" for="grant-ends">
             {{ 'schools.plan.grantDialog.endsAt' | transloco }}
           </label>
           <input
@@ -185,10 +199,16 @@ const EFFECTS = [
             [ngModel]="endsAt()"
             (ngModelChange)="endsAt.set($event ?? '')"
             [ngModelOptions]="{ standalone: true }"
-            [attr.aria-invalid]="periodInvalid() ? 'true' : null"
+            aria-required="true"
+            [invalid]="endsMissing() || periodInvalid()"
+            [attr.aria-invalid]="endsMissing() || periodInvalid() ? 'true' : null"
             data-testid="grant-ends"
           />
-          @if (periodInvalid()) {
+          @if (endsMissing()) {
+            <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-ends-required">
+              {{ 'reasonDialog.fieldRequired' | transloco }}
+            </span>
+          } @else if (periodInvalid()) {
             <span class="text-xs text-red-600 dark:text-red-400" data-testid="grant-period-error">
               {{ 'schools.plan.grantDialog.periodInvalid' | transloco }}
             </span>
@@ -222,6 +242,8 @@ export class GrantDialog {
   protected readonly seats = signal('');
   protected readonly startsAt = signal('');
   protected readonly endsAt = signal('');
+  /** A submit was tried: from now on empty required fields are marked (ReasonDialog clears it). */
+  protected readonly attempted = signal(false);
 
   protected readonly effects = [...EFFECTS];
 
@@ -230,6 +252,11 @@ export class GrantDialog {
     const key = this.featureKey();
     return !!key && featureKind(key) === 'seats';
   });
+  protected readonly keyMissing = computed(() => this.attempted() && !this.featureKey());
+  protected readonly seatsMissing = computed(
+    () => this.attempted() && this.isSeats() && this.seats().trim() === '',
+  );
+  protected readonly endsMissing = computed(() => this.attempted() && !this.endsAt());
   protected readonly seatsInvalid = computed(
     () => this.isSeats() && this.seats().trim() !== '' && !SEATS.test(this.seats().trim()),
   );

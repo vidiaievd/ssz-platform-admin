@@ -444,12 +444,17 @@ describe('SchoolPlanTab', () => {
     // A switch-off carries no credits.
     expect(inPage('grant-credits')).toBeNull();
 
-    // Not ready without an end: nothing is sent.
+    // Not ready without an end: nothing is sent, and the empty end is marked red.
+    expect(inPage('grant-ends-required')).toBeNull();
     await type('reason-input', 'School asked to pause voice checks');
     await confirm();
     expect(http.match((r) => r.method === 'POST')).toHaveLength(0);
+    expect(inPage('grant-ends-required')).not.toBeNull();
+    expect(inPage('grant-ends')!.classList).toContain('p-invalid');
+    expect(inPage('grant-ends')!.getAttribute('aria-invalid')).toBe('true');
 
     await type('grant-ends', day(-1));
+    expect(inPage('grant-ends-required')).toBeNull();
     expect(inPage('grant-period-error')).not.toBeNull();
     await type('grant-ends', day(30));
     expect(inPage('grant-period-error')).toBeNull();
@@ -472,6 +477,36 @@ describe('SchoolPlanTab', () => {
     (await next(SCHOOL)).flush(school);
     await answerReads({}, false);
     expect(inPage('reason-dialog')).toBeNull();
+  });
+
+  it('marks every empty required field once a grant was tried without them', async () => {
+    await open();
+    await click('plan-grant');
+    await dialogShown();
+
+    // Nothing is red before a submit was tried.
+    for (const id of ['grant-key-error', 'grant-ends-required', 'reason-required']) {
+      expect(inPage(id)).toBeNull();
+    }
+    await confirm();
+    expect(http.match((r) => r.method === 'POST')).toHaveLength(0);
+    for (const id of ['grant-key-error', 'grant-ends-required', 'reason-required']) {
+      expect(inPage(id)).not.toBeNull();
+    }
+
+    // A seats key needs its number too; filling a field clears its mark.
+    await pick('grant-key', 'seats.students');
+    expect(inPage('grant-key-error')).toBeNull();
+    expect(inPage('grant-seats-required')).not.toBeNull();
+    await type('grant-seats', '40');
+    expect(inPage('grant-seats-required')).toBeNull();
+
+    // Reopening starts clean.
+    await click('reason-cancel');
+    await click('plan-grant');
+    await dialogShown();
+    expect(inPage('grant-ends-required')).toBeNull();
+    expect(inPage('grant-key-error')).toBeNull();
   });
 
   it("shows the seats: usage, the limit now, the plan's and the grant's part", async () => {

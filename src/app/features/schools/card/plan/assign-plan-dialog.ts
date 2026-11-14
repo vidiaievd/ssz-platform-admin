@@ -42,10 +42,11 @@ const STATUSES = ['active', 'trial'] as const;
       level="admin"
       [ready]="ready()"
       [action]="assign"
+      [(attempted)]="attempted"
       (done)="done.emit($event)"
     >
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium" for="assign-plan">
+        <label class="field-required text-sm font-medium" for="assign-plan">
           {{ 'schools.plan.assignDialog.plan' | transloco }}
         </label>
         @switch (plans().kind) {
@@ -70,6 +71,7 @@ const STATUSES = ['active', 'trial'] as const;
               (ngModelChange)="planCode.set($event)"
               [ngModelOptions]="{ standalone: true }"
               [placeholder]="'schools.plan.assignDialog.planPlaceholder' | transloco"
+              [invalid]="planMissing()"
               data-testid="assign-plan"
             >
               <ng-template #item let-plan>
@@ -81,7 +83,11 @@ const STATUSES = ['active', 'trial'] as const;
             </p-select>
           }
         }
-        @if (sameAsCurrent()) {
+        @if (planMissing()) {
+          <span class="text-xs text-red-600 dark:text-red-400" data-testid="assign-plan-required">
+            {{ 'reasonDialog.fieldRequired' | transloco }}
+          </span>
+        } @else if (sameAsCurrent()) {
           <span class="text-muted-color text-xs" data-testid="assign-same-plan">
             {{ 'schools.plan.assignDialog.samePlan' | transloco: { version: chosenVersion() } }}
           </span>
@@ -108,7 +114,11 @@ const STATUSES = ['active', 'trial'] as const;
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium" for="assign-period-end">
+        <label
+          class="text-sm font-medium"
+          [class.field-required]="status() === 'trial'"
+          for="assign-period-end"
+        >
           {{
             (status() === 'trial'
               ? 'schools.plan.assignDialog.trialEnd'
@@ -125,10 +135,16 @@ const STATUSES = ['active', 'trial'] as const;
           [ngModel]="periodEnd()"
           (ngModelChange)="periodEnd.set($event ?? '')"
           [ngModelOptions]="{ standalone: true }"
-          [attr.aria-invalid]="periodInvalid() ? 'true' : null"
+          [attr.aria-required]="status() === 'trial' ? 'true' : null"
+          [invalid]="trialEndMissing() || periodInvalid()"
+          [attr.aria-invalid]="trialEndMissing() || periodInvalid() ? 'true' : null"
           data-testid="assign-period-end"
         />
-        @if (periodInvalid()) {
+        @if (trialEndMissing()) {
+          <span class="text-xs text-red-600 dark:text-red-400" data-testid="assign-period-required">
+            {{ 'reasonDialog.fieldRequired' | transloco }}
+          </span>
+        } @else if (periodInvalid()) {
           <span class="text-xs text-red-600 dark:text-red-400" data-testid="assign-period-error">
             {{ 'schools.plan.assignDialog.periodInvalid' | transloco }}
           </span>
@@ -165,6 +181,8 @@ export class AssignPlanDialog {
   protected readonly planCode = signal<string | null>(null);
   protected readonly status = signal<(typeof STATUSES)[number]>('active');
   protected readonly periodEnd = signal('');
+  /** A submit was tried: from now on empty required fields are marked (ReasonDialog clears it). */
+  protected readonly attempted = signal(false);
 
   protected readonly options = computed(() => {
     const plans = this.plans();
@@ -175,6 +193,12 @@ export class AssignPlanDialog {
   );
   protected readonly chosenVersion = computed(
     () => this.options().find((p) => p.code === this.planCode())?.current.version ?? null,
+  );
+  protected readonly planMissing = computed(
+    () => this.attempted() && !this.options().some((p) => p.code === this.planCode()),
+  );
+  protected readonly trialEndMissing = computed(
+    () => this.attempted() && this.status() === 'trial' && !this.periodEnd(),
   );
   protected readonly periodInvalid = computed(
     () => !!this.periodEnd() && !isFutureDay(this.periodEnd()),

@@ -573,6 +573,7 @@
         "super": "Needs level super"
       },
       "confirmName": "Type the school name «{{ name }}» to confirm",
+      "nameMismatch": "The name does not match the school's name.",
       "transitions": {
         "suspend": {
           "title": "Suspend",
@@ -606,6 +607,7 @@
     "label": "Reason",
     "hint": "Required. Goes to the admin journal.",
     "required": "Name the reason for this change.",
+    "fieldRequired": "This field is required.",
     "cancel": "Cancel",
     "errors": {
       "network": "The gateway is unreachable. Nothing was changed.",

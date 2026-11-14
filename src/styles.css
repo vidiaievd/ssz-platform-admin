@@ -39,3 +39,18 @@ body {
     Roboto,
     sans-serif;
 }
+
+/*
+ * A required field's label: a red asterisk after the text. Screen readers learn it from
+ * `aria-required` on the field, so the mark itself is decoration.
+ */
+@layer components {
+  .field-required::after {
+    content: ' *';
+    color: var(--color-red-600);
+  }
+
+  .app-dark .field-required::after {
+    color: var(--color-red-400);
+  }
+}

@@ -40,6 +40,9 @@ export type ReasonAction<T> = (reason: string) => Observable<T>;
 /** A field that may move focus; the first one in the dialog takes it on opening. */
 const FOCUSABLE = 'input, select, textarea, button, [tabindex]:not([tabindex="-1"])';
 
+/** A field marked invalid — by `aria-invalid` on it, or by PrimeNG's class on its host. */
+const INVALID = '[aria-invalid="true"], .p-invalid';
+
 function notBlank(control: AbstractControl<string>): ValidationErrors | null {
   return control.value.trim() === '' ? { required: true } : null;
 }
@@ -47,7 +50,8 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
 /**
  * Every change an administrator makes goes through this dialog: the reason is required and lands
  * in the admin journal (§2 of plan 90). The action's own fields are projected above the reason
- * (`ready` says they are valid); the server's refusal is shown inside, and the dialog stays open
+ * (`ready` says they are valid; they bind `[(attempted)]` to show their own "required" errors
+ * once a submit was tried, as the reason does); the server's refusal is shown inside, and the dialog stays open
  * with what was typed. It closes and emits `done` only after the server agreed.
  *
  * The button that opens it is drawn under `*appIfLevel`; the dialog checks `level` too and shows
@@ -81,7 +85,7 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
           <ng-content />
 
           <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium" [for]="fieldId">
+            <label class="field-required text-sm font-medium" [for]="fieldId">
               {{ 'reasonDialog.label' | transloco }}
             </label>
             <textarea
@@ -91,10 +95,12 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
               class="w-full"
               formControlName="reason"
               [attr.maxlength]="maxLength"
+              aria-required="true"
+              [invalid]="showReasonError()"
               [attr.aria-invalid]="showReasonError() ? 'true' : null"
               [attr.aria-describedby]="fieldId + '-hint'"
               data-testid="reason-input"
-              (blur)="attempted.set(true)"
+              (blur)="reasonTouched.set(true)"
             ></textarea>
             <div
               class="text-muted-color flex justify-between gap-2 text-xs"
@@ -200,10 +206,15 @@ export class ReasonDialog<T = unknown> {
 
   protected readonly busy = signal(false);
   protected readonly error = signal<ActionError | null>(null);
-  /** The reason's error is shown once the field was left or a submit was tried. */
-  protected readonly attempted = signal(false);
+  /**
+   * A submit was tried (or the reason was left): errors of empty required fields are shown from
+   * now on. The projected fields read it through `[(attempted)]`; each opening clears it.
+   */
+  readonly attempted = model(false);
+  /** The reason was left empty; shown on its own, before any submit. */
+  private readonly reasonTouched = signal(false);
   protected readonly showReasonError = computed(
-    () => this.attempted() && this.reasonValue().trim() === '',
+    () => (this.attempted() || this.reasonTouched()) && this.reasonValue().trim() === '',
   );
 
   private running: Subscription | null = null;
@@ -217,6 +228,7 @@ export class ReasonDialog<T = unknown> {
         this.form.reset();
         this.error.set(null);
         this.attempted.set(false);
+        this.reasonTouched.set(false);
         this.focusFirstFieldWhenAttached();
       });
     });
@@ -225,7 +237,11 @@ export class ReasonDialog<T = unknown> {
   protected submit(): void {
     if (this.busy() || !this.allowed()) return;
     this.attempted.set(true);
-    if (this.form.invalid || !this.ready()) return;
+    if (this.form.invalid || !this.ready()) {
+      // The errors render on the next change detection; then the first one takes focus.
+      requestAnimationFrame(() => this.focusFirstInvalid());
+      return;
+    }
 
     this.busy.set(true);
     this.error.set(null);
@@ -242,6 +258,14 @@ export class ReasonDialog<T = unknown> {
         this.error.set(describeActionError(error));
       },
     });
+  }
+
+  private focusFirstInvalid(): void {
+    const marked = this.content()?.nativeElement.querySelector<HTMLElement>(INVALID);
+    if (!marked) return;
+    // PrimeNG puts `.p-invalid` on a select's host; the focusable part is inside it.
+    const field = marked.matches(FOCUSABLE) ? marked : marked.querySelector<HTMLElement>(FOCUSABLE);
+    field?.focus();
   }
 
   /**

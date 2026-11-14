@@ -573,6 +573,7 @@
         "super": "Krever nivå super"
       },
       "confirmName": "Skriv skolens navn «{{ name }}» for å bekrefte",
+      "nameMismatch": "Navnet stemmer ikke med skolens navn.",
       "transitions": {
         "suspend": {
           "title": "Sperr",
@@ -606,6 +607,7 @@
     "label": "Begrunnelse",
     "hint": "Påkrevd. Lagres i administratorloggen.",
     "required": "Oppgi en begrunnelse for endringen.",
+    "fieldRequired": "Feltet er påkrevd.",
     "cancel": "Avbryt",
     "errors": {
       "network": "Gatewayen svarer ikke. Ingenting ble endret.",

@@ -143,6 +143,7 @@ import { LifecycleTransition, TransitionRule, transitionsFrom } from './lifecycl
             [danger]="rule.confirmName"
             [ready]="!rule.confirmName || nameMatches()"
             [action]="run"
+            [(attempted)]="attempted"
             (done)="data.reload()"
           >
             <p class="text-sm">
@@ -150,7 +151,7 @@ import { LifecycleTransition, TransitionRule, transitionsFrom } from './lifecycl
             </p>
             @if (rule.confirmName) {
               <div class="flex flex-col gap-1">
-                <label class="text-sm font-medium" for="danger-confirm-name">
+                <label class="field-required text-sm font-medium" for="danger-confirm-name">
                   {{ 'schools.danger.confirmName' | transloco: { name: school.name } }}
                 </label>
                 <input
@@ -161,8 +162,24 @@ import { LifecycleTransition, TransitionRule, transitionsFrom } from './lifecycl
                   [ngModel]="typed()"
                   (ngModelChange)="typed.set($event)"
                   [ngModelOptions]="{ standalone: true }"
+                  aria-required="true"
+                  [invalid]="attempted() && !nameMatches()"
+                  [attr.aria-invalid]="attempted() && !nameMatches() ? 'true' : null"
                   data-testid="danger-confirm-name"
                 />
+                @if (attempted() && !nameMatches()) {
+                  <span
+                    class="text-xs text-red-600 dark:text-red-400"
+                    data-testid="danger-confirm-name-error"
+                  >
+                    {{
+                      (typed().trim() === ''
+                        ? 'reasonDialog.fieldRequired'
+                        : 'schools.danger.nameMismatch'
+                      ) | transloco
+                    }}
+                  </span>
+                }
               </div>
             }
           </app-reason-dialog>
@@ -189,6 +206,8 @@ export class SchoolDangerTab {
 
   protected readonly pending = signal<TransitionRule | null>(null);
   protected readonly typed = signal('');
+  /** A submit was tried: the name field is marked from now on (ReasonDialog clears it). */
+  protected readonly attempted = signal(false);
   protected readonly nameMatches = computed(
     () => this.typed().trim() === this.school()?.name.trim(),
   );
