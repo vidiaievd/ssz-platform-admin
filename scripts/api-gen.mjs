@@ -45,9 +45,19 @@ const SERVICES = [
     name: 'ai',
     port: 3010,
     prefix: 'Ai',
-    // A payer's AI keys and spend, and its policy (school card, "AI & services").
-    keep: (_method, p) =>
-      p.startsWith('/api/v1/admin/ai/usage/') || p.startsWith('/api/v1/admin/ai/payer-policies/'),
+    // A payer's AI keys and spend, and its policy (school card, "AI & services"); agents' models
+    // and their history, the registry they pick from, and the platform's spend per model
+    // (section "AI", plan 90, phase 7).
+    keep: (method, p) =>
+      p.startsWith('/api/v1/admin/ai/usage/') ||
+      p.startsWith('/api/v1/admin/ai/payer-policies/') ||
+      p.startsWith('/api/v1/admin/ai/bindings') ||
+      (method === 'get' &&
+        [
+          '/api/v1/admin/ai/models',
+          '/api/v1/admin/ai/providers',
+          '/api/v1/admin/ai/spend',
+        ].includes(p)),
   },
   {
     name: 'analytics',
