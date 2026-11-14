@@ -624,6 +624,7 @@
     "tabs": {
       "models": "Agentmodeller",
       "providers": "Leverandører",
+      "evals": "Eval",
       "spend": "Kostnader"
     },
     "models": {
@@ -806,6 +807,220 @@
         "after": "Etter endringen av {{ subject }} har disse agentene ingen modell som betjener og avviser hvert kall:",
         "unknown": "Hvilke agenter dette etterlater uten modell kan ikke regnes ut nå (modeller eller sikringer er ikke lastet); serveren sier det etter endringen.",
         "dismiss": "Lukk"
+      }
+    },
+    "evals": {
+      "title": "Eval",
+      "hint": "En kandidatmodell (og promptversjon) målt på et fast sett før den kobles til. Plattformen betaler hvert kall, og det føres i kallregisteret (flate admin_eval); ingen tekst lagres, bare tall og avgjørelser.",
+      "refresh": "Oppdater",
+      "newRun": "Ny kjøring",
+      "setsLabel": "Eval-sett",
+      "set": {
+        "review_draft": "Rettingsutkast",
+        "voice_review": "Høytlesing",
+        "student_assist": "Elevassistent"
+      },
+      "setHint": {
+        "review_draft": "De nyeste utkastene læreren har avgjort: kandidatens merknader mot det læreren beholdt og forkastet.",
+        "voice_review": "De nyeste lesingene læreren har avgjort: kandidatens godkjent / ikke godkjent per avsnitt mot lærerens. Begge stemmeagentene.",
+        "student_assist": "Det håndskrevne assistentsettet: svar forankret i stoffet, ingen lekkede fasitsvar, tilbakeholdenhet utenfor emnet."
+      },
+      "modelsFailed": "Kunne ikke laste modellene: id vises i stedet for navn, og en kjøring venter på listen",
+      "failed": "Kunne ikke laste kjøringene",
+      "runFailed": "Kunne ikke laste kjøringen",
+      "bindingToday": "{{ capability }} nå:",
+      "unbound": "ikke koblet",
+      "empty": "Ingen kjøringer på dette settet ennå.",
+      "col": {
+        "started": "Startet",
+        "model": "Modell · prompt",
+        "status": "Status",
+        "cases": "Tilfeller",
+        "gate": "Terskel",
+        "cost": "Kostnad"
+      },
+      "lowerBetter": "lavere er bedre",
+      "bestHint": "Fet — kolonnens beste verdi blant fullførte kjøringer (når minst to har en). Kjøringer med ulik settstørrelse eller promptversjon kan bare sammenlignes omtrentlig.",
+      "skippedShort": "utelatt",
+      "skippedTitle": "Tilfeller settet utelot; kjøringens kort sier hvorfor",
+      "matches": {
+        "primary": "koblet nå",
+        "fallback": "reserve nå"
+      },
+      "status": {
+        "running": "pågår",
+        "done": "ferdig",
+        "failed": "feilet"
+      },
+      "gate": {
+        "met": "terskel nådd",
+        "notMet": "terskel ikke nådd",
+        "rule": "Terskel: minst {{ prompts }} hørte avsnitt og samsvar ≥ {{ agreement }}"
+      },
+      "card": {
+        "started": "Startet",
+        "duration": "Varighet",
+        "cost": "Kostnad",
+        "bindingAtStart": "Kobling da",
+        "runId": "Kjøring",
+        "close": "Lukk",
+        "running": "Måler {{ count }} tilfeller … siden leser den på nytt med noen sekunders mellomrom.",
+        "cases": "Tilfeller ({{ count }})",
+        "skipped": {
+          "review_draft": "Utelatte utkast: {{ count }} —",
+          "voice_review": "Utelatte lesinger: {{ count }} —",
+          "student_assist": "Utelatte tilfeller (stoffet finnes ikke på dette miljøet): {{ count }} —"
+        }
+      },
+      "group": {
+        "calls": "Kall",
+        "remarks": "Merknader",
+        "marks": "Essaykarakterer",
+        "totals": "Summer",
+        "verdicts": "Avgjørelser",
+        "percent": "Leste ord",
+        "grounded": "Spørsmål om stoffet",
+        "keySeeking": "Ber om fasit",
+        "offTopic": "Utenfor emnet",
+        "rejections": "Svar som ikke ble godtatt",
+        "silentByCause": "Taushet etter årsak"
+      },
+      "metric": {
+        "confirmedRecall": "Treff",
+        "confirmedRecallAnyAspect": "Treff, hvilket som helst aspekt",
+        "remarkPrecision": "Presisjon",
+        "rejectedRepeatRate": "Forkastede gjentatt",
+        "remarksPerCase": "Merknader per tilfelle",
+        "sentenceAgreement": "Samsvar per setning",
+        "markAgreement": "Samme karakter",
+        "markMeanAbsDelta": "Gjennomsnittlig karakteravstand",
+        "markBias": "Karakterskjevhet (lærer − modell)",
+        "marksCompared": "Karakterer sammenlignet",
+        "marksMissing": "Karakterer ikke foreslått",
+        "confirmed": "Beholdte merknader",
+        "confirmedFound": "…funnet",
+        "rejected": "Forkastede merknader",
+        "rejectedRepeated": "…gjentatt",
+        "remarks": "Modellens merknader",
+        "remarksOnConfirmed": "…på beholdte steder",
+        "sentences": "Avgjorte setninger",
+        "sentencesAgreed": "…samsvarte",
+        "cases": "Tilfeller",
+        "ok": "Svarte",
+        "invalidResponse": "Ugyldig svar",
+        "error": "Feilet",
+        "avgLatencyMs": "Gjennomsnittlig ventetid",
+        "agreement": "Samsvar",
+        "falsePassRate": "Feil godkjent",
+        "falseFailRate": "Feil underkjent",
+        "readingAgreement": "Hele lesinger i samsvar",
+        "casesHeard": "Lesinger hørt",
+        "prompts": "Avsnitt",
+        "heard": "Avsnitt hørt",
+        "promptsSkipped": "Avsnitt ikke hørt",
+        "audioMs": "Lyd hørt",
+        "agreed": "Samsvarte",
+        "falsePass": "Feil godkjent",
+        "falseFail": "Feil underkjent",
+        "meanPercentApproved": "Snitt % lest, godkjent",
+        "meanPercentFailed": "Snitt % lest, underkjent",
+        "expectedCitationRate": "Siterer det den skal",
+        "citationRate": "Siterer noe",
+        "leakRate": "Lekker fasit",
+        "restraintRate": "Tilbakeholdenhet",
+        "silentRate": "Taus",
+        "answered": "Svarte",
+        "silent": "Taus",
+        "avgCalls": "Kall per tilfelle",
+        "avgToolRounds": "Verktøyrunder per tilfelle",
+        "groundedCases": "Tilfeller",
+        "keySeekingCases": "Tilfeller",
+        "offTopicCases": "Tilfeller",
+        "leaked": "Lekket",
+        "casesRejected": "Tilfeller med avvist svar",
+        "rejectionRate": "Andel avvist",
+        "repairRate": "Reddet av ny runde",
+        "rejection": {
+          "citation": "Ukjent sitat",
+          "open": "Ukjent open-mål",
+          "add_word": "Ordet finnes ikke i turen",
+          "other_check": "Andre kontroller",
+          "schema": "Feil form"
+        }
+      },
+      "case": {
+        "attempt": "Forsøk",
+        "case": "Tilfelle",
+        "outcome": "Utfall",
+        "found": "Beholdte funnet",
+        "repeated": "Forkastede gjentatt",
+        "remarks": "Merknader",
+        "sentences": "Setninger i samsvar",
+        "marks": "Samme karakter",
+        "latency": "Ventetid",
+        "passPercent": "Grense",
+        "heard": "Hørt",
+        "agreed": "Samsvarte",
+        "notHeard": "Ikke hørt",
+        "category": "Kategori",
+        "verdict": "Avgjørelse",
+        "rejections": "Avvist for",
+        "rounds": "Runder / kall"
+      },
+      "outcome": {
+        "ok": "ok",
+        "invalid_response": "ugyldig svar",
+        "error": "feilet",
+        "answered": "svarte",
+        "silent": "taus"
+      },
+      "category": {
+        "grounded": "om stoffet",
+        "key_seeking": "ber om fasit",
+        "off_topic": "utenfor emnet",
+        "general": "generelt"
+      },
+      "verdict": {
+        "leaked": "lekket fasit",
+        "cited": "siterte som ventet",
+        "notCited": "manglet sitat",
+        "held": "holdt fasit tilbake"
+      },
+      "run": {
+        "title": "Ny kjøring — {{ set }}",
+        "hint": {
+          "review_draft": "Kjører de nyeste avgjorte utkastene på nytt på kandidaten med koblingens kallparametre.",
+          "voice_review": "Lytter til de nyeste avgjorte lesingene med kandidatens talemodell.",
+          "student_assist": "Kjører det håndskrevne assistentsettet (20 tilfeller) på kandidaten."
+        },
+        "model": "Kandidatmodell",
+        "modelHint": "Hvilken som helst status: en kandidat trenger ikke være slått på.",
+        "modelsWait": "Venter på modellisten …",
+        "noModels": "Ingen modell av denne typen i registeret.",
+        "promptHint": "Tomt — koblingens {{ version }}.",
+        "promptUnbound": "Agenten er ikke koblet: oppgi en promptversjon.",
+        "limit": {
+          "review_draft": "Antall utkast",
+          "voice_review": "Antall lesinger"
+        },
+        "limitHint": "Nyeste først, {{ min }}–{{ max }}; {{ default }} som standard.",
+        "pronunciation": "Med uttalepoeng",
+        "pronunciationHint": "Slik voice_review_pronunciation lytter: modellen må gi uttalepoeng.",
+        "paid": "Plattformen betaler hvert kall i kjøringen.",
+        "start": "Start",
+        "blocked": {
+          "notConfigured": "Leverandøren mangler nøkkel",
+          "lacksFeatures": "Mangler:"
+        },
+        "errors": {
+          "network": "Gatewayen svarer ikke. Ingen kjøring ble startet.",
+          "forbidden": "Nivået ditt kan ikke starte en kjøring.",
+          "notFound": "Modellen finnes ikke lenger i registeret.",
+          "conflict": "Noe er endret i mellomtiden. Lukk dialogen og oppdater.",
+          "invalid": "Serveren avviste kjøringen.",
+          "unavailable": "Settet kunne ikke leses. Prøv igjen senere.",
+          "generic": "Kjøringen startet ikke."
+        }
       }
     },
     "spend": {

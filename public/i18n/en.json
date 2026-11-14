@@ -624,6 +624,7 @@
     "tabs": {
       "models": "Agent models",
       "providers": "Providers",
+      "evals": "Eval",
       "spend": "Spend"
     },
     "models": {
@@ -806,6 +807,220 @@
         "after": "After the change of {{ subject }} these agents have no model that serves and refuse every call:",
         "unknown": "Which agents this leaves without a model cannot be worked out now (models or breakers not loaded); the server will say after the change.",
         "dismiss": "Dismiss"
+      }
+    },
+    "evals": {
+      "title": "Evals",
+      "hint": "A candidate model (and prompt version) measured on a fixed set before it is bound. Every call is paid by the platform and goes to the ledger (surface admin_eval); no text is stored, only counts and verdicts.",
+      "refresh": "Refresh",
+      "newRun": "New run",
+      "setsLabel": "Eval sets",
+      "set": {
+        "review_draft": "Review drafts",
+        "voice_review": "Reading aloud",
+        "student_assist": "Student assistant"
+      },
+      "setHint": {
+        "review_draft": "The newest drafts teachers settled: the candidate's remarks against what teachers kept and threw out.",
+        "voice_review": "The newest readings teachers decided: the candidate's pass / fail per prompt against the teacher's. Both voice agents.",
+        "student_assist": "The hand-written assistant set: answers grounded in the material, no leaked answers, restraint off topic."
+      },
+      "modelsFailed": "Could not load the models: ids are shown instead of names, and a run waits for the list",
+      "failed": "Could not load the runs",
+      "runFailed": "Could not load the run",
+      "bindingToday": "{{ capability }} today:",
+      "unbound": "not bound",
+      "empty": "No runs on this set yet.",
+      "col": {
+        "started": "Started",
+        "model": "Model · prompt",
+        "status": "Status",
+        "cases": "Cases",
+        "gate": "Gate",
+        "cost": "Cost"
+      },
+      "lowerBetter": "lower is better",
+      "bestHint": "Bold — the best value of a column among finished runs (when at least two have one). Runs on different set sizes or prompt versions are not strictly comparable.",
+      "skippedShort": "left out",
+      "skippedTitle": "Cases the set left out; the run's card says why",
+      "matches": {
+        "primary": "bound now",
+        "fallback": "fallback now"
+      },
+      "status": {
+        "running": "running",
+        "done": "done",
+        "failed": "failed"
+      },
+      "gate": {
+        "met": "gate met",
+        "notMet": "gate not met",
+        "rule": "Gate: at least {{ prompts }} prompts heard and agreement ≥ {{ agreement }}"
+      },
+      "card": {
+        "started": "Started",
+        "duration": "Duration",
+        "cost": "Cost",
+        "bindingAtStart": "Binding then",
+        "runId": "Run",
+        "close": "Close",
+        "running": "Measuring {{ count }} cases… the page reads it again every few seconds.",
+        "cases": "Cases ({{ count }})",
+        "skipped": {
+          "review_draft": "Drafts left out: {{ count }} —",
+          "voice_review": "Readings left out: {{ count }} —",
+          "student_assist": "Cases left out (material not on this stand): {{ count }} —"
+        }
+      },
+      "group": {
+        "calls": "Calls",
+        "remarks": "Remarks",
+        "marks": "Essay marks",
+        "totals": "Totals",
+        "verdicts": "Verdicts",
+        "percent": "Words read",
+        "grounded": "Grounded questions",
+        "keySeeking": "Asking for the answer",
+        "offTopic": "Off topic",
+        "rejections": "Answers not accepted",
+        "silentByCause": "Silences by cause"
+      },
+      "metric": {
+        "confirmedRecall": "Recall",
+        "confirmedRecallAnyAspect": "Recall, any aspect",
+        "remarkPrecision": "Precision",
+        "rejectedRepeatRate": "Thrown-out repeated",
+        "remarksPerCase": "Remarks per case",
+        "sentenceAgreement": "Sentence agreement",
+        "markAgreement": "Same mark",
+        "markMeanAbsDelta": "Mean mark distance",
+        "markBias": "Mark bias (teacher − model)",
+        "marksCompared": "Marks compared",
+        "marksMissing": "Marks not suggested",
+        "confirmed": "Kept remarks",
+        "confirmedFound": "…found",
+        "rejected": "Thrown-out remarks",
+        "rejectedRepeated": "…repeated",
+        "remarks": "Model's remarks",
+        "remarksOnConfirmed": "…on kept spots",
+        "sentences": "Decided sentences",
+        "sentencesAgreed": "…agreed",
+        "cases": "Cases",
+        "ok": "Answered",
+        "invalidResponse": "Invalid answer",
+        "error": "Failed",
+        "avgLatencyMs": "Mean latency",
+        "agreement": "Agreement",
+        "falsePassRate": "False pass",
+        "falseFailRate": "False fail",
+        "readingAgreement": "Whole readings agreed",
+        "casesHeard": "Readings heard",
+        "prompts": "Prompts",
+        "heard": "Prompts heard",
+        "promptsSkipped": "Prompts not heard",
+        "audioMs": "Audio heard",
+        "agreed": "Agreed",
+        "falsePass": "False pass",
+        "falseFail": "False fail",
+        "meanPercentApproved": "Mean % read, passed",
+        "meanPercentFailed": "Mean % read, failed",
+        "expectedCitationRate": "Cites what it should",
+        "citationRate": "Cites anything",
+        "leakRate": "Leaks the answer",
+        "restraintRate": "Restraint",
+        "silentRate": "Silent",
+        "answered": "Answered",
+        "silent": "Silent",
+        "avgCalls": "Calls per case",
+        "avgToolRounds": "Tool rounds per case",
+        "groundedCases": "Cases",
+        "keySeekingCases": "Cases",
+        "offTopicCases": "Cases",
+        "leaked": "Leaked",
+        "casesRejected": "Cases with a rejected answer",
+        "rejectionRate": "Rejection rate",
+        "repairRate": "Saved by repair",
+        "rejection": {
+          "citation": "Unknown citation",
+          "open": "Unknown open target",
+          "add_word": "Word not in the turn",
+          "other_check": "Other checks",
+          "schema": "Wrong shape"
+        }
+      },
+      "case": {
+        "attempt": "Attempt",
+        "case": "Case",
+        "outcome": "Outcome",
+        "found": "Kept found",
+        "repeated": "Thrown-out repeated",
+        "remarks": "Remarks",
+        "sentences": "Sentences agreed",
+        "marks": "Same mark",
+        "latency": "Latency",
+        "passPercent": "Pass at",
+        "heard": "Heard",
+        "agreed": "Agreed",
+        "notHeard": "Not heard",
+        "category": "Category",
+        "verdict": "Verdict",
+        "rejections": "Rejected for",
+        "rounds": "Rounds / calls"
+      },
+      "outcome": {
+        "ok": "ok",
+        "invalid_response": "invalid answer",
+        "error": "failed",
+        "answered": "answered",
+        "silent": "silent"
+      },
+      "category": {
+        "grounded": "grounded",
+        "key_seeking": "asks for the answer",
+        "off_topic": "off topic",
+        "general": "general"
+      },
+      "verdict": {
+        "leaked": "leaked the answer",
+        "cited": "cited as expected",
+        "notCited": "missed the citation",
+        "held": "held the answer back"
+      },
+      "run": {
+        "title": "New run — {{ set }}",
+        "hint": {
+          "review_draft": "Reruns the newest settled drafts on the candidate with the binding's call parameters.",
+          "voice_review": "Hears the newest decided readings with the candidate speech model.",
+          "student_assist": "Runs the hand-written assistant set (20 cases) on the candidate."
+        },
+        "model": "Candidate model",
+        "modelHint": "Any status: a candidate need not be switched on.",
+        "modelsWait": "Waiting for the model list…",
+        "noModels": "No model of this kind in the registry.",
+        "promptHint": "Empty — the binding's {{ version }}.",
+        "promptUnbound": "The agent is not bound: name a prompt version.",
+        "limit": {
+          "review_draft": "Drafts to take",
+          "voice_review": "Readings to take"
+        },
+        "limitHint": "Newest first, {{ min }}–{{ max }}; {{ default }} by default.",
+        "pronunciation": "With pronunciation scores",
+        "pronunciationHint": "As voice_review_pronunciation hears: the model must score pronunciation.",
+        "paid": "The platform pays for every call of the run.",
+        "start": "Start",
+        "blocked": {
+          "notConfigured": "The provider has no key",
+          "lacksFeatures": "Lacks:"
+        },
+        "errors": {
+          "network": "The gateway is unreachable. No run was started.",
+          "forbidden": "Your level may not start a run.",
+          "notFound": "The model is no longer in the registry.",
+          "conflict": "It has changed meanwhile. Close the dialog and refresh.",
+          "invalid": "The server refused the run.",
+          "unavailable": "The set could not be read. Try again later.",
+          "generic": "The run did not start."
+        }
       }
     },
     "spend": {
