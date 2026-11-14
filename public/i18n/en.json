@@ -625,6 +625,7 @@
       "models": "Agent models",
       "providers": "Providers",
       "evals": "Eval",
+      "gate": "Q2 gate",
       "spend": "Spend"
     },
     "models": {
@@ -1022,6 +1023,61 @@
           "generic": "The run did not start."
         }
       }
+    },
+    "gate": {
+      "title": "Q2 gate: may the model review a template by itself",
+      "period": "Period",
+      "presets": {
+        "all": "All time",
+        "90": "90 d",
+        "30": "30 d"
+      },
+      "from": "From",
+      "to": "To",
+      "refresh": "Refresh",
+      "rangeRefused": "The start must not be after the end.",
+      "tariffWarning": "Read only. Do not include ai.review_direct in any plan until admitting templates to review_direct is built: today a model that answers learners by itself is not limited to the templates that passed this gate.",
+      "bindingFailed": "Could not read the review_direct binding",
+      "unbound": "review_direct is not bound to a model: the gate has no model to apply to.",
+      "boundTo": "review_direct is bound to",
+      "fallback": "fallback {{ model }}",
+      "failed": "Could not load the gate",
+      "thresholds": "A template passes on a model with at least {{ drafts }} drafts settled by teachers, at least {{ kept }} of remarks kept (as written or reworded) and at most {{ discarded }} thrown out.",
+      "summary": {
+        "templates": "Templates: {{ count }}",
+        "bound": "Bound model:",
+        "notRecorded": "{{ count }} drafts settled before the template was recorded"
+      },
+      "boundOnly": "Only the review_direct model",
+      "empty": "Teachers have settled no AI drafts in this period.",
+      "emptyBound": "The review_direct model has no settled drafts in this period.",
+      "col": {
+        "template": "Template",
+        "model": "Model",
+        "drafts": "Settled drafts",
+        "kept": "Kept",
+        "discarded": "Thrown out",
+        "remarks": "Remarks: kept / reworded / thrown out / untouched",
+        "direct": "Direct reviews",
+        "verdict": "Gate"
+      },
+      "notRecorded": "template not recorded",
+      "role": {
+        "primary": "review_direct",
+        "fallback": "review_direct fallback"
+      },
+      "remarks": "{{ accepted }} / {{ edited }} / {{ discarded }} / {{ untouched }}",
+      "direct": {
+        "reviews": "{{ reviews }} delivered, {{ disputes }} disputed",
+        "overturned": "teacher overturned {{ overturned }} of {{ verdicts }}"
+      },
+      "verdict": {
+        "passed": "passed",
+        "failed": "not passed",
+        "insufficient": "not enough data",
+        "not_recorded": "template not recorded"
+      },
+      "legend": "Shares count untouched remarks in the denominator. Red: the threshold is missed. Direct reviews are context and are not part of the gate."
     },
     "spend": {
       "title": "Spend by model",

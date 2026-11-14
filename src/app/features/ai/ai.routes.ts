@@ -6,6 +6,7 @@ const TAB_COMPONENTS: Record<AiTab, Route['loadComponent']> = {
   models: () => import('./models/agent-bindings.page').then((m) => m.AgentBindingsPage),
   providers: () => import('./providers/ai-providers.page').then((m) => m.AiProvidersPage),
   evals: () => import('./evals/ai-evals.page').then((m) => m.AiEvalsPage),
+  gate: () => import('./gate/review-gate.page').then((m) => m.ReviewGatePage),
   spend: () => import('./spend/ai-spend.page').then((m) => m.AiSpendPage),
 };
 

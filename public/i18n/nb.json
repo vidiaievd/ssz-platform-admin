@@ -625,6 +625,7 @@
       "models": "Agentmodeller",
       "providers": "Leverandører",
       "evals": "Eval",
+      "gate": "Q2-port",
       "spend": "Kostnader"
     },
     "models": {
@@ -1022,6 +1023,61 @@
           "generic": "Kjøringen startet ikke."
         }
       }
+    },
+    "gate": {
+      "title": "Q2-port: kan modellen vurdere en mal alene",
+      "period": "Periode",
+      "presets": {
+        "all": "All tid",
+        "90": "90 d",
+        "30": "30 d"
+      },
+      "from": "Fra",
+      "to": "Til",
+      "refresh": "Oppdater",
+      "rangeRefused": "Starten kan ikke være etter slutten.",
+      "tariffWarning": "Kun visning. Ikke ta med ai.review_direct i noen plan før opptak av maler til review_direct er bygget: i dag er en modell som svarer elever alene, ikke begrenset til malene som har bestått denne porten.",
+      "bindingFailed": "Kunne ikke lese koblingen for review_direct",
+      "unbound": "review_direct er ikke koblet til en modell: porten har ingen modell å gjelde for.",
+      "boundTo": "review_direct er koblet til",
+      "fallback": "reserve {{ model }}",
+      "failed": "Kunne ikke laste porten",
+      "thresholds": "En mal består på en modell med minst {{ drafts }} utkast avgjort av lærere, minst {{ kept }} av merknadene beholdt (som skrevet eller omformulert) og høyst {{ discarded }} forkastet.",
+      "summary": {
+        "templates": "Maler: {{ count }}",
+        "bound": "Koblet modell:",
+        "notRecorded": "{{ count }} utkast avgjort før malen ble registrert"
+      },
+      "boundOnly": "Bare modellen for review_direct",
+      "empty": "Lærerne har ikke avgjort noen KI-utkast i denne perioden.",
+      "emptyBound": "Modellen for review_direct har ingen avgjorte utkast i denne perioden.",
+      "col": {
+        "template": "Mal",
+        "model": "Modell",
+        "drafts": "Avgjorte utkast",
+        "kept": "Beholdt",
+        "discarded": "Forkastet",
+        "remarks": "Merknader: beholdt / omformulert / forkastet / urørt",
+        "direct": "Direkte vurderinger",
+        "verdict": "Port"
+      },
+      "notRecorded": "mal ikke registrert",
+      "role": {
+        "primary": "review_direct",
+        "fallback": "reserve for review_direct"
+      },
+      "remarks": "{{ accepted }} / {{ edited }} / {{ discarded }} / {{ untouched }}",
+      "direct": {
+        "reviews": "{{ reviews }} levert, {{ disputes }} bestridt",
+        "overturned": "læreren snudde {{ overturned }} av {{ verdicts }}"
+      },
+      "verdict": {
+        "passed": "bestått",
+        "failed": "ikke bestått",
+        "insufficient": "for lite data",
+        "not_recorded": "mal ikke registrert"
+      },
+      "legend": "Andelene har urørte merknader i nevneren. Rødt: terskelen er ikke nådd. Direkte vurderinger er kontekst og inngår ikke i porten."
     },
     "spend": {
       "title": "Kostnader per modell",
