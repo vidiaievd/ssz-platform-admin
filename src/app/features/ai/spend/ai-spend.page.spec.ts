@@ -13,12 +13,23 @@ import { provideApiClients } from '../../../core/api/provide-api-clients';
 import { SessionStore } from '../../../core/auth/session.store';
 import { adminToken, sessionBody, settle } from '../../../core/auth/testing';
 import { APP_CONFIG } from '../../../core/config/app-config';
+import {
+  LEARNER,
+  SCHOOL_A,
+  SCHOOL_B,
+  capabilitiesResponse,
+  payersResponse,
+  weeksResponse,
+} from './payer-spend-fixtures';
 import { spendResponse } from './spend-fixtures';
 import { presetRange } from './spend-period';
 // Real English texts, so a missing key would show up as the key itself.
 import en from '../../../../../public/i18n/en.json';
 
 const SPEND = 'http://gw/api/v1/admin/ai/spend';
+const USAGE = 'http://gw/api/v1/admin/ai/usage';
+const SCHOOLS = 'http://gw/api/v1/admin/schools';
+const PROFILES = 'http://gw/api/v1/profiles';
 
 describe('AiSpendPage', () => {
   let http: HttpTestingController;
@@ -60,6 +71,8 @@ describe('AiSpendPage', () => {
   });
 
   afterEach(() => {
+    // The per-payer block reads on its own; tests of the first block leave it unanswered.
+    http.match((r) => [USAGE, SCHOOLS, PROFILES].includes(r.url));
     http.verify();
     localStorage.removeItem('ssz-admin.lang');
   });
@@ -210,5 +223,160 @@ describe('AiSpendPage', () => {
     (await next()).flush(spendResponse());
     await stable();
     expect(find('spend-table')).not.toBeNull();
+  });
+  describe('credits by payer (step 17)', () => {
+    async function usage(groupBy: string): Promise<TestRequest> {
+      let req!: TestRequest;
+      await vi.waitFor(async () => {
+        await stable();
+        const found = http.match((r) => r.url === USAGE && r.params.get('groupBy') === groupBy);
+        expect(found).toHaveLength(1);
+        req = found[0];
+      });
+      return req;
+    }
+
+    async function names(url: string): Promise<TestRequest> {
+      let req!: TestRequest;
+      await vi.waitFor(async () => {
+        await stable();
+        const found = http.match((r) => r.url === url);
+        expect(found).toHaveLength(1);
+        req = found[0];
+      });
+      return req;
+    }
+
+    const school = (id: string, name: string, slug: string) => ({
+      id,
+      name,
+      slug,
+      kind: 'SOLO',
+      ownerId: 'o',
+      city: null,
+      status: 'active',
+      createdAt: '2026-10-01T00:00:00Z',
+      closesAt: null,
+      purgeAt: null,
+      counts: { students: 0, teachers: 0 },
+      seats: { used: 0, limit: null },
+    });
+
+    async function openAll(path = '/ai/spend') {
+      (await open(path)).flush(spendResponse());
+      const payers = await usage('payer');
+      const caps = await usage('capability');
+      const weeks = await usage('week');
+      return { payers, caps, weeks };
+    }
+
+    const payerRow = (id: string) =>
+      el.querySelector<HTMLElement>(`[data-testid="payer-row"][data-payer="${id}"]`)!;
+
+    it('reads the top 20, agents and weeks for the page period, then names the top', async () => {
+      const { payers, caps, weeks } = await openAll();
+      const range = presetRange('30');
+      for (const r of [payers, caps, weeks]) {
+        expect(r.request.params.get('from')).toBe(range.from);
+        expect(r.request.params.get('to')).toBe(range.to);
+        expect(r.request.params.has('payerType')).toBe(false);
+      }
+      expect(payers.request.params.get('limit')).toBe('20');
+      payers.flush(payersResponse());
+      caps.flush(capabilitiesResponse());
+      weeks.flush(weeksResponse());
+
+      const schools = await names(SCHOOLS);
+      expect(schools.request.params.get('ids')).toBe(`${SCHOOL_A},${SCHOOL_B}`);
+      expect(schools.request.params.get('limit')).toBe('2');
+      schools.flush({
+        items: [school(SCHOOL_A, 'My students', 'anna-k')],
+        total: 1,
+        page: 1,
+        limit: 2,
+      });
+      const profiles = await names(PROFILES);
+      expect(profiles.request.params.get('userIds')).toBe(LEARNER);
+      profiles.flush([{ userId: LEARNER, displayName: 'Olena' }]);
+      await stable();
+
+      expect(textOf(find('payers-total'))).toBe(
+        '796.16 credits · 1,201 calls · 6 payers · no price: 4',
+      );
+      const a = payerRow(SCHOOL_A);
+      expect(textOf(find('payer-name', a))).toBe('My students');
+      expect(find('payer-name', a)?.getAttribute('href')).toBe(`/schools/${SCHOOL_A}`);
+      expect(textOf(a)).toContain('anna-k');
+      expect(textOf(find('payer-credits', a))).toBe('398.08');
+      expect(textOf(find('payer-share', a))).toBe('50%');
+      expect(textOf(find('payer-name', payerRow(LEARNER)))).toBe('Olena');
+      // A school organization did not return keeps its id.
+      expect(textOf(find('payer-name', payerRow(SCHOOL_B)))).toBe(SCHOOL_B);
+      expect(textOf(find('payer-others'))).toContain('3 more payers');
+      expect(find('payer-names-failed')).toBeNull();
+
+      const capRows = el.querySelectorAll<HTMLElement>('[data-testid="capability-usage-row"]');
+      expect([...capRows].map((r) => r.dataset['capability'])).toEqual([
+        'review_draft',
+        'student_assist',
+      ]);
+      const weekRows = el.querySelectorAll<HTMLElement>('[data-testid="week-row"]');
+      expect(weekRows).toHaveLength(3);
+      expect(find('week-bar', weekRows[0])).toBeNull();
+      expect(find('week-bar', weekRows[1])?.style.width).toBe('100%');
+    });
+
+    it('filters by payer kind through the URL and reads all three again', async () => {
+      const { payers, caps, weeks } = await openAll();
+      payers.flush(payersResponse({ items: [], others: null, payers: 0 }));
+      caps.flush(capabilitiesResponse());
+      weeks.flush(weeksResponse());
+      await stable();
+      expect(find('payers-empty')).not.toBeNull();
+      expect(find('payer-filter-all')?.getAttribute('aria-pressed')).toBe('true');
+
+      find('payer-filter-user')!.click();
+      const again = [await usage('payer'), await usage('capability'), await usage('week')];
+      for (const r of again) expect(r.request.params.get('payerType')).toBe('user');
+      expect(TestBed.inject(Router).url).toContain('payer=user');
+      // The first block keeps its period and is not read again.
+      expect(http.match((r) => r.url === SPEND)).toHaveLength(0);
+    });
+
+    it('fails one read at a time, and shows ids when names cannot be read', async () => {
+      const { payers, caps, weeks } = await openAll();
+      payers.flush(payersResponse());
+      caps.flush(null, { status: 503, statusText: 'Unavailable' });
+      weeks.flush(weeksResponse());
+      (await names(SCHOOLS)).flush(null, { status: 503, statusText: 'Unavailable' });
+      (await names(PROFILES)).flush([{ userId: LEARNER, displayName: 'Olena' }]);
+      await stable();
+
+      expect(find('capabilities-failed')).not.toBeNull();
+      expect(find('payers-table')).not.toBeNull();
+      expect(el.querySelectorAll('[data-testid="week-row"]')).toHaveLength(3);
+      expect(find('payer-names-failed')).not.toBeNull();
+      expect(textOf(find('payer-name', payerRow(SCHOOL_A)))).toBe(SCHOOL_A);
+      expect(textOf(find('payer-name', payerRow(LEARNER)))).toBe('Olena');
+
+      (find('capabilities-failed')!.querySelector('button') as HTMLButtonElement).click();
+      (await usage('capability')).flush(capabilitiesResponse());
+      await stable();
+      expect(find('capabilities-failed')).toBeNull();
+    });
+
+    it('the page refresh reads both blocks', async () => {
+      const { payers, caps, weeks } = await openAll();
+      payers.flush(payersResponse({ items: [], others: null }));
+      caps.flush(capabilitiesResponse());
+      weeks.flush(weeksResponse());
+      await stable();
+
+      find('spend-refresh')!.click();
+      (await next()).flush(spendResponse());
+      (await usage('payer')).flush(payersResponse({ items: [], others: null }));
+      (await usage('capability')).flush(capabilitiesResponse());
+      (await usage('week')).flush(weeksResponse());
+    });
   });
 });

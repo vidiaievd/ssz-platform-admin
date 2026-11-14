@@ -22,7 +22,8 @@ export class AiSpendData {
     inject(ActivatedRoute).queryParamMap.pipe(
       map((p) => parseSpendRange(p.get('from'), p.get('to'))),
     ),
-    { requireSync: true },
+    // By value: `?payer=` (the per-payer block) changes the query too, and must not read this again.
+    { requireSync: true, equal: (a, b) => a.from === b.from && a.to === b.to },
   );
 
   /** The preset this range is today, or null for a range picked by hand. */

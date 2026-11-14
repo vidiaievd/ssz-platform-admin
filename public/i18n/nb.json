@@ -1133,6 +1133,37 @@
       "chartEmpty": "Ingenting priset i USD i denne perioden.",
       "chartUsdOnly": "Diagrammet viser bare USD; andre valutaer står i tabellen.",
       "other": "Andre"
+    },
+    "payerSpend": {
+      "title": "Kreditter per betaler",
+      "filter": "Betaler",
+      "types": {
+        "all": "Alle",
+        "workspace": "Skoler",
+        "user": "Elever",
+        "platform": "Plattform"
+      },
+      "type": {
+        "workspace": "skole",
+        "user": "elev",
+        "platform": "plattform"
+      },
+      "hint": "Hva betalerne ble belastet i kreditter — enheten tariffene teller — for samme periode, fra analytics. Kreditter er ikke penger: kostnaden per modell står over.",
+      "total": "{{ credits }} kreditter · {{ calls }} kall · {{ payers }} betalere",
+      "failed": "Kunne ikke laste kredittene",
+      "namesFailed": "Noen navn kunne ikke leses; de radene viser id.",
+      "empty": "Ingen ble belastet i denne perioden.",
+      "platform": "Plattform (diagnostikk, evalueringer)",
+      "others": "{{ count }} betalere til",
+      "byCapability": "Kreditter per agent",
+      "byWeek": "Kreditter per ISO-uke",
+      "col": {
+        "payer": "Betaler",
+        "credits": "Kreditter",
+        "capability": "Agent",
+        "week": "Uke",
+        "bar": "Kreditter, stolpe"
+      }
     }
   }
 }

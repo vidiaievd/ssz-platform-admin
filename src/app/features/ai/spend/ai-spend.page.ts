@@ -8,6 +8,8 @@ import { Tag } from 'primeng/tag';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
 import { AiSpendData } from './ai-spend.data';
+import { PayerSpendComponent } from './payer-spend';
+import { PayerSpendData } from './payer-spend.data';
 import { SpendChartComponent } from './spend-chart';
 import { MAIN_CURRENCY, SpendFigures, audioHours, formatMoney } from './spend-model';
 import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-period';
@@ -15,12 +17,12 @@ import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-
 /**
  * `/ai/spend` — "AI → Spend" (plan 90, phase 7, step 5): what the platform's AI calls cost per
  * model in a period, from ai-service's call ledger. KPIs, a table per model (unfolds per agent),
- * and the cost per day stacked by model. Read only. A call without a price is a warning, never a
- * zero: its money is unknown, not nothing.
+ * and the cost per day stacked by model; below it (step 17) the credits charged per payer. Read
+ * only. A call without a price is a warning, never a zero: its money is unknown, not nothing.
  */
 @Component({
   selector: 'app-ai-spend-page',
-  providers: [AiSpendData],
+  providers: [AiSpendData, PayerSpendData],
   imports: [
     DecimalPipe,
     NgTemplateOutlet,
@@ -31,6 +33,7 @@ import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-
     Tag,
     LocalDatePipe,
     SpendChartComponent,
+    PayerSpendComponent,
   ],
   template: `
     <section class="flex flex-col gap-4" data-testid="ai-spend">
@@ -84,7 +87,7 @@ import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-
             severity="secondary"
             data-testid="spend-refresh"
             [attr.aria-label]="'ai.spend.refresh' | transloco"
-            (click)="data.reload()"
+            (click)="reload()"
           >
             <i class="pi pi-refresh" aria-hidden="true"></i>
           </button>
@@ -416,11 +419,15 @@ import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-
           }
         }
       }
+
+      <hr class="border-border" />
+      <app-payer-spend />
     </section>
   `,
 })
 export class AiSpendPage {
   protected readonly data = inject(AiSpendData);
+  private readonly payers = inject(PayerSpendData);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   protected readonly lang = inject(LanguageService).current;
@@ -431,6 +438,12 @@ export class AiSpendPage {
   protected readonly rangeRefused = signal(false);
 
   protected readonly hours = audioHours;
+
+  /** Both blocks: the ledger per model and the credits per payer. */
+  protected reload(): void {
+    this.data.reload();
+    this.payers.reloadAll();
+  }
 
   protected money(micros: number): string {
     return formatMoney(micros, MAIN_CURRENCY, this.lang());

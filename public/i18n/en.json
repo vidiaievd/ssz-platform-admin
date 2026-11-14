@@ -1133,6 +1133,37 @@
       "chartEmpty": "Nothing priced in USD in this period.",
       "chartUsdOnly": "The chart shows USD only; other currencies are in the table.",
       "other": "Other"
+    },
+    "payerSpend": {
+      "title": "Credits by payer",
+      "filter": "Payer",
+      "types": {
+        "all": "All",
+        "workspace": "Schools",
+        "user": "Learners",
+        "platform": "Platform"
+      },
+      "type": {
+        "workspace": "school",
+        "user": "learner",
+        "platform": "platform"
+      },
+      "hint": "What payers were charged in credits — the unit tariffs count — for the same period, from analytics. Credits are not money: the cost per model is above.",
+      "total": "{{ credits }} credits · {{ calls }} calls · {{ payers }} payers",
+      "failed": "Could not load the credits",
+      "namesFailed": "Some names could not be read; those rows show ids.",
+      "empty": "Nobody was charged in this period.",
+      "platform": "Platform (diagnostics, evals)",
+      "others": "{{ count }} more payers",
+      "byCapability": "Credits by agent",
+      "byWeek": "Credits by ISO week",
+      "col": {
+        "payer": "Payer",
+        "credits": "Credits",
+        "capability": "Agent",
+        "week": "Week",
+        "bar": "Credits, bar"
+      }
     }
   }
 }

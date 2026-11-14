@@ -17,6 +17,11 @@ export interface AdminSchoolsList$Params {
   search?: string;
 
 /**
+ * Comma-separated school ids, 1–100: only these rows (a batch read of names). Unknown ids are absent, not an error. Combines with the other filters; pass `limit` ≥ the number of ids to get them on one page.
+ */
+  ids?: string;
+
+/**
  * SCHOOL = an organisation, SOLO = a private tutor
  */
   kind?: 'SCHOOL' | 'SOLO';
@@ -43,6 +48,7 @@ export function adminSchoolsList(http: HttpClient, rootUrl: string, params?: Adm
   const rb = new RequestBuilder(rootUrl, adminSchoolsList.PATH, 'get');
   if (params) {
     rb.query('search', params.search, {});
+    rb.query('ids', params.ids, {});
     rb.query('kind', params.kind, {});
     rb.query('status', params.status, {});
     rb.query('seats', params.seats, {});
