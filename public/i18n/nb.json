@@ -622,7 +622,8 @@
   "ai": {
     "tabsLabel": "KI-seksjoner",
     "tabs": {
-      "models": "Agentmodeller"
+      "models": "Agentmodeller",
+      "spend": "Kostnader"
     },
     "models": {
       "title": "Agentmodeller",
@@ -693,6 +694,61 @@
         "temperatureRange": "Et tall fra 0 til {{ max }}.",
         "temperatureHint": "Tomt = leverandørens standard."
       }
+    },
+    "spend": {
+      "title": "Kostnader per modell",
+      "hint": "Hva plattformens KI-kall koster, fra kallgloggen i ai-service, til prisen som gjaldt ved hvert kall. UTC-dager:",
+      "period": "Periode",
+      "presets": {
+        "7": "7 d",
+        "30": "30 d",
+        "90": "90 d",
+        "month": "Denne måneden"
+      },
+      "from": "Fra",
+      "to": "Til",
+      "refresh": "Oppdater",
+      "rangeRefused": "Starten kan ikke være etter slutten, og en periode er høyst {{ max }} dager.",
+      "failed": "Kunne ikke laste kostnadene",
+      "empty": "Ingen modell ble kalt eller bundet i denne perioden.",
+      "kpi": {
+        "cost": "Kostnad",
+        "credits": "belastet betalerne: {{ credits }} kreditter",
+        "calls": "Kall",
+        "callsDetail": "feilet {{ failed }} · av reservemodellen {{ fallback }}",
+        "unpriced": "Kall uten pris",
+        "unpricedHint": "Kostnaden er ukjent, ikke null — legg inn pris for: {{ models }}",
+        "unpricedNone": "Alle kall hadde pris.",
+        "volume": "Volum",
+        "tokens": "tokens inn / ut: {{ input }} / {{ output }}",
+        "audio": "lyd: {{ hours }} t",
+        "characters": "talesyntese: {{ count }} tegn"
+      },
+      "col": {
+        "model": "Modell",
+        "provider": "Leverandør",
+        "calls": "Kall",
+        "tokens": "Tokens inn / ut",
+        "cache": "Hurtigbuffer les / skriv",
+        "audio": "Lyd, t",
+        "characters": "TTS-tegn",
+        "cost": "Kostnad",
+        "share": "Andel"
+      },
+      "byAgent": "{{ model }} per agent",
+      "removed": "fjernet fra registeret",
+      "idle": "ikke bundet, ingen kall",
+      "role": {
+        "primary": "primær",
+        "fallback": "reserve"
+      },
+      "failedCalls": "feilet {{ count }}",
+      "fallbackCalls": "reserve {{ count }}",
+      "unpricedCalls": "uten pris: {{ count }}",
+      "daily": "Kostnad per dag, USD",
+      "chartEmpty": "Ingenting priset i USD i denne perioden.",
+      "chartUsdOnly": "Diagrammet viser bare USD; andre valutaer står i tabellen.",
+      "other": "Andre"
     }
   }
 }

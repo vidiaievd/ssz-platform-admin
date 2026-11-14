@@ -4,6 +4,7 @@ import { AI_TABS, AiTab, DEFAULT_AI_TAB } from './ai-tabs';
 /** The component of every tab of the section. */
 const TAB_COMPONENTS: Record<AiTab, Route['loadComponent']> = {
   models: () => import('./models/agent-bindings.page').then((m) => m.AgentBindingsPage),
+  spend: () => import('./spend/ai-spend.page').then((m) => m.AiSpendPage),
 };
 
 export const AI_ROUTES: Routes = [

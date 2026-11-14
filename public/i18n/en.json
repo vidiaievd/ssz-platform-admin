@@ -622,7 +622,8 @@
   "ai": {
     "tabsLabel": "AI sections",
     "tabs": {
-      "models": "Agent models"
+      "models": "Agent models",
+      "spend": "Spend"
     },
     "models": {
       "title": "Agent models",
@@ -693,6 +694,61 @@
         "temperatureRange": "A number from 0 to {{ max }}.",
         "temperatureHint": "Empty = the provider's default."
       }
+    },
+    "spend": {
+      "title": "Spend by model",
+      "hint": "What the platform's AI calls cost, from ai-service's call ledger, at the price in effect at each call. UTC days:",
+      "period": "Period",
+      "presets": {
+        "7": "7 d",
+        "30": "30 d",
+        "90": "90 d",
+        "month": "This month"
+      },
+      "from": "From",
+      "to": "To",
+      "refresh": "Refresh",
+      "rangeRefused": "The start must not be after the end, and a period is at most {{ max }} days.",
+      "failed": "Could not load the spend",
+      "empty": "No model was called or bound in this period.",
+      "kpi": {
+        "cost": "Cost",
+        "credits": "charged to payers: {{ credits }} credits",
+        "calls": "Calls",
+        "callsDetail": "failed {{ failed }} · by the fallback {{ fallback }}",
+        "unpriced": "Calls without a price",
+        "unpricedHint": "Their cost is unknown, not zero — add a price to: {{ models }}",
+        "unpricedNone": "Every call had a price.",
+        "volume": "Volume",
+        "tokens": "tokens in / out: {{ input }} / {{ output }}",
+        "audio": "audio: {{ hours }} h",
+        "characters": "speech synthesis: {{ count }} characters"
+      },
+      "col": {
+        "model": "Model",
+        "provider": "Provider",
+        "calls": "Calls",
+        "tokens": "Tokens in / out",
+        "cache": "Cache read / write",
+        "audio": "Audio, h",
+        "characters": "TTS characters",
+        "cost": "Cost",
+        "share": "Share"
+      },
+      "byAgent": "{{ model }} by agent",
+      "removed": "removed from registry",
+      "idle": "not bound, no calls",
+      "role": {
+        "primary": "primary",
+        "fallback": "fallback"
+      },
+      "failedCalls": "failed {{ count }}",
+      "fallbackCalls": "fallback {{ count }}",
+      "unpricedCalls": "no price: {{ count }}",
+      "daily": "Cost per day, USD",
+      "chartEmpty": "Nothing priced in USD in this period.",
+      "chartUsdOnly": "The chart shows USD only; other currencies are in the table.",
+      "other": "Other"
     }
   }
 }

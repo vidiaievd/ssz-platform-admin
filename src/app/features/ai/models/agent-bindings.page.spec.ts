@@ -238,28 +238,30 @@ describe('AgentBindingsPage', () => {
   }
 
   /**
-   * Options of the select opened last. In jsdom a closed overlay can stay in the page, so the
-   * newest overlay is the one that counts.
+   * The list of the select opened last, found through the select's own `aria-controls`. In jsdom
+   * a closed overlay can stay in the page for a while and the select just closed may even put a
+   * fresh copy of it in, so neither "the newest overlay" nor a count says whose list it is.
    */
-  function latestOptions(): HTMLElement[] {
-    const overlays = document.body.querySelectorAll('.p-select-overlay');
-    const latest = overlays[overlays.length - 1];
-    return latest ? [...latest.querySelectorAll<HTMLElement>('[role="option"]')] : [];
-  }
+  let currentList: Element | null = null;
+
+  const optionsOf = (list: Element | null) =>
+    list ? [...list.querySelectorAll<HTMLElement>('[role="option"]')] : [];
 
   async function openSelect(testId: string): Promise<string[]> {
-    const before = document.body.querySelectorAll('.p-select-overlay').length;
-    inPage(testId)!.click();
+    const select = inPage(testId)!;
+    select.click();
     await vi.waitFor(async () => {
       await stable();
-      expect(document.body.querySelectorAll('.p-select-overlay').length).toBeGreaterThan(before);
-      expect(latestOptions().length).toBeGreaterThan(0);
+      const listId = select.querySelector('[aria-controls]')?.getAttribute('aria-controls');
+      const lists = listId ? document.body.querySelectorAll(`[id="${listId}"]`) : [];
+      currentList = lists[lists.length - 1] ?? null;
+      expect(optionsOf(currentList).length).toBeGreaterThan(0);
     });
-    return latestOptions().map((o) => textOf(o)!);
+    return optionsOf(currentList).map((o) => textOf(o)!);
   }
 
   async function choose(option: string): Promise<void> {
-    latestOptions()
+    optionsOf(currentList)
       .find((o) => o.textContent!.includes(option))!
       .click();
     await stable();

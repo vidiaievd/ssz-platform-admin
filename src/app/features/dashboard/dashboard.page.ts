@@ -64,11 +64,12 @@ import { Sparkline } from './sparkline';
             pButton
             size="small"
             severity="secondary"
-            icon="pi pi-refresh"
             data-testid="refresh"
             [attr.aria-label]="'dashboard.refresh' | transloco"
             (click)="data.refresh()"
-          ></button>
+          >
+            <i class="pi pi-refresh" aria-hidden="true"></i>
+          </button>
           <span class="text-muted-color text-xs" data-testid="loaded-at">
             {{ 'dashboard.loadedAt' | transloco: { time: time() } }}
           </span>

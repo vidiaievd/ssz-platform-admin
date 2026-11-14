@@ -1,8 +1,8 @@
 /**
  * Tabs of the "AI" section (§6.7 of plan 90). Each tab is its own address under `/ai`;
- * `/ai` itself opens the first one. "Spend" joins in step 5, providers and evals in part 2.
+ * `/ai` itself opens the first one. Providers and evals join in part 2.
  */
-export const AI_TABS = ['models'] as const;
+export const AI_TABS = ['models', 'spend'] as const;
 
 export type AiTab = (typeof AI_TABS)[number];
 
