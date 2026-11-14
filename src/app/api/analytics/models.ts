@@ -3,3 +3,13 @@
 
 export type { AdminAuditEntryDto } from './models/admin-audit-entry-dto';
 export type { AdminAuditPageDto } from './models/admin-audit-page-dto';
+export type { AdminUsageDto } from './models/admin-usage-dto';
+export type { AdminUsageFiguresDto } from './models/admin-usage-figures-dto';
+export type { AdminUsageItemDto } from './models/admin-usage-item-dto';
+export type { AdminUsageOthersDto } from './models/admin-usage-others-dto';
+export type { AdminUsageTokensDto } from './models/admin-usage-tokens-dto';
+export type { ReviewGateDirectDto } from './models/review-gate-direct-dto';
+export type { ReviewGateDto } from './models/review-gate-dto';
+export type { ReviewGateGroupDto } from './models/review-gate-group-dto';
+export type { ReviewGateRemarksDto } from './models/review-gate-remarks-dto';
+export type { ReviewGateThresholdsDto } from './models/review-gate-thresholds-dto';

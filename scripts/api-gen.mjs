@@ -47,24 +47,28 @@ const SERVICES = [
     prefix: 'Ai',
     // A payer's AI keys and spend, and its policy (school card, "AI & services"); agents' models
     // and their history, the registry they pick from, and the platform's spend per model
-    // (section "AI", plan 90, phase 7).
+    // (section "AI", plan 90, phase 7, part 1). Providers and models switched on and off, price
+    // history, test calls, breakers and eval runs (part 2). Not the diagnostic and try-out routes.
     keep: (method, p) =>
       p.startsWith('/api/v1/admin/ai/usage/') ||
       p.startsWith('/api/v1/admin/ai/payer-policies/') ||
       p.startsWith('/api/v1/admin/ai/bindings') ||
-      (method === 'get' &&
-        [
-          '/api/v1/admin/ai/models',
-          '/api/v1/admin/ai/providers',
-          '/api/v1/admin/ai/spend',
-        ].includes(p)),
+      p.startsWith('/api/v1/admin/ai/providers') ||
+      p.startsWith('/api/v1/admin/ai/models') ||
+      p.startsWith('/api/v1/admin/ai/breakers') ||
+      p.startsWith('/api/v1/admin/ai/evals/') ||
+      (method === 'get' && p === '/api/v1/admin/ai/spend'),
   },
   {
     name: 'analytics',
     port: 3008,
     prefix: 'Analytics',
-    // The admin journal collected from every service (school card, "Journal").
-    keep: (method, p) => method === 'get' && p === '/api/v1/admin/audit',
+    // The admin journal collected from every service (school card, "Journal"); review quality
+    // per template against the Q2 gate and the AI spend per payer, capability and week (section
+    // "AI", plan 90, phase 7, part 2).
+    keep: (method, p) =>
+      method === 'get' &&
+      ['/api/v1/admin/audit', '/api/v1/admin/ai/review-gate', '/api/v1/admin/ai/usage'].includes(p),
   },
   {
     name: 'content',
