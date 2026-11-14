@@ -618,5 +618,81 @@
       "unavailable": "Tjenesten er utilgjengelig. Prøv igjen senere.",
       "generic": "Endringen mislyktes."
     }
+  },
+  "ai": {
+    "tabsLabel": "KI-seksjoner",
+    "tabs": {
+      "models": "Agentmodeller"
+    },
+    "models": {
+      "title": "Agentmodeller",
+      "hint": "Hvilken modell som svarer hver KI-agent først, og hvilken som tar over når den feiler. Ruteren leser en endring i løpet av sekunder; hver endring går til adminloggen.",
+      "refresh": "Oppdater",
+      "failed": "Kunne ikke laste agentene",
+      "registryFailed": "Kunne ikke laste modeller og leverandører: radene viser modell-id-er, redigering venter",
+      "unboundBanner": "Agenter uten modell: {{ count }}. Hvert kall fra dem avvises.",
+      "agent": "Agent",
+      "primary": "Hovedmodell",
+      "fallback": "Reservemodell",
+      "state": "Tilstand",
+      "promptVersion": "Promptversjon",
+      "limits": "Grenser",
+      "changed": "Siste endring",
+      "noFallback": "ingen",
+      "unbound": "ikke koblet",
+      "on": "på",
+      "off": "av",
+      "tokensLimit": "opptil {{ count }} tokens",
+      "temperatureDefault": "temperatur: leverandørens standard",
+      "temperatureValue": "temperatur {{ value }}",
+      "timeoutLimit": "tidsavbrudd {{ seconds }} s",
+      "edit": "Endre",
+      "bind": "Koble",
+      "editWaits": "Venter på modellisten",
+      "providerDefault": "leverandørens standard",
+      "maxOutputTokens": "Svartokens per kall",
+      "timeoutMs": "Tidsavbrudd per forsøk, ms",
+      "temperature": "Temperatur",
+      "status": {
+        "active": "aktiv",
+        "deprecated": "utgående",
+        "disabled": "deaktivert"
+      },
+      "history": {
+        "toggle": "Historikk",
+        "failed": "Kunne ikke laste historikken",
+        "empty": "Ingen endringer registrert.",
+        "created": "opprettet",
+        "unchanged": "Lagret uten endringer."
+      },
+      "fields": {
+        "primaryModelId": "Hoved",
+        "fallbackModelId": "Reserve",
+        "enabled": "Agent",
+        "promptVersion": "Prompt",
+        "maxOutputTokens": "Svartokens",
+        "timeoutMs": "Tidsavbrudd, ms",
+        "temperature": "Temperatur"
+      },
+      "dialog": {
+        "title": "Modeller for {{ capability }}",
+        "confirm": "Lagre",
+        "requires": "Begge modellene må ha",
+        "pickModel": "Velg en modell",
+        "noModels": "Ingen {{ modality }}-modell kan velges: alle er deaktivert, eller ingen er registrert.",
+        "noFallback": "Ingen reserve",
+        "fallbackHint": "Tar over ved en feil som kan prøves igjen, en avslått leverandør eller en åpen breaker. En annen leverandør går fint.",
+        "enabledOn": "Agenten er på",
+        "enabledOff": "Agenten er av: hvert kall avvises før noen modell",
+        "promptHint": "Slik agenten kaller den, f.eks. review_draft@3. Serveren avviser en versjon den ikke kjenner.",
+        "wholeNumber": "Et helt tall over null.",
+        "maxOutputTooLarge": "De valgte modellene tillater høyst {{ max }}.",
+        "maxOutputHint": "De valgte modellene tillater opptil {{ max }}.",
+        "timeoutRange": "Fra {{ min }} til {{ max }}.",
+        "timeoutHint": "Reservemodellen får sitt eget tidsavbrudd.",
+        "temperatureRange": "Et tall fra 0 til {{ max }}.",
+        "temperatureHint": "Tomt = leverandørens standard."
+      }
+    }
   }
 }

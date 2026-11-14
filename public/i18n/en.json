@@ -618,5 +618,81 @@
       "unavailable": "The service is unavailable. Try again later.",
       "generic": "The change failed."
     }
+  },
+  "ai": {
+    "tabsLabel": "AI sections",
+    "tabs": {
+      "models": "Agent models"
+    },
+    "models": {
+      "title": "Agent models",
+      "hint": "Which model answers each AI agent first, and which takes over when it fails. The router reads a change within seconds; every change goes to the admin journal.",
+      "refresh": "Refresh",
+      "failed": "Could not load the agents",
+      "registryFailed": "Could not load the models and providers: rows show model ids, editing waits",
+      "unboundBanner": "Agents without a model: {{ count }}. Every call of theirs is refused.",
+      "agent": "Agent",
+      "primary": "Primary model",
+      "fallback": "Fallback model",
+      "state": "State",
+      "promptVersion": "Prompt version",
+      "limits": "Limits",
+      "changed": "Last change",
+      "noFallback": "none",
+      "unbound": "not bound",
+      "on": "on",
+      "off": "off",
+      "tokensLimit": "up to {{ count }} tokens",
+      "temperatureDefault": "temperature: provider's default",
+      "temperatureValue": "temperature {{ value }}",
+      "timeoutLimit": "timeout {{ seconds }} s",
+      "edit": "Change",
+      "bind": "Bind",
+      "editWaits": "Waits for the model list",
+      "providerDefault": "provider's default",
+      "maxOutputTokens": "Output tokens per call",
+      "timeoutMs": "Timeout per attempt, ms",
+      "temperature": "Temperature",
+      "status": {
+        "active": "active",
+        "deprecated": "deprecated",
+        "disabled": "disabled"
+      },
+      "history": {
+        "toggle": "History",
+        "failed": "Could not load the history",
+        "empty": "No changes recorded.",
+        "created": "created",
+        "unchanged": "Saved without changes."
+      },
+      "fields": {
+        "primaryModelId": "Primary",
+        "fallbackModelId": "Fallback",
+        "enabled": "Agent",
+        "promptVersion": "Prompt",
+        "maxOutputTokens": "Output tokens",
+        "timeoutMs": "Timeout, ms",
+        "temperature": "Temperature"
+      },
+      "dialog": {
+        "title": "Models of {{ capability }}",
+        "confirm": "Save",
+        "requires": "Both models must have",
+        "pickModel": "Choose a model",
+        "noModels": "No {{ modality }} model can be chosen: every one is disabled or none is registered.",
+        "noFallback": "No fallback",
+        "fallbackHint": "Takes over on a retryable error, a switched-off provider or an open breaker. Another provider is fine.",
+        "enabledOn": "Agent on",
+        "enabledOff": "Agent off: every call refused before any model",
+        "promptHint": "As the agent names it, e.g. review_draft@3. The server refuses a version it does not know.",
+        "wholeNumber": "A whole number above zero.",
+        "maxOutputTooLarge": "The chosen models allow at most {{ max }}.",
+        "maxOutputHint": "The chosen models allow up to {{ max }}.",
+        "timeoutRange": "From {{ min }} to {{ max }}.",
+        "timeoutHint": "The fallback gets its own timeout.",
+        "temperatureRange": "A number from 0 to {{ max }}.",
+        "temperatureHint": "Empty = the provider's default."
+      }
+    }
   }
 }

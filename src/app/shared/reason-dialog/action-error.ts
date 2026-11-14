@@ -12,12 +12,14 @@ export interface ActionError {
    * something.
    */
   readonly code: string | null;
+  /** The server's own list of what stops the change (a 422 `missing`), shown as is. */
+  readonly details: readonly string[];
 }
 
 /** Turns a failed admin change into the line its dialog shows. */
 export function describeActionError(error: unknown): ActionError {
   const e = ApiError.from(error);
-  return { key: keyOf(e), code: e.code };
+  return { key: keyOf(e), code: e.code, details: e.details };
 }
 
 function keyOf(e: ApiError): ActionErrorKey {

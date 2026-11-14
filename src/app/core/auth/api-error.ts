@@ -16,6 +16,11 @@ export class ApiError extends Error {
     readonly lockedUntil: Date | null = null,
     /** Field errors of a validation failure (422), when the server sends them. */
     readonly fieldErrors: Readonly<Record<string, readonly string[]>> | null = null,
+    /**
+     * What stops the change, listed by the server (`missing` of a 422 — ai-service's binding
+     * check); empty when the answer has no such list.
+     */
+    readonly details: readonly string[] = [],
   ) {
     super(message);
     this.name = 'ApiError';
@@ -47,6 +52,7 @@ export class ApiError extends Error {
       message,
       locked && !Number.isNaN(locked.getTime()) ? locked : null,
       fieldErrors(body),
+      stringList(body, 'missing'),
     );
   }
 }
@@ -70,6 +76,11 @@ function stringField(body: Record<string, unknown> | null, key: string): string 
 /** `SESSION_LIMIT` is a code; `Course not found` is prose. */
 function codeLike(value: string | null): string | null {
   return value && /^[A-Z][A-Z0-9_]+$/.test(value) ? value : null;
+}
+
+function stringList(body: Record<string, unknown> | null, key: string): string[] {
+  const value = body?.[key];
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : [];
 }
 
 function fieldErrors(

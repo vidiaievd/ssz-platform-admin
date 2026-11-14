@@ -134,6 +134,13 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
                   {{ error.code }}
                 </span>
               }
+              @if (error.details.length > 0) {
+                <ul class="list-disc pl-5 text-xs" data-testid="reason-error-details">
+                  @for (detail of error.details; track $index) {
+                    <li>{{ detail }}</li>
+                  }
+                </ul>
+              }
             </div>
           }
 
