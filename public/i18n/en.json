@@ -693,6 +693,7 @@
   "plans": {
     "intro": "Every plan with its current version, keys and subscribers. Archived plans stay: their subscribers keep their version.",
     "refresh": "Refresh",
+    "newPlan": "New plan",
     "failed": "Could not load the plans",
     "statsFailed": "Could not load the subscriber counts",
     "none": "No plans yet.",
@@ -746,6 +747,7 @@
       "freeNote": "The free plan of its audience: every new account opens on it, so it cannot be archived. Payers with no subscription row are on it too and are not counted here.",
       "rename": "Rename",
       "archive": "Archive",
+      "newVersion": "New version",
       "renameDialog": {
         "title": "Rename plan",
         "confirm": "Rename",
@@ -760,6 +762,47 @@
         "subscribers": "{{ n }} subscribers stay on it with their version until they are moved to another plan.",
         "final": "The panel has no way to bring an archived plan back."
       }
+    },
+    "editor": {
+      "backToPlan": "Back to the plan",
+      "versionTitle": "{{ plan }} — new version v{{ version }}",
+      "versionBase": "Starts from v{{ version }}, the current one. The version you save is the complete key list: a key left out gives nothing.",
+      "conflict": "The plan got a new version meanwhile. Reread it — what you typed stays, the changes are then counted against the new version.",
+      "reread": "Reread the plan",
+      "fixFirst": "Fix the marked fields to see the changes.",
+      "noChanges": "Same keys as the current version — nothing to save.",
+      "saveVersion": "Save as v{{ version }}",
+      "confirmVersion": "Save version v{{ version }}",
+      "reach": "New assignments get this version. Subscribers stay on theirs until they are moved.",
+      "state": "In the plan",
+      "settings": "Terms",
+      "kind": {
+        "ai_credits": "AI, credits",
+        "switch": "switch",
+        "seats": "seats",
+        "unknown": "unknown to the panel"
+      },
+      "states": {
+        "absent": "Not in plan",
+        "off": "Off",
+        "on": "On"
+      },
+      "unknownKept": "The panel does not know this key; it is kept as it is.",
+      "foreign": "Not for this audience: the server refuses it. Set it to “Not in plan”.",
+      "credits": "Credits / month",
+      "unmetered": "unmetered",
+      "creditsRequired": "Give the credits or tick “unmetered”.",
+      "wholeNumber": "A whole number, 0 or more.",
+      "number": "A number, 0 or more.",
+      "limitOptional": "optional",
+      "newTitle": "New plan",
+      "code": "Code",
+      "codeHint": "lower_snake_case, 2–64 characters; it never changes.",
+      "codeInvalid": "lower_snake_case: a Latin letter first, then letters, digits and “_”, 2–64 characters.",
+      "codeTaken": "A plan with this code already exists.",
+      "audience": "Audience",
+      "create": "Create plan",
+      "confirmCreate": "Create plan"
     }
   },
   "reasonDialog": {

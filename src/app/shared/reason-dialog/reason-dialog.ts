@@ -29,7 +29,7 @@ import { Textarea } from 'primeng/textarea';
 import { Observable, Subscription, startWith } from 'rxjs';
 import { AdminLevel } from '../../core/auth/admin-level';
 import { SessionStore } from '../../core/auth/session.store';
-import { ActionError, describeActionError } from './action-error';
+import { ActionError, ActionErrorKey, describeActionError } from './action-error';
 
 /** The servers' limit on a reason (`IsAdminReason`: non-empty, at most 500). */
 export const REASON_MAX_LENGTH = 500;
@@ -127,7 +127,7 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
             >
               <span class="flex items-center gap-2">
                 <i class="pi pi-exclamation-triangle text-red-500" aria-hidden="true"></i>
-                {{ 'reasonDialog.errors.' + error.key | transloco }}
+                {{ errorText()[error.key] ?? ('reasonDialog.errors.' + error.key | transloco) }}
               </span>
               @if (error.code) {
                 <span class="text-muted-color font-mono text-xs" data-testid="reason-error-code">
@@ -185,6 +185,11 @@ export class ReasonDialog<T = unknown> {
   readonly ready = input(true);
   /** Destructive actions (revoke, cancel) get a red confirm button. */
   readonly danger = input(false);
+  /**
+   * The action's own words for a refusal, in place of the shared ones — e.g. a 409 that means
+   * "this code is taken" rather than "changed meanwhile".
+   */
+  readonly errorText = input<Partial<Record<ActionErrorKey, string>>>({});
   /** The server agreed; the dialog is already closing. */
   readonly done = output<T>();
 

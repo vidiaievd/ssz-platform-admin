@@ -48,6 +48,24 @@ describe('ApiError.from', () => {
     expect(err.fieldErrors).toEqual({ Email: ['Required'] });
   });
 
+  it('lists what stops a change: `missing` first, else the fields of `details`', () => {
+    expect(
+      ApiError.from(httpError(422, { code: 'binding_not_ready', missing: ['key', 'price'] }))
+        .details,
+    ).toEqual(['key', 'price']);
+    const refusal = ApiError.from(
+      httpError(422, {
+        statusCode: 422,
+        code: 'invalid_limit',
+        message: 'Limit "max" of "seats.students" must be a non-negative number',
+        details: { code: 'invalid_limit', featureKey: 'seats.students', limit: 'max' },
+      }),
+    );
+    expect(refusal.code).toBe('invalid_limit');
+    expect(refusal.details).toEqual(['featureKey: seats.students', 'limit: max']);
+    expect(ApiError.from(httpError(422, { details: ['a'] })).details).toEqual([]);
+  });
+
   it('marks an unreachable gateway as a network error', () => {
     const err = ApiError.from(httpError(0, new ProgressEvent('error')));
     expect(err.isNetworkError).toBe(true);

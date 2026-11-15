@@ -386,4 +386,308 @@ describe('Plans section', () => {
       expect(TestBed.inject(Router).url).toBe('/plans/nope');
     });
   });
+
+  /** A key's row of the editor. */
+  const editorRow = (key: string) =>
+    el.querySelector<HTMLElement>(`[data-testid="editor-row"][data-key="${key}"]`)!;
+
+  async function setState(key: string, label: 'Not in plan' | 'Off' | 'On'): Promise<void> {
+    [
+      ...find('editor-state', editorRow(key))!.querySelectorAll<HTMLElement>(
+        'button, .p-togglebutton',
+      ),
+    ]
+      .find((b) => b.textContent!.trim() === label)!
+      .click();
+    await stable();
+  }
+
+  async function typeIn(root: HTMLElement, testId: string, value: string): Promise<void> {
+    const field = find<HTMLInputElement>(testId, root)!;
+    field.value = value;
+    field.dispatchEvent(new Event('input'));
+    await stable();
+  }
+
+  async function tick(root: HTMLElement, testId: string): Promise<void> {
+    find(testId, root)!.querySelector<HTMLInputElement>('input[type="checkbox"]')!.click();
+    await stable();
+  }
+
+  async function openEditor(body: PlanDetailsResponseDto = SCHOOL): Promise<void> {
+    await open(`/plans/${body.code}/new-version`);
+    (await next(`${PLANS}/${body.code}`)).flush(body);
+    await stable();
+  }
+
+  /** The card the page lands on after a save. */
+  async function landOnCard(body: PlanDetailsResponseDto): Promise<void> {
+    (await next(`${PLANS}/${body.code}`)).flush(body);
+    (await next(STATS)).flush(statsBody);
+    await stable();
+    expect(TestBed.inject(Router).url).toBe(`/plans/${body.code}`);
+  }
+
+  describe('writing plans', () => {
+    it('offers a new version of an active plan to super', async () => {
+      await openCard();
+      expect(find('plan-new-version')?.getAttribute('href')).toBe('/plans/school/new-version');
+    });
+
+    it('offers no new version of an archived plan', async () => {
+      await openCard('super', { ...SCHOOL, status: 'archived' });
+      expect(find('plan-new-version')).toBeNull();
+    });
+
+    it('offers no new version to lower levels', async () => {
+      await openCard('admin');
+      expect(find('plan-new-version')).toBeNull();
+    });
+
+    it('offers no new plan in the catalog to lower levels', async () => {
+      await open('/plans', 'admin');
+      (await next(PLANS)).flush(PLAN_LIST);
+      (await next(STATS)).flush(statsBody);
+      await stable();
+      expect(find('plans-new')).toBeNull();
+    });
+
+    it('keeps the editor away from lower levels', async () => {
+      await open('/plans/school/new-version', 'admin');
+      await stable();
+      expect(find('plan-version-page')).toBeNull();
+      expect(http.match((r) => r.url.startsWith(PLANS))).toHaveLength(0);
+    });
+  });
+
+  describe('new version', () => {
+    it('starts from the current keys, checks the fields and sends the full list', async () => {
+      await openEditor();
+      expect(textOf(find('page-title'))).toBe('School — new version v3');
+      expect(editorRow('ai.practice').dataset['state']).toBe('on');
+      expect(find<HTMLInputElement>('editor-credits', editorRow('ai.practice'))!.value).toBe('300');
+      expect(editorRow('ai.authoring').dataset['state']).toBe('absent');
+      // Nothing changed yet: nothing to save.
+      expect(find('version-no-changes')).not.toBeNull();
+      expect(find<HTMLButtonElement>('version-save')!.disabled).toBe(true);
+
+      await typeIn(editorRow('ai.practice'), 'editor-credits', '500');
+      await setState('ai.authoring', 'On');
+      // An empty allowance is an error only after a save was tried.
+      expect(find('editor-credits-error', editorRow('ai.authoring'))).toBeNull();
+      find<HTMLButtonElement>('version-save')!.click();
+      await stable();
+      expect(textOf(find('editor-credits-error', editorRow('ai.authoring')))).toBe(
+        'Give the credits or tick “unmetered”.',
+      );
+      expect(inPage('reason-dialog')).toBeNull();
+
+      await tick(editorRow('ai.authoring'), 'editor-unmetered');
+      await setState('ai.review_draft', 'Not in plan');
+      expect(all('version-change').map((c) => [c.dataset['key'], c.dataset['change']])).toEqual([
+        ['ai.authoring', 'added'],
+        ['ai.practice', 'changed'],
+        ['ai.review_draft', 'removed'],
+      ]);
+
+      find<HTMLButtonElement>('version-save')!.click();
+      await dialogShown('version-reach');
+      await type('reason-input', 'more practice');
+      await confirm();
+      const req = await next(`${PLANS}/school/versions`, 'POST');
+      expect(req.request.body).toEqual({
+        expectedVersion: 2,
+        reason: 'more practice',
+        features: [
+          { featureKey: 'ai.authoring', enabled: true, monthlyCredits: null, limits: {} },
+          { featureKey: 'ai.practice', enabled: true, monthlyCredits: '500', limits: {} },
+          {
+            featureKey: 'seats.students',
+            enabled: true,
+            monthlyCredits: null,
+            limits: { max: 20 },
+          },
+        ],
+      });
+      req.flush(PLAN_LIST[0]);
+      await landOnCard(SCHOOL);
+    });
+
+    it('asks for the seat limit while seats are on', async () => {
+      await openEditor();
+      await typeIn(editorRow('seats.students'), 'editor-limit', '');
+      find<HTMLButtonElement>('version-save')!.click();
+      await stable();
+      expect(textOf(find('editor-limit-error', editorRow('seats.students')))).toBe(
+        'This field is required.',
+      );
+      await typeIn(editorRow('seats.students'), 'editor-limit', '2.5');
+      expect(textOf(find('editor-limit-error', editorRow('seats.students')))).toBe(
+        'A whole number, 0 or more.',
+      );
+      expect(inPage('reason-dialog')).toBeNull();
+    });
+
+    it('on a 409 rereads the plan and keeps what was typed', async () => {
+      await openEditor();
+      await typeIn(editorRow('ai.practice'), 'editor-credits', '500');
+      find<HTMLButtonElement>('version-save')!.click();
+      await dialogShown('version-reach');
+      await type('reason-input', 'more');
+      await confirm();
+      (await next(`${PLANS}/school/versions`, 'POST')).flush(
+        { statusCode: 409, message: 'Plan "school" changed since version 2; reload and retry' },
+        { status: 409, statusText: 'Conflict' },
+      );
+      await stable();
+      expect(textOf(inPage('reason-error'))).toContain('The plan got a new version meanwhile');
+      inPage<HTMLButtonElement>('reason-cancel')!.click();
+      await stable();
+
+      find<HTMLButtonElement>('version-reread')!.click();
+      const v3 = v(3, [
+        { featureKey: 'ai.practice', enabled: true, monthlyCredits: '400', limits: {} },
+      ]);
+      (await next(`${PLANS}/school`)).flush({
+        ...SCHOOL,
+        current: v3,
+        versions: [v3, SCHOOL_V2, SCHOOL_V1],
+      });
+      await stable();
+
+      expect(find('version-conflict')).toBeNull();
+      expect(textOf(find('page-title'))).toBe('School — new version v4');
+      expect(find<HTMLInputElement>('editor-credits', editorRow('ai.practice'))!.value).toBe('500');
+      // Counted against v3 now: seats are added back, credits 400 → 500.
+      expect(all('version-change').map((c) => [c.dataset['key'], c.dataset['change']])).toEqual([
+        ['ai.practice', 'changed'],
+        ['ai.review_draft', 'added'],
+        ['seats.students', 'added'],
+      ]);
+
+      find<HTMLButtonElement>('version-save')!.click();
+      await dialogShown('version-reach');
+      await type('reason-input', 'more');
+      await confirm();
+      const req = await next(`${PLANS}/school/versions`, 'POST');
+      expect(req.request.body.expectedVersion).toBe(3);
+      req.flush(PLAN_LIST[0]);
+      await landOnCard(SCHOOL);
+    });
+
+    it('shows the server’s refusal with its code and details', async () => {
+      await openEditor();
+      await typeIn(editorRow('ai.practice'), 'editor-credits', '500');
+      find<HTMLButtonElement>('version-save')!.click();
+      await dialogShown('version-reach');
+      await type('reason-input', 'more');
+      await confirm();
+      (await next(`${PLANS}/school/versions`, 'POST')).flush(
+        {
+          statusCode: 422,
+          code: 'limit_required',
+          message: 'Feature key "seats.students" needs the limit "max" while it is on',
+          details: { code: 'limit_required', featureKey: 'seats.students', limit: 'max' },
+        },
+        { status: 422, statusText: 'Unprocessable Entity' },
+      );
+      await stable();
+      expect(textOf(inPage('reason-error-code'))).toBe('limit_required');
+      expect(
+        [...inPage('reason-error-details')!.querySelectorAll('li')].map((li) => textOf(li)),
+      ).toEqual(['featureKey: seats.students', 'limit: max']);
+    });
+
+    it('writes no version of an archived plan', async () => {
+      await openEditor({ ...SCHOOL, status: 'archived' });
+      expect(find('plan-archived-note')).not.toBeNull();
+      expect(find('features-editor')).toBeNull();
+    });
+  });
+
+  describe('new plan', () => {
+    it('checks code, name and keys, then creates the plan', async () => {
+      await open('/plans/new');
+      await stable();
+      expect(editorRow('seats.students')).not.toBeNull();
+
+      find<HTMLButtonElement>('plan-create')!.click();
+      await stable();
+      expect(textOf(find('plan-code-error'))).toBe('This field is required.');
+      expect(find('plan-name-error')).not.toBeNull();
+      expect(inPage('reason-dialog')).toBeNull();
+
+      await typeIn(el, 'plan-code-input', 'School-Plus');
+      expect(textOf(find('plan-code-error'))).toContain('lower_snake_case');
+      await typeIn(el, 'plan-code-input', 'school_plus');
+      expect(find('plan-code-error')).toBeNull();
+      await typeIn(el, 'plan-new-name', ' School Plus ');
+
+      // Self-study plans take no seats: the row goes.
+      [...find('plan-audience-input')!.querySelectorAll<HTMLElement>('button, .p-togglebutton')]
+        .find((b) => b.textContent!.trim() === 'Self-study students')!
+        .click();
+      await stable();
+      expect(editorRow('seats.students')).toBeNull();
+
+      await setState('ai.practice', 'On');
+      await typeIn(editorRow('ai.practice'), 'editor-credits', '100');
+
+      find<HTMLButtonElement>('plan-create')!.click();
+      await dialogShown('create-summary');
+      expect(textOf(inPage('create-summary'))).toBe(
+        'School Plus · school_plus · Self-study students',
+      );
+      await type('reason-input', 'new tier');
+      await confirm();
+      let req = await next(PLANS, 'POST');
+      expect(req.request.body).toEqual({
+        code: 'school_plus',
+        name: 'School Plus',
+        audience: 'individual',
+        reason: 'new tier',
+        features: [{ featureKey: 'ai.practice', enabled: true, monthlyCredits: '100', limits: {} }],
+      });
+
+      // A taken code: said in the dialog and on the field.
+      req.flush(
+        { statusCode: 409, message: 'Plan "school_plus" already exists' },
+        { status: 409, statusText: 'Conflict' },
+      );
+      await stable();
+      expect(textOf(inPage('reason-error'))).toContain('A plan with this code already exists.');
+      inPage<HTMLButtonElement>('reason-cancel')!.click();
+      await stable();
+      expect(textOf(find('plan-code-error'))).toBe('A plan with this code already exists.');
+      find<HTMLButtonElement>('plan-create')!.click();
+      await stable();
+      expect(inPage('reason-dialog')).toBeNull();
+
+      await typeIn(el, 'plan-code-input', 'self_plus');
+      find<HTMLButtonElement>('plan-create')!.click();
+      await dialogShown('create-summary');
+      await type('reason-input', 'new tier');
+      await confirm();
+      req = await next(PLANS, 'POST');
+      expect(req.request.body.code).toBe('self_plus');
+      const created: PlanResponseDto = {
+        id: 'p9',
+        code: 'self_plus',
+        name: 'School Plus',
+        audience: 'individual',
+        status: 'active',
+        current: v(1, req.request.body.features, '6f1c2a90-0000-4000-8000-000000000001'),
+      };
+      req.flush(created);
+      await landOnCard({ ...created, versions: [created.current] });
+    });
+
+    it('is reached from the catalog by super only', async () => {
+      await open('/plans');
+      (await next(PLANS)).flush(PLAN_LIST);
+      (await next(STATS)).flush(statsBody);
+      await stable();
+      expect(find('plans-new')).not.toBeNull();
+    });
+  });
 });

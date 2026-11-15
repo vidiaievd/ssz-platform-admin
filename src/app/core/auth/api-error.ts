@@ -17,8 +17,9 @@ export class ApiError extends Error {
     /** Field errors of a validation failure (422), when the server sends them. */
     readonly fieldErrors: Readonly<Record<string, readonly string[]>> | null = null,
     /**
-     * What stops the change, listed by the server (`missing` of a 422 — ai-service's binding
-     * check); empty when the answer has no such list.
+     * What stops the change, listed by the server: `missing` of a 422 (ai-service's binding
+     * check), or else the fields of subscription's `details` (`featureKey: ai.practice`,
+     * `limit: max`); empty when the answer has neither.
      */
     readonly details: readonly string[] = [],
   ) {
@@ -52,7 +53,7 @@ export class ApiError extends Error {
       message,
       locked && !Number.isNaN(locked.getTime()) ? locked : null,
       fieldErrors(body),
-      stringList(body, 'missing'),
+      missingOrDetails(body),
     );
   }
 }
@@ -81,6 +82,17 @@ function codeLike(value: string | null): string | null {
 function stringList(body: Record<string, unknown> | null, key: string): string[] {
   const value = body?.[key];
   return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : [];
+}
+
+function missingOrDetails(body: Record<string, unknown> | null): string[] {
+  const missing = stringList(body, 'missing');
+  if (missing.length > 0) return missing;
+  // subscription's 422 (`businessError`): `details` is the refusal itself, its `code` aside.
+  const details = body?.['details'];
+  if (typeof details !== 'object' || details === null || Array.isArray(details)) return [];
+  return Object.entries(details)
+    .filter(([name, value]) => name !== 'code' && ['string', 'number'].includes(typeof value))
+    .map(([name, value]) => `${name}: ${String(value)}`);
 }
 
 function fieldErrors(

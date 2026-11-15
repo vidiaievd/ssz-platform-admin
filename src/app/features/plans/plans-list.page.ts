@@ -5,35 +5,55 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonDirective } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
+import { IfLevelDirective } from '../../core/auth/if-level.directive';
 import { PlansListData } from './plans.data';
 
 /**
  * `/plans` — the plan catalog (plan 90, phase 8, step 13): every plan by audience with its
  * current version, keys and subscribers; archived plans stay, muted, below the active ones.
- * Each row opens the plan card.
+ * Each row opens the plan card; `super` starts a new plan from here (step 14).
  */
 @Component({
   selector: 'app-plans-list-page',
   providers: [PlansListData],
-  imports: [DecimalPipe, RouterLink, TranslocoPipe, ButtonDirective, Skeleton, Tag],
+  imports: [
+    DecimalPipe,
+    RouterLink,
+    TranslocoPipe,
+    ButtonDirective,
+    Skeleton,
+    Tag,
+    IfLevelDirective,
+  ],
   template: `
     <section class="flex flex-col gap-4" data-testid="plans-list">
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="text-2xl font-semibold" data-testid="page-title">
           {{ 'nav.plans' | transloco }}
         </h1>
-        <button
-          type="button"
-          pButton
-          size="small"
-          severity="secondary"
-          class="ml-auto"
-          data-testid="plans-refresh"
-          [attr.aria-label]="'plans.refresh' | transloco"
-          (click)="data.reload()"
-        >
-          <i class="pi pi-refresh" aria-hidden="true"></i>
-        </button>
+        <span class="ml-auto flex flex-wrap gap-2">
+          <a
+            *appIfLevel="'super'"
+            pButton
+            size="small"
+            routerLink="/plans/new"
+            data-testid="plans-new"
+          >
+            <i class="pi pi-plus" aria-hidden="true"></i>
+            {{ 'plans.newPlan' | transloco }}
+          </a>
+          <button
+            type="button"
+            pButton
+            size="small"
+            severity="secondary"
+            data-testid="plans-refresh"
+            [attr.aria-label]="'plans.refresh' | transloco"
+            (click)="data.reload()"
+          >
+            <i class="pi pi-refresh" aria-hidden="true"></i>
+          </button>
+        </span>
       </div>
       <p class="text-muted-color text-sm">{{ 'plans.intro' | transloco }}</p>
 

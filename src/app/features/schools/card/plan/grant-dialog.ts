@@ -19,14 +19,11 @@ import { AccountOverviewResponseDto } from '../../../../api/subscription/models/
 import { IssueGrantDto } from '../../../../api/subscription/models/issue-grant-dto';
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
-import { FEATURE_KEYS, featureKind } from './feature-keys';
+import { CREDITS, FEATURE_KEYS, featureKind } from './feature-keys';
 import { dayStartUtc, isFutureDay, todayUtc } from './plan-dates';
 
 /** Seats as subscription accepts them: a whole number, at least 1. */
 const SEATS = /^[1-9]\d{0,8}$/;
-
-/** Credits as subscription accepts them (`plan.ts`): a decimal string, never a float. */
-const CREDITS = /^\d{1,12}(\.\d{1,6})?$/;
 
 const EFFECTS = [
   { value: true, key: 'on' },

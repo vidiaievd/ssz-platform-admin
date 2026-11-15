@@ -11,6 +11,7 @@ import { IfLevelDirective } from '../../core/auth/if-level.directive';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { ReasonDialog } from '../../shared/reason-dialog/reason-dialog';
+import { PlanChanges } from './plan-changes';
 import { isFreePlan, termsOf } from './plan-model';
 import { PlanRenameDialog } from './plan-rename-dialog';
 import { PlanTerms } from './plan-terms';
@@ -20,7 +21,7 @@ import { PlanCardData } from './plans.data';
  * `/plans/:code` — the plan card (plan 90, phase 8, step 13): every version, newest first, with
  * its subscribers (`byVersion` of the stats), its keys and what changed against the version
  * below. `super` renames the plan and archives it, each with a reason; a free plan is never
- * archived (every new account opens on it).
+ * archived (every new account opens on it). "New version" (step 14) opens the version editor.
  */
 @Component({
   selector: 'app-plan-card-page',
@@ -35,6 +36,7 @@ import { PlanCardData } from './plans.data';
     IfLevelDirective,
     LocalDatePipe,
     ReasonDialog,
+    PlanChanges,
     PlanRenameDialog,
     PlanTerms,
   ],
@@ -97,6 +99,18 @@ import { PlanCardData } from './plans.data';
                     />
                   }
                   <span class="ml-auto flex flex-wrap gap-2">
+                    @if (plan.status === 'active') {
+                      <a
+                        *appIfLevel="'super'"
+                        pButton
+                        size="small"
+                        data-testid="plan-new-version"
+                        [routerLink]="['/plans', plan.code, 'new-version']"
+                      >
+                        <i class="pi pi-plus" aria-hidden="true"></i>
+                        {{ 'plans.card.newVersion' | transloco }}
+                      </a>
+                    }
                     <button
                       *appIfLevel="'super'"
                       type="button"
@@ -274,39 +288,7 @@ import { PlanCardData } from './plans.data';
                             {{ 'plans.card.noChanges' | transloco }}
                           </p>
                         } @else {
-                          <ul class="flex flex-col gap-1 text-sm">
-                            @for (c of v.changes; track c.featureKey) {
-                              <li
-                                class="flex flex-wrap items-center gap-x-2"
-                                data-testid="version-change"
-                                [attr.data-key]="c.featureKey"
-                                [attr.data-change]="c.change"
-                              >
-                                <p-tag
-                                  [severity]="changeSeverity[c.change]"
-                                  [value]="'plans.card.change.' + c.change | transloco"
-                                />
-                                <span class="font-mono text-xs">{{ c.featureKey }}</span>
-                                @if (c.before) {
-                                  <span [class.line-through]="c.change === 'removed'">
-                                    <app-plan-terms
-                                      [featureKey]="c.featureKey"
-                                      [terms]="c.before"
-                                    />
-                                  </span>
-                                }
-                                @if (c.before && c.after) {
-                                  <i class="pi pi-arrow-right text-xs" aria-hidden="true"></i>
-                                  <span class="sr-only">{{
-                                    'plans.card.becomes' | transloco
-                                  }}</span>
-                                }
-                                @if (c.after) {
-                                  <app-plan-terms [featureKey]="c.featureKey" [terms]="c.after" />
-                                }
-                              </li>
-                            }
-                          </ul>
+                          <app-plan-changes [changes]="v.changes" />
                         }
                       </div>
                     }
@@ -363,12 +345,6 @@ export class PlanCardPage {
 
   protected readonly free = computed(() => isFreePlan(this.code()));
   protected readonly terms = termsOf;
-
-  protected readonly changeSeverity = {
-    added: 'success',
-    removed: 'danger',
-    changed: 'warn',
-  } as const;
 
   constructor() {
     effect(() => this.data.code.set(this.code()));

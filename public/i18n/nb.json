@@ -693,6 +693,7 @@
   "plans": {
     "intro": "Alle abonnementer med gjeldende versjon, nøkler og abonnenter. Arkiverte blir stående: abonnentene beholder sin versjon.",
     "refresh": "Oppdater",
+    "newPlan": "Nytt abonnement",
     "failed": "Kunne ikke laste abonnementene",
     "statsFailed": "Kunne ikke laste antall abonnenter",
     "none": "Ingen abonnementer ennå.",
@@ -746,6 +747,7 @@
       "freeNote": "Gratisplanen for målgruppen: hver ny konto åpnes på den, så den kan ikke arkiveres. Betalere uten abonnementsrad er også på den og telles ikke her.",
       "rename": "Gi nytt navn",
       "archive": "Arkiver",
+      "newVersion": "Ny versjon",
       "renameDialog": {
         "title": "Gi abonnementet nytt navn",
         "confirm": "Gi nytt navn",
@@ -760,6 +762,47 @@
         "subscribers": "{{ n }} abonnenter blir stående på det med sin versjon til de flyttes til et annet abonnement.",
         "final": "Panelet kan ikke hente et arkivert abonnement tilbake."
       }
+    },
+    "editor": {
+      "backToPlan": "Tilbake til abonnementet",
+      "versionTitle": "{{ plan }} — ny versjon v{{ version }}",
+      "versionBase": "Tar utgangspunkt i v{{ version }}, den gjeldende. Versjonen du lagrer er hele nøkkellisten: en nøkkel som er utelatt, gir ingenting.",
+      "conflict": "Abonnementet har fått en ny versjon i mellomtiden. Les det inn på nytt — det du har skrevet blir stående, og endringene regnes da fra den nye versjonen.",
+      "reread": "Les inn på nytt",
+      "fixFirst": "Rett de merkede feltene for å se endringene.",
+      "noChanges": "Samme nøkler som gjeldende versjon — ingenting å lagre.",
+      "saveVersion": "Lagre som v{{ version }}",
+      "confirmVersion": "Lagre versjon v{{ version }}",
+      "reach": "Nye tildelinger får denne versjonen. Abonnentene blir på sin til de flyttes.",
+      "state": "I abonnementet",
+      "settings": "Vilkår",
+      "kind": {
+        "ai_credits": "KI, kreditter",
+        "switch": "bryter",
+        "seats": "plasser",
+        "unknown": "ukjent for panelet"
+      },
+      "states": {
+        "absent": "Ikke med",
+        "off": "Av",
+        "on": "På"
+      },
+      "unknownKept": "Panelet kjenner ikke denne nøkkelen; den beholdes som den er.",
+      "foreign": "Ikke for denne målgruppen: serveren avviser den. Sett den til «Ikke med».",
+      "credits": "Kreditter / mnd.",
+      "unmetered": "uten måling",
+      "creditsRequired": "Oppgi kreditter eller kryss av for «uten måling».",
+      "wholeNumber": "Et heltall, 0 eller mer.",
+      "number": "Et tall, 0 eller mer.",
+      "limitOptional": "valgfritt",
+      "newTitle": "Nytt abonnement",
+      "code": "Kode",
+      "codeHint": "lower_snake_case, 2–64 tegn; den endres aldri.",
+      "codeInvalid": "lower_snake_case: en latinsk bokstav først, deretter bokstaver, sifre og «_», 2–64 tegn.",
+      "codeTaken": "Et abonnement med denne koden finnes allerede.",
+      "audience": "Målgruppe",
+      "create": "Opprett abonnement",
+      "confirmCreate": "Opprett abonnement"
     }
   },
   "reasonDialog": {
