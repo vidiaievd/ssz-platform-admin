@@ -690,6 +690,78 @@
       }
     }
   },
+  "plans": {
+    "intro": "Every plan with its current version, keys and subscribers. Archived plans stay: their subscribers keep their version.",
+    "refresh": "Refresh",
+    "failed": "Could not load the plans",
+    "statsFailed": "Could not load the subscriber counts",
+    "none": "No plans yet.",
+    "audience": {
+      "workspace": "Schools and tutors",
+      "individual": "Self-study students"
+    },
+    "columns": {
+      "plan": "Plan",
+      "version": "Version",
+      "keys": "Keys",
+      "subscribers": "Subscribers",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "free": "free",
+    "older": "{{ n }} on older versions",
+    "trial": "{{ n }} on trial",
+    "freeNote": "Payers with no subscription row are on the free plan of their audience and are not counted here.",
+    "terms": {
+      "off": "off",
+      "on": "on",
+      "seats": "up to {{ n }} seats",
+      "credits": "{{ n }} credits / month",
+      "unmetered": "unmetered"
+    },
+    "card": {
+      "back": "All plans",
+      "failed": "Could not load the plan",
+      "notFound": "No such plan",
+      "current": "New subscriptions get v{{ version }}",
+      "subscribers": "{{ n }} subscribers",
+      "currentTag": "current",
+      "seed": "seed",
+      "key": "Key",
+      "terms": "Gives",
+      "noKeys": "This version gives no keys.",
+      "changesFrom": "Changes from v{{ version }}",
+      "noChanges": "Same keys as the version below.",
+      "becomes": "becomes",
+      "change": {
+        "added": "added",
+        "removed": "removed",
+        "changed": "changed"
+      },
+      "versionsNote": "A new version reaches only new assignments; subscribers stay on the version they were put on until they are moved.",
+      "archivedNote": "Archived: the plan cannot be assigned any more; its subscribers keep their version.",
+      "freeNote": "The free plan of its audience: every new account opens on it, so it cannot be archived. Payers with no subscription row are on it too and are not counted here.",
+      "rename": "Rename",
+      "archive": "Archive",
+      "renameDialog": {
+        "title": "Rename plan",
+        "confirm": "Rename",
+        "name": "Name",
+        "unchanged": "This is the current name.",
+        "hint": "Only the display name changes; no new version, subscribers see the new name at once."
+      },
+      "archiveDialog": {
+        "title": "Archive plan",
+        "confirm": "Archive",
+        "text": "“{{ plan }}” can no longer be assigned or get new versions.",
+        "subscribers": "{{ n }} subscribers stay on it with their version until they are moved to another plan.",
+        "final": "The panel has no way to bring an archived plan back."
+      }
+    }
+  },
   "reasonDialog": {
     "label": "Reason",
     "hint": "Required. Goes to the admin journal.",

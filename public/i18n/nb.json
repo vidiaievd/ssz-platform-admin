@@ -690,6 +690,78 @@
       }
     }
   },
+  "plans": {
+    "intro": "Alle abonnementer med gjeldende versjon, nøkler og abonnenter. Arkiverte blir stående: abonnentene beholder sin versjon.",
+    "refresh": "Oppdater",
+    "failed": "Kunne ikke laste abonnementene",
+    "statsFailed": "Kunne ikke laste antall abonnenter",
+    "none": "Ingen abonnementer ennå.",
+    "audience": {
+      "workspace": "Skoler og lærere",
+      "individual": "Elever på egen hånd"
+    },
+    "columns": {
+      "plan": "Abonnement",
+      "version": "Versjon",
+      "keys": "Nøkler",
+      "subscribers": "Abonnenter",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Aktiv",
+      "archived": "Arkivert"
+    },
+    "free": "gratis",
+    "older": "{{ n }} på eldre versjoner",
+    "trial": "{{ n }} på prøve",
+    "freeNote": "Betalere uten abonnementsrad er på gratisplanen for sin målgruppe og telles ikke her.",
+    "terms": {
+      "off": "av",
+      "on": "på",
+      "seats": "opptil {{ n }} plasser",
+      "credits": "{{ n }} kreditter / mnd.",
+      "unmetered": "uten måling"
+    },
+    "card": {
+      "back": "Alle abonnementer",
+      "failed": "Kunne ikke laste abonnementet",
+      "notFound": "Abonnementet finnes ikke",
+      "current": "Nye abonnement får v{{ version }}",
+      "subscribers": "{{ n }} abonnenter",
+      "currentTag": "gjeldende",
+      "seed": "seed",
+      "key": "Nøkkel",
+      "terms": "Gir",
+      "noKeys": "Denne versjonen gir ingen nøkler.",
+      "changesFrom": "Endringer fra v{{ version }}",
+      "noChanges": "Samme nøkler som versjonen under.",
+      "becomes": "blir",
+      "change": {
+        "added": "lagt til",
+        "removed": "fjernet",
+        "changed": "endret"
+      },
+      "versionsNote": "En ny versjon gjelder bare nye tildelinger; abonnenter blir på versjonen de fikk til de flyttes.",
+      "archivedNote": "Arkivert: abonnementet kan ikke tildeles lenger; abonnentene beholder sin versjon.",
+      "freeNote": "Gratisplanen for målgruppen: hver ny konto åpnes på den, så den kan ikke arkiveres. Betalere uten abonnementsrad er også på den og telles ikke her.",
+      "rename": "Gi nytt navn",
+      "archive": "Arkiver",
+      "renameDialog": {
+        "title": "Gi abonnementet nytt navn",
+        "confirm": "Gi nytt navn",
+        "name": "Navn",
+        "unchanged": "Dette er gjeldende navn.",
+        "hint": "Bare visningsnavnet endres; ingen ny versjon, abonnentene ser det nye navnet med en gang."
+      },
+      "archiveDialog": {
+        "title": "Arkiver abonnement",
+        "confirm": "Arkiver",
+        "text": "«{{ plan }}» kan ikke lenger tildeles eller få nye versjoner.",
+        "subscribers": "{{ n }} abonnenter blir stående på det med sin versjon til de flyttes til et annet abonnement.",
+        "final": "Panelet kan ikke hente et arkivert abonnement tilbake."
+      }
+    }
+  },
   "reasonDialog": {
     "label": "Begrunnelse",
     "hint": "Påkrevd. Lagres i administratorloggen.",
