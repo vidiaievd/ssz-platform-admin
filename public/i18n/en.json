@@ -1256,7 +1256,8 @@
   "platform": {
     "tabsLabel": "Platform tabs",
     "tabs": {
-      "sessions": "Session lifetimes"
+      "sessions": "Session lifetimes",
+      "media": "Media cleanup"
     },
     "sessions": {
       "title": "Session lifetimes",
@@ -1305,6 +1306,93 @@
         "bounds": "From {{min}} to {{max}}.",
         "wholeNumber": "A whole number, please.",
         "unchanged": "Same as now — nothing to save."
+      }
+    },
+    "media": {
+      "title": "Media cleanup",
+      "refresh": "Reload",
+      "intro": "Four nightly sweeps remove media files nobody uses any more. Each asks the service that owns the references before deleting; a file it cannot vouch for is kept.",
+      "failed": "Could not load the media sweeps",
+      "nightlyMode": "Nightly runs:",
+      "nightlyModeHint": "Set by MEDIA_ORPHAN_SWEEP_MODE in media-service, the same for all four; not changed here.",
+      "historyDays": "Run history is kept for {{days}} days.",
+      "modes": {
+        "dry-run": "check only",
+        "delete": "delete"
+      },
+      "kinds": {
+        "orphan_recordings": {
+          "title": "Orphan recordings",
+          "what": "Learners’ voice recordings that no attempt refers to (an attempt was dropped or redone)."
+        },
+        "superseded_narrations": {
+          "title": "Replaced narrations",
+          "what": "Lesson narrations replaced by a newer one and no longer used by any lesson version."
+        },
+        "abandoned_uploads": {
+          "title": "Abandoned uploads",
+          "what": "Uploads that were started but never confirmed."
+        },
+        "orphan_content": {
+          "title": "Orphan content files",
+          "what": "Images and audio of materials that no course item refers to any more."
+        }
+      },
+      "schedule": "Schedule",
+      "dailyAt": "every night at {{time}}, server time",
+      "minAge": "Minimum age",
+      "ageBasis": {
+        "created": "{{days}} d after upload",
+        "superseded": "{{days}} d after replacement"
+      },
+      "maxPerRun": "Files per run, at most",
+      "asks": "Asks",
+      "owners": {
+        "engine": "exercise engine",
+        "content": "content service",
+        "none": "nobody (an unconfirmed upload is unused)"
+      },
+      "check": "Check now",
+      "running": "A run of this sweep is going on right now. Try again when it ends.",
+      "checkedAt": "Checked {{when}}:",
+      "dryRunResult": "{{scanned}} looked at, {{kept}} still in use, {{candidates}} would be deleted.",
+      "aborted": "Stopped: {{service}} did not answer",
+      "deletedResult": "Deleted {{deleted}} files.",
+      "blocked": {
+        "noDryRun": "Delete opens after a check from this panel in the last 30 minutes.",
+        "aborted": "The check did not finish — check again before deleting.",
+        "nothing": "Nothing to delete."
+      },
+      "noRuns": "No runs yet.",
+      "runsCaption": "Last runs",
+      "runs": {
+        "started": "Started",
+        "trigger": "Started by",
+        "outcome": "Result"
+      },
+      "triggers": {
+        "nightly": "Nightly",
+        "admin": "Admin panel",
+        "operator": "Operator"
+      },
+      "summary": {
+        "scanned": "Looked at",
+        "kept": "In use",
+        "candidates": "To delete",
+        "deleted": "Deleted"
+      },
+      "outcomes": {
+        "done": "Done",
+        "running": "Running or interrupted",
+        "skipped": "Skipped: another run was going",
+        "failed": "Failed"
+      },
+      "delete": {
+        "open": "Delete",
+        "title": "Delete unused files",
+        "confirm": "Delete files",
+        "checkedAt": "Your check of {{when}} found:",
+        "warning": "Files are deleted from storage for good. The sweep counts again as it deletes, so the number may differ slightly from the check."
       }
     }
   }

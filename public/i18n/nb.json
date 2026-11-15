@@ -1256,7 +1256,8 @@
   "platform": {
     "tabsLabel": "Faner for plattform",
     "tabs": {
-      "sessions": "Øktvarighet"
+      "sessions": "Øktvarighet",
+      "media": "Medieopprydding"
     },
     "sessions": {
       "title": "Øktvarighet",
@@ -1305,6 +1306,93 @@
         "bounds": "Fra {{min}} til {{max}}.",
         "wholeNumber": "Skriv et heltall.",
         "unchanged": "Samme som nå — ingenting å lagre."
+      }
+    },
+    "media": {
+      "title": "Medieopprydding",
+      "refresh": "Last inn på nytt",
+      "intro": "Fire nattlige gjennomganger fjerner mediefiler som ingen bruker lenger. Hver spør tjenesten som eier referansene før sletting; en fil den ikke kan gå god for, beholdes.",
+      "failed": "Kunne ikke laste medieoppryddingen",
+      "nightlyMode": "Nattlige kjøringer:",
+      "nightlyModeHint": "Styres av MEDIA_ORPHAN_SWEEP_MODE i media-service, likt for alle fire; endres ikke her.",
+      "historyDays": "Kjørehistorikken beholdes i {{days}} dager.",
+      "modes": {
+        "dry-run": "bare sjekk",
+        "delete": "slett"
+      },
+      "kinds": {
+        "orphan_recordings": {
+          "title": "Foreldreløse opptak",
+          "what": "Elevenes taleopptak som ingen forsøk viser til (et forsøk ble forkastet eller tatt på nytt)."
+        },
+        "superseded_narrations": {
+          "title": "Erstattet opplesning",
+          "what": "Opplesninger av leksjoner som er erstattet av en nyere og ikke lenger brukes av noen leksjonsversjon."
+        },
+        "abandoned_uploads": {
+          "title": "Avbrutte opplastinger",
+          "what": "Opplastinger som ble startet, men aldri bekreftet."
+        },
+        "orphan_content": {
+          "title": "Foreldreløse innholdsfiler",
+          "what": "Bilder og lyd i materiell som ingen kursdel viser til lenger."
+        }
+      },
+      "schedule": "Tidsplan",
+      "dailyAt": "hver natt kl. {{time}}, servertid",
+      "minAge": "Minste alder",
+      "ageBasis": {
+        "created": "{{days}} d etter opplasting",
+        "superseded": "{{days}} d etter erstatning"
+      },
+      "maxPerRun": "Filer per kjøring, høyst",
+      "asks": "Spør",
+      "owners": {
+        "engine": "øvelsesmotoren",
+        "content": "innholdstjenesten",
+        "none": "ingen (en ubekreftet opplasting er ubrukt)"
+      },
+      "check": "Sjekk nå",
+      "running": "En kjøring av denne gjennomgangen pågår nå. Prøv igjen når den er ferdig.",
+      "checkedAt": "Sjekket {{when}}:",
+      "dryRunResult": "{{scanned}} sett på, {{kept}} fortsatt i bruk, {{candidates}} ville blitt slettet.",
+      "aborted": "Stoppet: {{service}} svarte ikke",
+      "deletedResult": "Slettet {{deleted}} filer.",
+      "blocked": {
+        "noDryRun": "Slett åpnes etter en sjekk fra dette panelet de siste 30 minuttene.",
+        "aborted": "Sjekken ble ikke fullført — sjekk igjen før sletting.",
+        "nothing": "Ingenting å slette."
+      },
+      "noRuns": "Ingen kjøringer ennå.",
+      "runsCaption": "Siste kjøringer",
+      "runs": {
+        "started": "Startet",
+        "trigger": "Startet av",
+        "outcome": "Resultat"
+      },
+      "triggers": {
+        "nightly": "Nattlig",
+        "admin": "Adminpanelet",
+        "operator": "Operatør"
+      },
+      "summary": {
+        "scanned": "Sett på",
+        "kept": "I bruk",
+        "candidates": "Til sletting",
+        "deleted": "Slettet"
+      },
+      "outcomes": {
+        "done": "Ferdig",
+        "running": "Pågår eller avbrutt",
+        "skipped": "Hoppet over: en annen kjøring pågikk",
+        "failed": "Feilet"
+      },
+      "delete": {
+        "open": "Slett",
+        "title": "Slett ubrukte filer",
+        "confirm": "Slett filer",
+        "checkedAt": "Sjekken din fra {{when}} fant:",
+        "warning": "Filene slettes fra lagringen for godt. Gjennomgangen teller på nytt mens den sletter, så tallet kan avvike litt fra sjekken."
       }
     }
   }

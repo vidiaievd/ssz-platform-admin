@@ -4,6 +4,7 @@ import { DEFAULT_PLATFORM_TAB, PLATFORM_TABS, PlatformTab } from './platform-tab
 /** The component of every tab of the section. */
 const TAB_COMPONENTS: Record<PlatformTab, Route['loadComponent']> = {
   sessions: () => import('./sessions/token-lifetimes.page').then((m) => m.TokenLifetimesPage),
+  media: () => import('./media/media-sweeps.page').then((m) => m.MediaSweepsPage),
 };
 
 export const PLATFORM_ROUTES: Routes = [
