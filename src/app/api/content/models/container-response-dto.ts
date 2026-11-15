@@ -35,8 +35,30 @@ export interface ContainerResponseDto {
   learningGoals: Array<string>;
   levelSystem: 'cefr' | 'custom' | 'single';
   localizations: Array<ContainerLocalizationResponseDto>;
+
+  /**
+   * When the maintenance status last changed.
+   */
+  maintenanceChangedAt?: {
+} | null;
+
+  /**
+   * Who set the status last — the author by hand or the owning school’s lifecycle. Null: never changed.
+   */
+  maintenanceSource?: ('author' | 'school') | null;
+
+  /**
+   * Whether the course is still looked after (plan 90, Q5): `unmaintained` — in the catalogue with a badge; `obsolete` — out of the catalogue, no new enrolments, current learners carry on.
+   */
+  maintenanceStatus: 'maintained' | 'unmaintained' | 'obsolete';
   ownerSchoolId?: {
 };
+
+  /**
+   * The owning school’s name kept from when it closed; null while the school is open.
+   */
+  ownerSchoolName?: {
+} | null;
   ownerUserId: string;
   slug?: {
 };
