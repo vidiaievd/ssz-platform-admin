@@ -14,6 +14,8 @@ import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
 import { DEFAULT_PERIOD, PERIODS, Period, attentionItems } from './dashboard-model';
 import { DashboardData } from './dashboard.data';
+import { GrowthChart } from './growth-chart';
+import { growthBuckets, growthStep, planBars } from './growth-model';
 import { Sparkline } from './sparkline';
 
 /**
@@ -33,6 +35,7 @@ import { Sparkline } from './sparkline';
     Tag,
     LocalDatePipe,
     Sparkline,
+    GrowthChart,
   ],
   template: `
     <div class="flex flex-col gap-4">
@@ -311,6 +314,170 @@ import { Sparkline } from './sparkline';
           }
         }
       </section>
+
+      <div class="grid gap-3 lg:grid-cols-2">
+        <!-- Growth: the same organization read as the KPIs, its own skeleton and retry -->
+        <section
+          class="border-border flex flex-col gap-3 rounded-md border p-4"
+          data-testid="growth"
+        >
+          <h2 class="text-base font-semibold">{{ 'dashboard.growth.title' | transloco }}</h2>
+          @switch (data.stats().kind) {
+            @case ('loading') {
+              <p-skeleton height="8rem" />
+              <p-skeleton height="8rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="growth-failed">
+                {{ 'dashboard.growth.failed' | transloco }} ·
+                <button type="button" class="text-primary underline" (click)="data.reloadStats()">
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @for (g of growth(); track g.metric) {
+                <div class="flex flex-col gap-1" [attr.data-testid]="'growth-' + g.metric">
+                  <h3 class="flex items-baseline gap-2 text-sm">
+                    <span class="text-muted-color">
+                      {{ 'dashboard.growth.' + g.metric | transloco }}
+                    </span>
+                    <span class="font-semibold tabular-nums" data-testid="growth-total">
+                      {{ 'dashboard.kpi.delta' | transloco: { n: g.total } }}
+                    </span>
+                  </h3>
+                  @if (g.total === 0) {
+                    <p class="text-muted-color text-xs" data-testid="growth-empty">
+                      {{ 'dashboard.growth.none' | transloco }}
+                    </p>
+                  } @else {
+                    <app-growth-chart
+                      [buckets]="buckets()"
+                      [metric]="g.metric"
+                      [step]="step()"
+                      [label]="
+                        ('dashboard.growth.' + g.metric | transloco) +
+                        ': ' +
+                        ('dashboard.kpi.delta' | transloco: { n: g.total })
+                      "
+                    />
+                  }
+                </div>
+              }
+              <p class="text-muted-color text-xs" data-testid="growth-step">
+                {{ 'dashboard.growth.step.' + step() | transloco }}
+              </p>
+            }
+          }
+        </section>
+
+        <!-- Plans: the same subscription read as the queue, its own skeleton and retry -->
+        <section
+          class="border-border flex flex-col gap-3 rounded-md border p-4"
+          data-testid="plans"
+        >
+          <h2 class="text-base font-semibold">{{ 'dashboard.plans.title' | transloco }}</h2>
+          @switch (data.queue().kind) {
+            @case ('loading') {
+              <p-skeleton height="12rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="plans-failed">
+                {{ 'dashboard.plans.failed' | transloco }} ·
+                <button type="button" class="text-primary underline" (click)="data.reloadQueue()">
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @if (planGroups().length === 0) {
+                <p class="text-muted-color text-sm" data-testid="plans-empty">
+                  {{ 'dashboard.plans.none' | transloco }}
+                </p>
+              } @else {
+                @for (group of planGroups(); track group.audience) {
+                  <div class="flex flex-col gap-1" [attr.data-testid]="'plans-' + group.audience">
+                    <h3 class="text-muted-color text-xs uppercase">
+                      {{ 'dashboard.plans.audience.' + group.audience | transloco }}
+                    </h3>
+                    <ul class="flex flex-col">
+                      @for (bar of group.bars; track bar.code) {
+                        <li>
+                          <a
+                            [routerLink]="['/plans', bar.code]"
+                            class="hover:bg-emphasis flex flex-col gap-1 rounded px-2 py-1.5"
+                            [class.opacity-60]="bar.archived"
+                            data-testid="plan-bar"
+                            [attr.data-code]="bar.code"
+                            [attr.data-archived]="bar.archived"
+                          >
+                            <span class="flex flex-wrap items-center gap-x-2 text-sm">
+                              <span class="font-medium">{{ bar.name }}</span>
+                              <span class="text-muted-color font-mono text-xs">
+                                {{ bar.code }} · v{{ bar.currentVersion }}
+                              </span>
+                              @if (bar.archived) {
+                                <p-tag
+                                  severity="secondary"
+                                  [value]="'dashboard.plans.archived' | transloco"
+                                />
+                              }
+                              <span class="ml-auto tabular-nums" data-testid="plan-bar-count">
+                                {{ bar.subscribers | number }}
+                              </span>
+                            </span>
+                            <span
+                              class="bg-surface-100 dark:bg-surface-800 flex h-2 w-full overflow-hidden rounded-sm"
+                              aria-hidden="true"
+                            >
+                              <span
+                                class="bg-primary h-full"
+                                [class.bg-surface-400]="bar.archived"
+                                [style.width.%]="bar.currentPct"
+                              ></span>
+                              <span
+                                class="bg-primary/40 h-full"
+                                [style.width.%]="bar.olderPct"
+                              ></span>
+                            </span>
+                            @if (bar.onOlder > 0 || bar.trial > 0) {
+                              <span
+                                class="text-muted-color flex flex-wrap gap-x-3 text-xs tabular-nums"
+                              >
+                                @if (bar.onOlder > 0) {
+                                  <span data-testid="plan-bar-older">
+                                    {{ 'dashboard.plans.older' | transloco: { n: bar.onOlder } }}
+                                  </span>
+                                }
+                                @if (bar.trial > 0) {
+                                  <span data-testid="plan-bar-trial">
+                                    {{ 'dashboard.plans.trial' | transloco: { n: bar.trial } }}
+                                  </span>
+                                }
+                              </span>
+                            }
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+                <p class="text-muted-color flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+                  <span class="flex items-center gap-1">
+                    <span class="bg-primary inline-block h-2 w-3 rounded-sm"></span>
+                    {{ 'dashboard.plans.legendCurrent' | transloco }}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <span class="bg-primary/40 inline-block h-2 w-3 rounded-sm"></span>
+                    {{ 'dashboard.plans.legendOlder' | transloco }}
+                  </span>
+                  <span>{{ 'dashboard.plans.freeNote' | transloco }}</span>
+                </p>
+              }
+            }
+          }
+        </section>
+      </div>
     </div>
   `,
 })
@@ -347,6 +514,30 @@ export class DashboardPage {
       { id: 'students', people: s.students, series: this.series().students },
       { id: 'teachers', people: s.teachers, series: this.series().teachers },
     ];
+  });
+
+  /** Bars of the growth block: grouped by day, 7 days or month, depending on the period. */
+  protected readonly step = computed(() => growthStep(this.stats()?.daily.length ?? 0));
+  protected readonly buckets = computed(() =>
+    growthBuckets(this.stats()?.daily ?? [], this.step()),
+  );
+  protected readonly growth = computed<{ metric: 'schools' | 'students'; total: number }[]>(() => {
+    const s = this.stats();
+    if (!s) return [];
+    return [
+      { metric: 'schools', total: s.schools.createdInPeriod },
+      { metric: 'students', total: s.students.newInPeriod },
+    ];
+  });
+
+  /** Plans of the subscription stats as bars, workspace plans first (the server's order). */
+  protected readonly planGroups = computed(() => {
+    const q = this.data.queue();
+    if (q.kind !== 'ready') return [];
+    const bars = planBars(q.value.plans);
+    return (['workspace', 'individual'] as const)
+      .map((audience) => ({ audience, bars: bars.filter((b) => b.audience === audience) }))
+      .filter((g) => g.bars.length > 0);
   });
 
   protected readonly items = computed(() => {

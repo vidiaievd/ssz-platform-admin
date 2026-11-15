@@ -83,6 +83,12 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   follow the period switch (`?period=7|30|90|365`, default 30, a bad value falls back; one switch per page); the
   attention queue from subscription `admin/subscriptions/stats?withinDays=7` does not follow it. Each queue row links to
   the school's Plan tab (a `user` payer has no link — no user card until phase 6). No auto-refresh; "refresh" reads both.
+  Under the KPIs (phase 8, step 8): *Growth* — new schools and new students per bar from the same `admin/stats` `daily[]`
+  (`growth-model.ts`: a bar a day up to 31 days, 7-day chunks counted back from today up to 120, UTC calendar months
+  beyond; bars add up to the period's totals; zero in the period → a sentence, not a flat chart) and *Plans* — one HTML
+  bar per plan from the queue's `admin/subscriptions/stats` (`plans[]`, archived muted; current version vs older ones from
+  `byVersion`, one scale for all plans), each row a link to `/plans/:code`. Each block has its own skeleton and retry of
+  the read it shares, so no new request.
 - **Seats are one rule, copied.** `features/schools/seats.ts` mirrors organization's `seat-policy.vo.ts`: `none` (no
   limit) / `ok` / `near` (≥ 90 %, not over) / `warning` (in the +10 % margin) / `full` (at the ceiling). The list reads
   `seats { used, limit }`; a school without a projected limit shows `87` alone, never a made-up limit. Seats come only

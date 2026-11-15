@@ -103,6 +103,33 @@
       "seatsSchools": "in {{ n }} schools with a limit",
       "seatsNear": "{{ n }} near the limit",
       "seatsOver": "{{ n }} over the limit"
+    },
+    "growth": {
+      "title": "Growth",
+      "failed": "Could not load the growth",
+      "schools": "New schools",
+      "students": "New students",
+      "none": "None in the period.",
+      "step": {
+        "day": "One bar is a day (UTC).",
+        "week": "One bar is 7 days (UTC); the oldest may be shorter.",
+        "month": "One bar is a calendar month (UTC); the first and last may be partial."
+      }
+    },
+    "plans": {
+      "title": "Plans",
+      "failed": "Could not load the plans",
+      "none": "No plans yet.",
+      "audience": {
+        "workspace": "Schools and tutors",
+        "individual": "Self-study students"
+      },
+      "archived": "archived",
+      "older": "{{ n }} on older versions",
+      "trial": "{{ n }} on trial",
+      "legendCurrent": "current version",
+      "legendOlder": "older versions",
+      "freeNote": "Payers with no subscription row are on the free plan and are not counted here."
     }
   },
   "comingSoon": {
@@ -1028,9 +1055,9 @@
       "title": "Q2 gate: may the model review a template by itself",
       "period": "Period",
       "presets": {
-        "all": "All time",
+        "30": "30 d",
         "90": "90 d",
-        "30": "30 d"
+        "all": "All time"
       },
       "from": "From",
       "to": "To",

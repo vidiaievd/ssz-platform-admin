@@ -103,6 +103,33 @@
       "seatsSchools": "i {{ n }} skoler med grense",
       "seatsNear": "{{ n }} nær grensen",
       "seatsOver": "{{ n }} over grensen"
+    },
+    "growth": {
+      "title": "Vekst",
+      "failed": "Kunne ikke laste veksten",
+      "schools": "Nye skoler",
+      "students": "Nye elever",
+      "none": "Ingen i perioden.",
+      "step": {
+        "day": "Én søyle er én dag (UTC).",
+        "week": "Én søyle er 7 dager (UTC); den eldste kan være kortere.",
+        "month": "Én søyle er en kalendermåned (UTC); den første og siste kan være delvise."
+      }
+    },
+    "plans": {
+      "title": "Abonnementer",
+      "failed": "Kunne ikke laste abonnementene",
+      "none": "Ingen abonnementer ennå.",
+      "audience": {
+        "workspace": "Skoler og lærere",
+        "individual": "Elever på egen hånd"
+      },
+      "archived": "arkivert",
+      "older": "{{ n }} på eldre versjoner",
+      "trial": "{{ n }} på prøve",
+      "legendCurrent": "gjeldende versjon",
+      "legendOlder": "eldre versjoner",
+      "freeNote": "Betalere uten abonnementsrad er på gratisplanen og telles ikke her."
     }
   },
   "comingSoon": {
@@ -1028,9 +1055,9 @@
       "title": "Q2-port: kan modellen vurdere en mal alene",
       "period": "Periode",
       "presets": {
-        "all": "All tid",
+        "30": "30 d",
         "90": "90 d",
-        "30": "30 d"
+        "all": "All tid"
       },
       "from": "Fra",
       "to": "Til",

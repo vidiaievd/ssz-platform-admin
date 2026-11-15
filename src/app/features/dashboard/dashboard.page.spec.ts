@@ -295,6 +295,88 @@ describe('DashboardPage', () => {
     expect(find('queue-empty')).not.toBeNull();
   });
 
+  it('shows the growth of the period from the same read, a day per bar', async () => {
+    await open({
+      stats: { ...stats, schools: { ...stats.schools, createdInPeriod: 0 } },
+    });
+    // No new school in the period: a sentence, not a flat chart.
+    expect(text('growth-schools')).toContain('+0 in the period');
+    expect(find('growth-schools')!.querySelector('[data-testid="growth-empty"]')).not.toBeNull();
+    expect(text('growth-students')).toContain('+112 in the period');
+    expect(find('growth-chart-students')).not.toBeNull();
+    expect(find('growth-chart-schools')).toBeNull();
+    expect(text('growth-step')).toContain('One bar is a day');
+  });
+
+  it('draws a bar per plan, archived muted, each linking to its plan', async () => {
+    await open({
+      queue: {
+        ...queue(),
+        plans: [
+          {
+            code: 'school',
+            name: 'School',
+            audience: 'workspace',
+            status: 'active',
+            currentVersion: 2,
+            subscribers: 12,
+            trial: 2,
+            byVersion: [
+              { version: 2, count: 9 },
+              { version: 1, count: 3 },
+            ],
+          },
+          {
+            code: 'old_school',
+            name: 'Old school',
+            audience: 'workspace',
+            status: 'archived',
+            currentVersion: 1,
+            subscribers: 1,
+            trial: 0,
+            byVersion: [{ version: 1, count: 1 }],
+          },
+          {
+            code: 'plus',
+            name: 'Plus',
+            audience: 'individual',
+            status: 'active',
+            currentVersion: 1,
+            subscribers: 4,
+            trial: 0,
+            byVersion: [{ version: 1, count: 4 }],
+          },
+        ],
+      },
+    });
+    const bars = all('plan-bar');
+    expect(bars.map((b) => b.getAttribute('data-code'))).toEqual(['school', 'old_school', 'plus']);
+    expect(bars[0].getAttribute('href')).toBe('/plans/school');
+    expect(bars[0].textContent).toContain('3 on older versions');
+    expect(bars[0].textContent).toContain('2 on trial');
+    expect(bars[1].getAttribute('data-archived')).toBe('true');
+    expect(bars[1].classList).toContain('opacity-60');
+    expect(text('plans-individual')).toContain('Self-study students');
+    expect(
+      find('plans-individual')!.querySelector('[data-testid="plan-bar-count"]')!.textContent,
+    ).toContain('4');
+  });
+
+  it('lets the plans and the growth fail with their own widgets and retry', async () => {
+    await open({ stats: 'fail', queue: 'fail' });
+    expect(text('growth-failed')).toContain('Could not load the growth');
+    expect(text('plans-failed')).toContain('Could not load the plans');
+
+    find('plans-failed')!.querySelector('button')!.click();
+    await answer(QUEUE, queue());
+    expect(text('plans-empty')).toContain('No plans yet');
+    expect(find('growth-failed')).not.toBeNull();
+
+    find('growth-failed')!.querySelector('button')!.click();
+    await answer(STATS, stats);
+    expect(find('growth-students')).not.toBeNull();
+  });
+
   it('reads both widgets again on refresh', async () => {
     await open();
     find('refresh')!.click();
