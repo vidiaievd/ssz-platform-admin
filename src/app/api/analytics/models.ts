@@ -3,6 +3,7 @@
 
 export type { AdminAuditEntryDto } from './models/admin-audit-entry-dto';
 export type { AdminAuditPageDto } from './models/admin-audit-page-dto';
+export type { AdminUsageCapabilityItemDto } from './models/admin-usage-capability-item-dto';
 export type { AdminUsageDto } from './models/admin-usage-dto';
 export type { AdminUsageFiguresDto } from './models/admin-usage-figures-dto';
 export type { AdminUsageItemDto } from './models/admin-usage-item-dto';

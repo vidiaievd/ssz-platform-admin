@@ -36,7 +36,7 @@ export interface AdminAuditEntryDto {
    */
   occurredAt: string;
   reason: string | null;
-  service: 'auth' | 'subscription' | 'organization' | 'ai';
+  service: 'auth' | 'subscription' | 'organization' | 'ai' | 'media';
   targetId: string;
   targetType: string;
 }

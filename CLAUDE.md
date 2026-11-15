@@ -28,7 +28,8 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
 ## Layout of `src/app`
 
 - `core/config` — runtime `/config.json` (`apiBaseUrl`, `primeUiLicense`), read before Angular starts. No `environment.ts`
-- `core/auth` — `AdminSessionApi` (hand-written, 7 routes of `api/v1/auth/admin/session/*`), `SessionStore` (signals,
+- `core/auth` — `AdminSessionApi` (hand-written, 7 routes of `api/v1/auth/admin/session/*`), `TokenLifetimesApi`
+  (hand-written, `api/v1/auth/admin/token-lifetimes`: GET any level, PUT `super` with a reason), `SessionStore` (signals,
   access token in memory only), `authInterceptor`, `authGuard`, `levelGuard`, `*appIfLevel`, `admin-level.ts`
 - `core/api` — `provideApiClients()` sets `apiBaseUrl` on every generated client
 - `core/i18n`, `core/theme`, `core/storage.ts` — language / theme choice kept in `localStorage`
@@ -50,7 +51,7 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
 - **Lists are batch-read.** One request per page for owners (`GET profiles?userIds=`) and one for plans
   (`accounts/lookup`); never a request per row. A failed side request shows "—" and "retry", the table stays.
 - **Generated clients.** `npm run api:gen` reads specs from the dev stand's service ports (organization :3002,
-  subscription :3011, ai :3010, analytics :3008, content :3003, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
+  subscription :3011, ai :3010, analytics :3008, media :3004, content :3003, user-profile :3001), trims them to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`),
   and refuses to overwrite a client when nothing matched (stale image). Add a new operation to `keep()`, then regenerate.
   Auth is hand-written because its login answers are anonymous objects Swagger does not type.
 - **Every change has a reason.** Open `app-reason-dialog` from a button under `*appIfLevel` and pass the change as

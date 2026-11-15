@@ -14,7 +14,7 @@ export interface AdminAuditList$Params {
 /**
  * Service that made the change
  */
-  service?: 'auth' | 'subscription' | 'organization' | 'ai';
+  service?: 'auth' | 'subscription' | 'organization' | 'ai' | 'media';
 
 /**
  * Admin who acted (user id)

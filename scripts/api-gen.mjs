@@ -71,6 +71,14 @@ const SERVICES = [
       ['/api/v1/admin/audit', '/api/v1/admin/ai/review-gate', '/api/v1/admin/ai/usage'].includes(p),
   },
   {
+    name: 'media',
+    port: 3004,
+    prefix: 'Media',
+    // The four media sweeps: schedule, night mode, recent runs and a manual run (section
+    // "Platform", plan 90, phase 8). Not the internal sweep routes (x-internal-token).
+    keep: (_method, p) => p.startsWith('/api/v1/admin/media/'),
+  },
+  {
     name: 'content',
     port: 3003,
     prefix: 'Content',

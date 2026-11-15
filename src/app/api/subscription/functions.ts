@@ -13,6 +13,8 @@ export type { AdminPlansRevise$Params as AdminPlansRevise$Params } from './fn/ad
 export { adminPlansRevise as adminPlansRevise } from './fn/admin-plans/admin-plans-revise';
 export type { AdminPlansArchive$Params as AdminPlansArchive$Params } from './fn/admin-plans/admin-plans-archive';
 export { adminPlansArchive as adminPlansArchive } from './fn/admin-plans/admin-plans-archive';
+export type { AdminPlanMigrationMigrate$Params as AdminPlanMigrationMigrate$Params } from './fn/admin-plans/admin-plan-migration-migrate';
+export { adminPlanMigrationMigrate as adminPlanMigrationMigrate } from './fn/admin-plans/admin-plan-migration-migrate';
 export type { AdminAccountsLookup$Params as AdminAccountsLookup$Params } from './fn/admin-accounts/admin-accounts-lookup';
 export { adminAccountsLookup as adminAccountsLookup } from './fn/admin-accounts/admin-accounts-lookup';
 export type { AdminAccountsGet$Params as AdminAccountsGet$Params } from './fn/admin-accounts/admin-accounts-get';

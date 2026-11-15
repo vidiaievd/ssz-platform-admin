@@ -9,6 +9,8 @@ import { AnalyticsApi } from '../../api/analytics/analytics-api';
 import { adminAuditList } from '../../api/analytics/functions';
 import { ContentApi } from '../../api/content/content-api';
 import { containerFindOne } from '../../api/content/functions';
+import { adminSweepsOverview } from '../../api/media/functions';
+import { MediaApi } from '../../api/media/media-api';
 import { adminSchoolsList } from '../../api/organization/functions';
 import { OrganizationApi } from '../../api/organization/organization-api';
 import { adminAccountsLookup } from '../../api/subscription/functions';
@@ -97,5 +99,12 @@ describe('provideApiClients', () => {
     const course = mock.expectOne('http://gw/api/v1/containers/c-1');
     expect(course.request.method).toBe('GET');
     course.flush({});
+  });
+
+  it('configures the media client too', () => {
+    TestBed.inject(MediaApi).invoke(adminSweepsOverview, {}).subscribe();
+    const sweeps = mock.expectOne('http://gw/api/v1/admin/media/sweeps');
+    expect(sweeps.request.method).toBe('GET');
+    sweeps.flush({});
   });
 });
