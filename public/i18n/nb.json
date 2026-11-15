@@ -763,6 +763,40 @@
         "final": "Panelet kan ikke hente et arkivert abonnement tilbake."
       }
     },
+    "migration": {
+      "title": "Flytt abonnenter til v{{ version }}",
+      "intro": "Abonnenter på eldre versjoner beholder nøklene sine til de flyttes. En forhåndsvisning viser hvor mange som flyttes og hva som endres for dem; ingenting lagres.",
+      "preview": "Forhåndsvis flyttingen",
+      "previewLoading": "Teller abonnenter…",
+      "previewFailed": "Kunne ikke forhåndsvise flyttingen.",
+      "previewAgain": "Tell på nytt",
+      "nobody": "Ingen å flytte: alle gjeldende abonnementer er allerede på gjeldende versjon.",
+      "total": "{{ n }} abonnenter flyttes til v{{ version }}.",
+      "source": "Fra v{{ version }} — {{ n }} abonnenter",
+      "same": "Samme nøkler som gjeldende versjon.",
+      "fewerSeats": "Færre elevplasser: ingen over den nye grensen fjernes; skolen tar ikke inn nye elever før den er under den.",
+      "keeps": "Status, prøveperiode og periode forblir som de er; kredittmåneden starter ikke på nytt. Tildelinger røres ikke. Hver konto får én rad i revisjonsloggen.",
+      "start": "Flytt {{ n }}",
+      "dialog": {
+        "title": "Flytt abonnenter",
+        "confirm": "Flytt",
+        "text": "{{ n }} abonnenter flyttes til v{{ version }} og får nøklene med en gang.",
+        "batches": "Kontoene flyttes i puljer på 200; hold panelet åpent til kjøringen er ferdig. En stoppet kjøring kan fortsettes fra plankortet."
+      },
+      "progress": "Flytter abonnenter",
+      "counts": "Flyttet {{ moved }} av {{ all }}",
+      "running": "Flytter…",
+      "stopping": "Stopper etter gjeldende pulje…",
+      "done": "Ferdig: {{ n }} abonnenter flyttet.",
+      "paused": "Stoppet; {{ n }} gjenstår.",
+      "stalled": "Siste pulje flyttet ingen (kontoene endret seg i mellomtiden); {{ n }} gjenstår.",
+      "failed": "Kjøringen stoppet; {{ n }} gjenstår.",
+      "reasonOfRun": "Begrunnelse",
+      "stop": "Stopp",
+      "resume": "Fortsett",
+      "leave": "La det være",
+      "close": "Lukk"
+    },
     "editor": {
       "backToPlan": "Tilbake til abonnementet",
       "versionTitle": "{{ plan }} — ny versjon v{{ version }}",

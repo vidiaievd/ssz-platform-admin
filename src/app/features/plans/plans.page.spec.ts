@@ -387,6 +387,257 @@ describe('Plans section', () => {
     });
   });
 
+  describe('moving subscribers', () => {
+    const MIGRATE = `${PLANS}/school/migrate`;
+
+    const previewBody = {
+      dryRun: true,
+      planCode: 'school',
+      toVersion: 2,
+      total: 3,
+      sources: [
+        {
+          version: 1,
+          subscribers: 3,
+          changes: [
+            {
+              featureKey: 'ai.practice',
+              change: 'changed',
+              before: { enabled: true, monthlyCredits: '100', limits: {} },
+              after: { enabled: true, monthlyCredits: '300', limits: {} },
+            },
+            {
+              featureKey: 'seats.students',
+              change: 'changed',
+              before: { enabled: true, monthlyCredits: null, limits: { max: 20 } },
+              after: { enabled: true, monthlyCredits: null, limits: { max: 10 } },
+            },
+          ],
+        },
+      ],
+    };
+
+    const batch = (moved: number, remaining: number, skipped = 0) => ({
+      dryRun: false,
+      planCode: 'school',
+      toVersion: 2,
+      batchId: 'b-1',
+      moved,
+      remaining,
+      skipped,
+    });
+
+    /** The card rereads its counts when a run starts or ends. */
+    async function statsReread(): Promise<void> {
+      (await next(STATS)).flush(statsBody);
+      await stable();
+    }
+
+    async function previewShown(): Promise<void> {
+      find<HTMLButtonElement>('migration-preview')!.click();
+      const req = await next(MIGRATE, 'POST');
+      expect(req.request.body).toEqual({ toVersion: 2, dryRun: true });
+      req.flush(previewBody);
+      await stable();
+    }
+
+    async function startRun(reason = 'move to v2'): Promise<void> {
+      await previewShown();
+      find<HTMLButtonElement>('migration-start')!.click();
+      await dialogShown('migration-dialog-text');
+      await type('reason-input', reason);
+      await confirm();
+    }
+
+    it('is offered to super on an active plan with subscribers on older versions', async () => {
+      await openCard();
+      expect(find('plan-migration')).not.toBeNull();
+      expect(textOf(find('plan-migration'))).toContain('Move subscribers to v2');
+    });
+
+    it('is not offered to lower levels, nor without older subscribers', async () => {
+      await openCard('admin');
+      expect(find('plan-migration')).toBeNull();
+    });
+
+    it('is not offered when everybody is on the current version', async () => {
+      await open('/plans/school');
+      (await next(`${PLANS}/school`)).flush(SCHOOL);
+      (await next(STATS)).flush({
+        ...statsBody,
+        plans: [{ ...PLAN_STATS[0], byVersion: [{ version: 2, count: 8 }] }],
+      });
+      await stable();
+      expect(find('plan-migration')).toBeNull();
+    });
+
+    it('previews who moves and what changes for them, writing nothing', async () => {
+      await openCard();
+      await previewShown();
+
+      expect(textOf(find('migration-total'))).toBe('3 subscribers would move to v2.');
+      const source = find('migration-source')!;
+      expect(source.getAttribute('data-version')).toBe('1');
+      expect(textOf(source)).toContain('From v1 — 3 subscribers');
+      expect(
+        all('version-change', source).map((c) => [
+          c.getAttribute('data-key'),
+          c.getAttribute('data-change'),
+        ]),
+      ).toEqual([
+        ['ai.practice', 'changed'],
+        ['seats.students', 'changed'],
+      ]);
+      expect(find('migration-fewer-seats', source)).not.toBeNull();
+      expect(textOf(find('migration-start'))).toBe('Move 3');
+    });
+
+    it('says when the preview finds nobody', async () => {
+      await openCard();
+      find<HTMLButtonElement>('migration-preview')!.click();
+      (await next(MIGRATE, 'POST')).flush({ ...previewBody, total: 0, sources: [] });
+      await stable();
+      expect(find('migration-nobody')).not.toBeNull();
+      expect(find('migration-start')).toBeNull();
+    });
+
+    it('runs in batches with one batchId until nobody remains', async () => {
+      await openCard();
+      await startRun();
+
+      const first = await next(MIGRATE, 'POST');
+      expect(first.request.body).toEqual({ toVersion: 2, reason: 'move to v2', dryRun: false });
+      first.flush(batch(200, 250));
+      await stable();
+
+      const second = await next(MIGRATE, 'POST');
+      expect(second.request.body).toEqual({
+        toVersion: 2,
+        reason: 'move to v2',
+        batchId: 'b-1',
+        dryRun: false,
+      });
+      expect(textOf(find('migration-counts'))).toBe('Moved 200 of 450');
+      expect(find('migration-progress')!.getAttribute('aria-valuenow')).toBe('44');
+      await statsReread();
+
+      second.flush(batch(250, 0));
+      await stable();
+      expect(find('plan-migration')!.getAttribute('data-phase')).toBe('done');
+      expect(textOf(find('migration-phase'))).toBe('Done: 450 subscribers moved.');
+      expect(find('migration-progress')!.getAttribute('aria-valuenow')).toBe('100');
+      await statsReread();
+
+      find<HTMLButtonElement>('migration-close')!.click();
+      await stable();
+      await statsReread();
+      expect(find('migration-run')).toBeNull();
+    });
+
+    it('shows a refused first call inside the dialog', async () => {
+      await openCard();
+      await startRun();
+      (await next(MIGRATE, 'POST')).flush(
+        { statusCode: 422, message: 'migration_target_not_current' },
+        { status: 422, statusText: 'Unprocessable Entity' },
+      );
+      await stable();
+      expect(inPage('reason-error')).not.toBeNull();
+      expect(find('migration-run')).toBeNull();
+    });
+
+    it('stops after the batch in flight and continues with the same run', async () => {
+      await openCard();
+      await startRun();
+      (await next(MIGRATE, 'POST')).flush(batch(200, 400));
+      await stable();
+      await statsReread();
+
+      const inFlight = await next(MIGRATE, 'POST');
+      find<HTMLButtonElement>('migration-stop')!.click();
+      await stable();
+      expect(textOf(find('migration-phase'))).toContain('Stopping after the current batch');
+      inFlight.flush(batch(200, 200));
+      await stable();
+      expect(find('plan-migration')!.getAttribute('data-phase')).toBe('paused');
+      expect(textOf(find('migration-counts'))).toBe('Moved 400 of 600');
+      expect(http.match((r) => r.url === MIGRATE)).toHaveLength(0);
+      await statsReread();
+
+      find<HTMLButtonElement>('migration-resume')!.click();
+      const resumed = await next(MIGRATE, 'POST');
+      expect(resumed.request.body).toEqual({
+        toVersion: 2,
+        reason: 'move to v2',
+        batchId: 'b-1',
+        dryRun: false,
+      });
+      await statsReread();
+      resumed.flush(batch(200, 0));
+      await stable();
+      expect(textOf(find('migration-phase'))).toBe('Done: 600 subscribers moved.');
+      await statsReread();
+    });
+
+    it('halts when a batch moves nobody, and on a failed call; both can go on', async () => {
+      await openCard();
+      await startRun();
+      (await next(MIGRATE, 'POST')).flush(batch(200, 300));
+      await stable();
+      await statsReread();
+
+      (await next(MIGRATE, 'POST')).flush(batch(0, 300, 5));
+      await stable();
+      expect(find('plan-migration')!.getAttribute('data-phase')).toBe('stalled');
+      await statsReread();
+
+      find<HTMLButtonElement>('migration-resume')!.click();
+      await statsReread();
+      (await next(MIGRATE, 'POST')).flush(
+        { statusCode: 503, message: 'Service Unavailable' },
+        { status: 503, statusText: 'Service Unavailable' },
+      );
+      await stable();
+      expect(find('plan-migration')!.getAttribute('data-phase')).toBe('failed');
+      expect(textOf(find('migration-phase'))).toContain('300 still to move');
+      await statsReread();
+
+      // Left as it is: the card goes back to the preview.
+      find<HTMLButtonElement>('migration-leave')!.click();
+      await stable();
+      await statsReread();
+      expect(find('migration-run')).toBeNull();
+      expect(find('migration-preview')).not.toBeNull();
+    });
+
+    it('keeps a stopped run when the card is left and opened again', async () => {
+      await openCard();
+      await startRun();
+      (await next(MIGRATE, 'POST')).flush(batch(200, 400));
+      await stable();
+      await statsReread();
+      const inFlight = await next(MIGRATE, 'POST');
+      find<HTMLButtonElement>('migration-stop')!.click();
+      await stable();
+      inFlight.flush(batch(200, 200));
+      await stable();
+      await statsReread();
+
+      await TestBed.inject(Router).navigateByUrl('/plans');
+      (await next(PLANS)).flush(PLAN_LIST);
+      (await next(STATS)).flush(statsBody);
+      await stable();
+
+      await TestBed.inject(Router).navigateByUrl('/plans/school');
+      (await next(`${PLANS}/school`)).flush(SCHOOL);
+      (await next(STATS)).flush(statsBody);
+      await stable();
+      expect(find('plan-migration')!.getAttribute('data-phase')).toBe('paused');
+      expect(textOf(find('migration-counts'))).toBe('Moved 400 of 600');
+      expect(find('migration-resume')).not.toBeNull();
+    });
+  });
+
   /** A key's row of the editor. */
   const editorRow = (key: string) =>
     el.querySelector<HTMLElement>(`[data-testid="editor-row"][data-key="${key}"]`)!;

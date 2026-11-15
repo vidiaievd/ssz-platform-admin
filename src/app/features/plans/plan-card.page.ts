@@ -12,6 +12,8 @@ import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { ReasonDialog } from '../../shared/reason-dialog/reason-dialog';
 import { PlanChanges } from './plan-changes';
+import { PlanMigration } from './plan-migration';
+import { PlanMigrations } from './plan-migrations';
 import { isFreePlan, termsOf } from './plan-model';
 import { PlanRenameDialog } from './plan-rename-dialog';
 import { PlanTerms } from './plan-terms';
@@ -21,7 +23,8 @@ import { PlanCardData } from './plans.data';
  * `/plans/:code` — the plan card (plan 90, phase 8, step 13): every version, newest first, with
  * its subscribers (`byVersion` of the stats), its keys and what changed against the version
  * below. `super` renames the plan and archives it, each with a reason; a free plan is never
- * archived (every new account opens on it). "New version" (step 14) opens the version editor.
+ * archived (every new account opens on it). "New version" (step 14) opens the version editor;
+ * subscribers below the current version are moved onto it from here (step 15, `super`).
  */
 @Component({
   selector: 'app-plan-card-page',
@@ -37,6 +40,7 @@ import { PlanCardData } from './plans.data';
     LocalDatePipe,
     ReasonDialog,
     PlanChanges,
+    PlanMigration,
     PlanRenameDialog,
     PlanTerms,
   ],
@@ -205,6 +209,15 @@ import { PlanCardData } from './plans.data';
                 <p class="text-muted-color text-xs">{{ 'plans.card.versionsNote' | transloco }}</p>
               </header>
 
+              @if (migrationShown()) {
+                <app-plan-migration
+                  *appIfLevel="'super'"
+                  [code]="plan.code"
+                  [toVersion]="plan.current.version"
+                  (moved)="data.reloadStats()"
+                />
+              }
+
               <!-- Versions, newest first -->
               <ol class="flex flex-col gap-3" data-testid="plan-versions">
                 @for (v of data.versions(); track v.version) {
@@ -343,7 +356,20 @@ export class PlanCardPage {
   protected readonly renameOpen = signal(false);
   protected readonly archiveOpen = signal(false);
 
+  private readonly migration = inject(PlanMigrations).of(() => this.code());
+
   protected readonly free = computed(() => isFreePlan(this.code()));
+
+  /**
+   * Moving subscribers: on an active plan with some below its current version (subscription
+   * refuses an archived plan), or while this panel has a run of it to show.
+   */
+  protected readonly migrationShown = computed(() => {
+    const plan = this.data.details();
+    if (!plan || plan.status !== 'active') return false;
+    if (this.migration()?.toVersion === plan.current.version) return true;
+    return (this.data.subscribers()?.onOlder ?? 0) > 0;
+  });
   protected readonly terms = termsOf;
 
   constructor() {

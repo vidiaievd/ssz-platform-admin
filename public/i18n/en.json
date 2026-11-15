@@ -763,6 +763,40 @@
         "final": "The panel has no way to bring an archived plan back."
       }
     },
+    "migration": {
+      "title": "Move subscribers to v{{ version }}",
+      "intro": "Subscribers on older versions keep their keys until they are moved. A preview shows how many would move and what changes for them; nothing is written.",
+      "preview": "Preview the move",
+      "previewLoading": "Counting subscribers…",
+      "previewFailed": "Could not preview the move.",
+      "previewAgain": "Count again",
+      "nobody": "Nobody to move: every current subscription is already on the current version.",
+      "total": "{{ n }} subscribers would move to v{{ version }}.",
+      "source": "From v{{ version }} — {{ n }} subscribers",
+      "same": "Same keys as the current version.",
+      "fewerSeats": "Fewer student seats: nobody over the new limit is removed; the school takes no new students until it is under it.",
+      "keeps": "Status, trial and period stay as they are; the credit month does not restart. Grants are not touched. Each account gets one row in the audit log.",
+      "start": "Move {{ n }}",
+      "dialog": {
+        "title": "Move subscribers",
+        "confirm": "Move",
+        "text": "{{ n }} subscribers move to v{{ version }} and get its keys at once.",
+        "batches": "Accounts move in batches of 200; keep the panel open until the run is done. A stopped run can be continued from the plan card."
+      },
+      "progress": "Moving subscribers",
+      "counts": "Moved {{ moved }} of {{ all }}",
+      "running": "Moving…",
+      "stopping": "Stopping after the current batch…",
+      "done": "Done: {{ n }} subscribers moved.",
+      "paused": "Stopped; {{ n }} still to move.",
+      "stalled": "The last batch moved nobody (the accounts changed meanwhile); {{ n }} still to move.",
+      "failed": "The run stopped; {{ n }} still to move.",
+      "reasonOfRun": "Reason",
+      "stop": "Stop",
+      "resume": "Continue",
+      "leave": "Leave as it is",
+      "close": "Close"
+    },
     "editor": {
       "backToPlan": "Back to the plan",
       "versionTitle": "{{ plan }} — new version v{{ version }}",

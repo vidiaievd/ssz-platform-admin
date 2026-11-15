@@ -1,3 +1,5 @@
+import { FeatureChangeDto } from '../../api/subscription/models/feature-change-dto';
+import { FeatureTermsDto } from '../../api/subscription/models/feature-terms-dto';
 import { PlanDetailsResponseDto } from '../../api/subscription/models/plan-details-response-dto';
 import { PlanFeatureResponseDto } from '../../api/subscription/models/plan-feature-response-dto';
 import { PlanResponseDto } from '../../api/subscription/models/plan-response-dto';
@@ -151,6 +153,42 @@ export function diffFeatures(
     }
   }
   return changes;
+}
+
+function termsOfDto(terms: FeatureTermsDto): FeatureTerms {
+  return {
+    enabled: terms.enabled,
+    monthlyCredits: terms.monthlyCredits,
+    limits: { ...(terms.limits as Record<string, number>) },
+  };
+}
+
+/** The migration preview's changes (subscription's own diff) in the panel's shape. */
+export function changesOfDto(changes: readonly FeatureChangeDto[]): FeatureChange[] {
+  return changes.map((c) => ({
+    featureKey: c.featureKey,
+    change: c.change,
+    before: c.before ? termsOfDto(c.before) : null,
+    after: c.after ? termsOfDto(c.after) : null,
+  }));
+}
+
+/**
+ * Student seats a version's terms give. No key, or the key off, is no limit at all (as
+ * subscription resolves it: no limit is more than any `max`).
+ */
+function seatsOf(terms: FeatureTerms | null): number {
+  if (!terms?.enabled) return Infinity;
+  const max = terms.limits['max'];
+  return typeof max === 'number' ? max : Infinity;
+}
+
+/**
+ * The change gives fewer student seats than before. Moving does not expel anyone over the new
+ * limit (as in phase 4); the school just takes nobody new until it is under it.
+ */
+export function seatsShrink(changes: readonly FeatureChange[]): boolean {
+  return changes.some((c) => c.featureKey === SEATS_KEY && seatsOf(c.after) < seatsOf(c.before));
 }
 
 function sameTerms(a: FeatureTerms, b: FeatureTerms): boolean {

@@ -4,8 +4,10 @@ import { PlanResponseDto } from '../../api/subscription/models/plan-response-dto
 import { PlanStatsDto } from '../../api/subscription/models/plan-stats-dto';
 import {
   catalogGroups,
+  changesOfDto,
   diffFeatures,
   isFreePlan,
+  seatsShrink,
   subscribersOf,
   termsText,
   versionRows,
@@ -193,5 +195,51 @@ describe('plan model', () => {
 
     // Without the stats the counts are unknown, not zero.
     expect(versionRows(details, null).map((r) => r.subscribers)).toEqual([null, null, null]);
+  });
+
+  it('reads the migration preview’s changes and sees fewer seats', () => {
+    const terms = (max?: number, enabled = true) => ({
+      enabled,
+      monthlyCredits: null,
+      limits: max === undefined ? {} : { max },
+    });
+    const changes = changesOfDto([
+      {
+        featureKey: 'ai.practice',
+        change: 'added',
+        before: null,
+        after: { enabled: true, monthlyCredits: '50', limits: {} },
+      },
+    ]);
+    expect(changes).toEqual([
+      {
+        featureKey: 'ai.practice',
+        change: 'added',
+        before: null,
+        after: { enabled: true, monthlyCredits: '50', limits: {} },
+      },
+    ]);
+    expect(seatsShrink(changes)).toBe(false);
+
+    const seats = (
+      before: ReturnType<typeof terms> | null,
+      after: ReturnType<typeof terms> | null,
+    ) =>
+      seatsShrink(
+        changesOfDto([
+          {
+            featureKey: 'seats.students',
+            change: before && after ? 'changed' : after ? 'added' : 'removed',
+            before,
+            after,
+          },
+        ]),
+      );
+    expect(seats(terms(20), terms(10))).toBe(true);
+    expect(seats(terms(10), terms(20))).toBe(false);
+    // No key, or the key off, is no limit at all.
+    expect(seats(null, terms(20))).toBe(true);
+    expect(seats(terms(20), null)).toBe(false);
+    expect(seats(terms(20, false), terms(5))).toBe(true);
   });
 });
