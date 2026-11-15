@@ -130,6 +130,26 @@
       "legendCurrent": "gjeldende versjon",
       "legendOlder": "eldre versjoner",
       "freeNote": "Betalere uten abonnementsrad er på gratisplanen og telles ikke her."
+    },
+    "ai": {
+      "kpi": "KI i perioden",
+      "failed": "Kunne ikke laste KI-kreditter",
+      "creditsUnit": "kreditter belastet betalerne",
+      "change": "{{ n }} mot forrige periode",
+      "changeNone": "Ingenting ble belastet i forrige periode.",
+      "changeFailed": "Endring mot forrige periode er ukjent.",
+      "calls": "{{ n }} modellkall",
+      "unpriced": "{{ n }} kall uten pris — ikke med i kredittene",
+      "money": "Leverandørene fakturerte {{ amount }}",
+      "moneyFailed": "Kunne ikke laste leverandørenes regning",
+      "agents": "Kreditter per agent, per uke",
+      "agentsNone": "Ingen agent brukte kreditter i perioden.",
+      "others": "Andre",
+      "top": "Topp 5 skoler etter kreditter",
+      "topAll": "Alle betalere",
+      "topFailed": "Kunne ikke laste toppskolene",
+      "topNone": "Ingen skole brukte kreditter i perioden.",
+      "namesFailed": "Kunne ikke lese skolenavn; id vises."
     }
   },
   "comingSoon": {

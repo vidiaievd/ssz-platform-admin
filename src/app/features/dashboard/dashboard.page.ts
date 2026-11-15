@@ -12,8 +12,11 @@ import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { schoolTabLink } from '../schools/card/school-tabs';
 import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
-import { DEFAULT_PERIOD, PERIODS, Period, attentionItems } from './dashboard-model';
+import { DEFAULT_PERIOD, PERIODS, Period, attentionItems, periodRange } from './dashboard-model';
 import { DashboardData } from './dashboard.data';
+import { formatCredits } from '../ai/spend/payer-spend-model';
+import { MAIN_CURRENCY, formatMoney, spendTotals, toMicros } from '../ai/spend/spend-model';
+import { AgentChartComponent } from './agent-chart';
 import { GrowthChart } from './growth-chart';
 import { growthBuckets, growthStep, planBars } from './growth-model';
 import { Sparkline } from './sparkline';
@@ -36,6 +39,7 @@ import { Sparkline } from './sparkline';
     LocalDatePipe,
     Sparkline,
     GrowthChart,
+    AgentChartComponent,
   ],
   template: `
     <div class="flex flex-col gap-4">
@@ -478,6 +482,197 @@ import { Sparkline } from './sparkline';
           }
         </section>
       </div>
+
+      <!-- AI of the period: credits (analytics) and money (ai-service), per agent, top schools -->
+      <div class="grid gap-3 lg:grid-cols-3" data-testid="ai">
+        <article
+          class="border-border flex flex-col gap-1 rounded-md border p-4"
+          data-testid="kpi-ai"
+        >
+          <h2 class="text-muted-color text-sm">{{ 'dashboard.ai.kpi' | transloco }}</h2>
+          @switch (data.aiWeeks().kind) {
+            @case ('loading') {
+              <p-skeleton height="6rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="kpi-ai-failed">
+                {{ 'dashboard.ai.failed' | transloco }} ·
+                <button type="button" class="text-primary underline" (click)="data.reloadAiWeeks()">
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @if (data.aiKpi(); as k) {
+                <a
+                  routerLink="/ai/spend"
+                  [queryParams]="spendQuery()"
+                  class="text-3xl font-semibold tabular-nums"
+                  data-testid="kpi-value"
+                >
+                  {{ credits(k.creditMicros) }}
+                </a>
+                <p class="text-muted-color text-xs">{{ 'dashboard.ai.creditsUnit' | transloco }}</p>
+                <p class="text-sm tabular-nums" data-testid="kpi-ai-change">
+                  @if (k.change !== null) {
+                    {{ 'dashboard.ai.change' | transloco: { n: signedPercent(k.change) } }}
+                  } @else if (k.previousEmpty) {
+                    {{ 'dashboard.ai.changeNone' | transloco }}
+                  } @else if (data.aiPreviousFailed()) {
+                    {{ 'dashboard.ai.changeFailed' | transloco }}
+                  }
+                </p>
+                <p class="text-muted-color text-xs tabular-nums" data-testid="kpi-ai-calls">
+                  {{ 'dashboard.ai.calls' | transloco: { n: (k.calls | number) } }}
+                </p>
+                @if (k.unpricedCalls > 0) {
+                  <p
+                    class="text-xs text-amber-700 dark:text-amber-400"
+                    data-testid="kpi-ai-unpriced"
+                  >
+                    {{ 'dashboard.ai.unpriced' | transloco: { n: k.unpricedCalls } }}
+                  </p>
+                }
+                <app-sparkline [values]="k.weekly" />
+              }
+            }
+          }
+          <!-- Money is its own read: it fails without taking the credits away -->
+          <div class="border-border mt-1 border-t pt-2 text-sm" data-testid="kpi-ai-money">
+            @switch (data.aiSpend().kind) {
+              @case ('loading') {
+                <p-skeleton width="8rem" height="1rem" />
+              }
+              @case ('error') {
+                <span role="alert" data-testid="kpi-ai-money-failed">
+                  {{ 'dashboard.ai.moneyFailed' | transloco }} ·
+                  <button
+                    type="button"
+                    class="text-primary underline"
+                    (click)="data.reloadAiSpend()"
+                  >
+                    {{ 'schools.retry' | transloco }}
+                  </button>
+                </span>
+              }
+              @default {
+                <span class="tabular-nums">{{
+                  'dashboard.ai.money' | transloco: { amount: money() }
+                }}</span>
+              }
+            }
+          </div>
+        </article>
+
+        <section
+          class="border-border flex flex-col gap-3 rounded-md border p-4 lg:col-span-2"
+          data-testid="agents"
+        >
+          <h2 class="text-base font-semibold">{{ 'dashboard.ai.agents' | transloco }}</h2>
+          @switch (data.aiWeeks().kind) {
+            @case ('loading') {
+              <p-skeleton height="14rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="agents-failed">
+                {{ 'dashboard.ai.failed' | transloco }} ·
+                <button type="button" class="text-primary underline" (click)="data.reloadAiWeeks()">
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @if (data.agentChart(); as chart) {
+                <app-agent-chart [chart]="chart" [label]="'dashboard.ai.agents' | transloco" />
+              } @else {
+                <p class="text-muted-color text-sm" data-testid="agents-empty">
+                  {{ 'dashboard.ai.agentsNone' | transloco }}
+                </p>
+              }
+            }
+          }
+        </section>
+
+        <section
+          class="border-border flex flex-col gap-2 rounded-md border p-4 lg:col-span-3"
+          data-testid="top-schools"
+        >
+          <h2 class="flex flex-wrap items-baseline gap-x-3 text-base font-semibold">
+            {{ 'dashboard.ai.top' | transloco }}
+            <a
+              routerLink="/ai/spend"
+              [queryParams]="spendQuery({ payer: 'workspace' })"
+              class="text-primary text-sm font-normal underline"
+              data-testid="top-schools-all"
+            >
+              {{ 'dashboard.ai.topAll' | transloco }}
+            </a>
+          </h2>
+          @switch (data.aiTop().kind) {
+            @case ('loading') {
+              <p-skeleton height="8rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="top-schools-failed">
+                {{ 'dashboard.ai.topFailed' | transloco }} ·
+                <button type="button" class="text-primary underline" (click)="data.reloadAiTop()">
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @if (data.topSchools().length === 0) {
+                <p class="text-muted-color text-sm" data-testid="top-schools-empty">
+                  {{ 'dashboard.ai.topNone' | transloco }}
+                </p>
+              } @else {
+                <ol class="flex flex-col">
+                  @for (row of data.topSchools(); track row.payerId; let i = $index) {
+                    <li
+                      class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
+                      data-testid="top-school"
+                    >
+                      <span class="text-muted-color w-4 tabular-nums">{{ i + 1 }}</span>
+                      @if (row.link; as link) {
+                        <a
+                          [routerLink]="link"
+                          class="text-primary underline"
+                          data-testid="top-school-link"
+                        >
+                          {{ row.name }}
+                        </a>
+                        <span class="text-muted-color font-mono text-xs">{{ row.detail }}</span>
+                      } @else {
+                        <span class="font-mono text-xs" data-testid="top-school-id">{{
+                          row.payerId
+                        }}</span>
+                      }
+                      <span class="ml-auto tabular-nums" data-testid="top-school-credits">
+                        {{ credits(row.creditMicros) }}
+                      </span>
+                      <span class="text-muted-color w-12 text-right text-xs tabular-nums">
+                        {{ share(row.share) }}
+                      </span>
+                    </li>
+                  }
+                </ol>
+                @if (data.namesFailed()) {
+                  <p class="text-muted-color text-xs" data-testid="top-schools-names-failed">
+                    {{ 'dashboard.ai.namesFailed' | transloco }} ·
+                    <button
+                      type="button"
+                      class="text-primary underline"
+                      (click)="data.reloadNames()"
+                    >
+                      {{ 'schools.retry' | transloco }}
+                    </button>
+                  </p>
+                }
+              }
+            }
+          }
+        </section>
+      </div>
     </div>
   `,
 })
@@ -587,6 +782,37 @@ export class DashboardPage {
     const q = this.data.queue();
     return q.kind === 'ready' && q.value.endingSoon.truncated;
   });
+
+  /** Providers' money of the period: USD, other currencies apart and never converted. */
+  protected readonly money = computed(() => {
+    const s = this.data.aiSpend();
+    if (s.kind !== 'ready') return '';
+    const t = spendTotals(s.value);
+    return [
+      formatMoney(t.usdMicros, MAIN_CURRENCY, this.lang()),
+      ...t.other.map((m) => formatMoney(toMicros(m.amount), m.currency, this.lang())),
+    ].join(' + ');
+  });
+
+  /** "AI → Spend" for the same days; the default 30 days is that page's own default. */
+  protected spendQuery(extra: Record<string, string> = {}): Record<string, string> {
+    const period = this.data.period();
+    return period === DEFAULT_PERIOD ? extra : { ...periodRange(period), ...extra };
+  }
+
+  protected credits(micros: number): string {
+    return formatCredits(micros, this.lang());
+  }
+
+  /** 0.25 → "+25 %", -0.1 → "−10 %"; a change under half a percent reads "0 %". */
+  protected signedPercent(ratio: number): string {
+    const n = Math.round(ratio * 100);
+    return n > 0 ? `+${n} %` : n < 0 ? `−${-n} %` : '0 %';
+  }
+
+  protected share(share: number | null): string {
+    return share === null ? '—' : `${Math.round(share * 100)} %`;
+  }
 
   protected time(): string {
     return this.data

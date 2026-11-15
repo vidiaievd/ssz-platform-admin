@@ -3,38 +3,8 @@ import { TranslocoService } from '@jsverse/transloco';
 import { UIChart } from 'primeng/chart';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { ThemeService } from '../../../core/theme/theme.service';
+import { INK, seriesColour } from '../../../shared/chart-palette';
 import { MAIN_CURRENCY, SpendChart, formatMoney } from './spend-model';
-
-/**
- * Categorical colours of the series, in fixed order, stepped for each surface (the validated
- * palette of the data-viz guide: adjacent pairs stay apart for colour-blind readers). A ninth
- * model is never a new hue — it folds into "Other", which is grey.
- */
-const SERIES_LIGHT = [
-  '#2a78d6',
-  '#eb6834',
-  '#1baf7a',
-  '#eda100',
-  '#e87ba4',
-  '#008300',
-  '#6250d6',
-  '#e34948',
-];
-const SERIES_DARK = [
-  '#3987e5',
-  '#d95926',
-  '#199e70',
-  '#c98500',
-  '#d55181',
-  '#0ca30c',
-  '#9085e9',
-  '#e66767',
-];
-const OTHER = { light: '#a3a29c', dark: '#6b6a64' };
-const INK = {
-  light: { text: '#52514e', grid: 'rgba(11, 11, 11, 0.08)', surface: '#ffffff' },
-  dark: { text: '#c3c2b7', grid: 'rgba(240, 239, 236, 0.10)', surface: '#18181b' },
-};
 
 /**
  * Cost per day, stacked by model (USD). The hover tooltip lists every model of the day with
@@ -70,7 +40,6 @@ export class SpendChartComponent {
 
   protected readonly data = computed(() => {
     const dark = this.theme.isDark();
-    const palette = dark ? SERIES_DARK : SERIES_LIGHT;
     const surface = dark ? INK.dark.surface : INK.light.surface;
     const dayFormat = new Intl.DateTimeFormat(this.lang(), {
       day: 'numeric',
@@ -82,8 +51,7 @@ export class SpendChartComponent {
       datasets: this.chart().series.map((s) => ({
         label: s.name ?? this.transloco.translate<string>('ai.spend.other'),
         data: [...s.values],
-        backgroundColor:
-          s.slot === null ? (dark ? OTHER.dark : OTHER.light) : palette[s.slot % palette.length],
+        backgroundColor: seriesColour(s.slot, dark),
         // A thin gap of the surface between stacked segments.
         borderColor: surface,
         borderWidth: { top: 2, bottom: 0, left: 0, right: 0 },

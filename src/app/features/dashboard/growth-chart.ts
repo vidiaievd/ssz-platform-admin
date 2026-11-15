@@ -2,14 +2,8 @@ import { Component, computed, inject, input } from '@angular/core';
 import { UIChart } from 'primeng/chart';
 import { LanguageService } from '../../core/i18n/language.service';
 import { ThemeService } from '../../core/theme/theme.service';
+import { INK, seriesColour } from '../../shared/chart-palette';
 import { GrowthBucket, GrowthStep } from './growth-model';
-
-/** One series, so one hue: the first of the validated categorical palette, per surface. */
-const BAR = { light: '#2a78d6', dark: '#3987e5' };
-const INK = {
-  light: { text: '#52514e', grid: 'rgba(11, 11, 11, 0.08)' },
-  dark: { text: '#c3c2b7', grid: 'rgba(240, 239, 236, 0.10)' },
-};
 
 /**
  * A small bar chart of new schools or new students per bar of the period. The totals are
@@ -72,7 +66,8 @@ export class GrowthChart {
       datasets: [
         {
           data: this.buckets().map((b) => b[metric]),
-          backgroundColor: dark ? BAR.dark : BAR.light,
+          // One series, so one hue: the first of the palette.
+          backgroundColor: seriesColour(0, dark),
           borderRadius: 2,
           maxBarThickness: 18,
         },

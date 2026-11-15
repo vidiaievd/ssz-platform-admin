@@ -130,6 +130,26 @@
       "legendCurrent": "current version",
       "legendOlder": "older versions",
       "freeNote": "Payers with no subscription row are on the free plan and are not counted here."
+    },
+    "ai": {
+      "kpi": "AI in the period",
+      "failed": "Could not load AI credits",
+      "creditsUnit": "credits charged to payers",
+      "change": "{{ n }} to the previous period",
+      "changeNone": "Nothing was charged in the previous period.",
+      "changeFailed": "Change to the previous period unknown.",
+      "calls": "{{ n }} model calls",
+      "unpriced": "{{ n }} calls without a price — not in the credits",
+      "money": "Providers billed {{ amount }}",
+      "moneyFailed": "Could not load the providers' bill",
+      "agents": "Credits by agent, per week",
+      "agentsNone": "No agent spent credits in the period.",
+      "others": "Others",
+      "top": "Top 5 schools by credits",
+      "topAll": "All payers",
+      "topFailed": "Could not load the top schools",
+      "topNone": "No school spent credits in the period.",
+      "namesFailed": "Could not read school names; ids are shown."
     }
   },
   "comingSoon": {

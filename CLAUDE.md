@@ -89,6 +89,14 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   bar per plan from the queue's `admin/subscriptions/stats` (`plans[]`, archived muted; current version vs older ones from
   `byVersion`, one scale for all plans), each row a link to `/plans/:code`. Each block has its own skeleton and retry of
   the read it shares, so no new request.
+  AI blocks (step 9) follow the period: KPI *AI in the period* — credits from analytics `admin/ai/usage?groupBy=week`
+  (sparkline by ISO week), change to the previous period of the same length (a second read, `groupBy=capability`, only
+  its total; a failed one shows "unknown", an empty one "nothing charged" — never a ratio to zero) and providers' money
+  from ai-service `admin/ai/spend` `totals.cost` (own read, USD first, other currencies beside, never converted); *Credits
+  by agent* — the same week read stacked by capability (`dashboard-ai-model.ts`: ≤ 6 own series by period total, ties by
+  name, the rest grey "Others"); *Top 5 schools* — `groupBy=payer&payerType=workspace&limit=5`, names from organization
+  `admin/schools?ids=` (failed → ids + retry), a named school links to its `ai` tab. Chart colours live in
+  `shared/chart-palette.ts` (spend, growth and agents charts share them).
 - **Seats are one rule, copied.** `features/schools/seats.ts` mirrors organization's `seat-policy.vo.ts`: `none` (no
   limit) / `ok` / `near` (≥ 90 %, not over) / `warning` (in the +10 % margin) / `full` (at the ceiling). The list reads
   `seats { used, limit }`; a school without a projected limit shows `87` alone, never a made-up limit. Seats come only
