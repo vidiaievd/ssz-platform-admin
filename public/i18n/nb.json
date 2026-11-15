@@ -82,8 +82,13 @@
         "seats_full": "Ved taket: nye elever avvises",
         "seats_warning": "Over grensen, innenfor 10 % slingringsmonn",
         "closing": "Sperret: stenger snart",
-        "purging": "I arkivet: slettes snart"
-      }
+        "purging": "I arkivet: slettes snart",
+        "breakerOpen": "Sikring åpen: kall går til reserven",
+        "providerOff": "Leverandør slått av, men i bruk",
+        "providerNoKey": "Leverandør i bruk mangler nøkkel"
+      },
+      "reopensAt": "prøves igjen {{ time }}",
+      "openProviders": "Leverandører"
     },
     "kpi": {
       "failed": "Kunne ikke laste tallene",
@@ -150,6 +155,26 @@
       "topFailed": "Kunne ikke laste toppskolene",
       "topNone": "Ingen skole brukte kreditter i perioden.",
       "namesFailed": "Kunne ikke lese skolenavn; id vises."
+    },
+    "providers": {
+      "title": "Leverandører",
+      "failed": "Kunne ikke laste leverandørene",
+      "none": "Ingen leverandører i registeret.",
+      "health": {
+        "ok": "i drift",
+        "off": "slått av",
+        "noKey": "mangler nøkkel",
+        "breakerOpen": "åpne sikringer: {{ n }}"
+      },
+      "unused": "ingen agent bruker den",
+      "boardFailed": "Sikringsstatus utilgjengelig",
+      "storeDown": "Sikringslageret svarer ikke: noen tilstander er ukjente."
+    },
+    "recent": {
+      "title": "Siste handlinger",
+      "all": "Hele loggen",
+      "failed": "Kunne ikke laste loggen",
+      "none": "Ingen adminhandlinger ennå."
     }
   },
   "comingSoon": {
@@ -596,7 +621,22 @@
         "school.reactivated": "Skolen gjenåpnet",
         "school.closed": "Skolen stengt",
         "school.restored": "Skolen gjenopprettet",
-        "school.purge_requested": "Tidlig sletting forespurt"
+        "school.purge_requested": "Tidlig sletting forespurt",
+        "admin.granted": "Admintilgang gitt",
+        "admin.level_changed": "Adminnivå endret",
+        "admin.revoked": "Admintilgang trukket tilbake",
+        "token_lifetime.changed": "Tokenlevetid endret",
+        "plan.created": "Plan opprettet",
+        "plan.renamed": "Plan omdøpt",
+        "plan.revised": "Ny planversjon",
+        "plan.archived": "Plan arkivert",
+        "subscription.migrated": "Flyttet til gjeldende planversjon",
+        "binding.changed": "Agentens modell endret",
+        "provider.toggled": "Leverandør slått av/på",
+        "model.status_changed": "Modellstatus endret",
+        "model.tested": "Modell testet",
+        "breaker.reset": "Sikring tilbakestilt",
+        "media.sweep.deleted": "Medieopprydding slettet filer"
       }
     },
     "allSeats": "Alle plassnivåer",

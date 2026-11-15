@@ -13,6 +13,8 @@ import { provideApiClients } from '../../core/api/provide-api-clients';
 import { SessionStore } from '../../core/auth/session.store';
 import { adminToken, sessionBody, settle } from '../../core/auth/testing';
 import { APP_CONFIG } from '../../core/config/app-config';
+import { board as breakerBoard, providers as registry } from '../ai/providers/provider-fixtures';
+import { PROVIDERS_POLL_MS } from './dashboard.data';
 // Real English texts, so a missing key would show up as the key itself.
 import en from '../../../../public/i18n/en.json';
 
@@ -21,6 +23,9 @@ const QUEUE = 'http://gw/api/v1/admin/subscriptions/stats';
 const USAGE = 'http://gw/api/v1/admin/ai/usage';
 const SPEND = 'http://gw/api/v1/admin/ai/spend';
 const SCHOOLS = 'http://gw/api/v1/admin/schools';
+const PROVIDERS = 'http://gw/api/v1/admin/ai/providers';
+const BREAKERS = 'http://gw/api/v1/admin/ai/breakers';
+const AUDIT = 'http://gw/api/v1/admin/audit';
 const unavailable = { status: 503, statusText: 'Unavailable' };
 
 const SCHOOL_A = '6f1c2a9e-0b7d-4e3a-9c55-1d2e3f4a5b6c';
@@ -140,6 +145,33 @@ const stats = {
   ],
 };
 
+/** Every breaker closed: the strip is calm and the queue has no provider row. */
+const calmBoard = {
+  ...breakerBoard,
+  items: breakerBoard.items.map((r) => ({ ...r, state: 'closed' as const })),
+};
+const audit = (items: object[] = []) => ({ items, nextCursor: null });
+const entry = (id: string, overrides: object = {}) => ({
+  id,
+  service: 'subscription',
+  action: 'grant.issued',
+  actorId: 'admin-1',
+  actorLevel: 'admin',
+  targetType: 'workspace',
+  targetId: SCHOOL_A,
+  reason: 'pilot',
+  before: null,
+  after: null,
+  occurredAt: '2026-11-14T10:00:00.000Z',
+  ...overrides,
+});
+
+interface PlatformAnswers {
+  providers?: object | 'fail';
+  board?: object | 'fail';
+  audit?: object | 'fail';
+}
+
 const queue = (endingSoon: object = { grants: [], subscriptions: [], truncated: false }) => ({
   generatedAt: '2026-11-10T08:00:00.000Z',
   horizon: '2026-11-17T08:00:00.000Z',
@@ -152,6 +184,16 @@ const queue = (endingSoon: object = { grants: [], subscriptions: [], truncated: 
 describe('DashboardPage', () => {
   let http: HttpTestingController;
   let el: HTMLElement;
+  let harness: RouterTestingHarness;
+  /** The strip's poll; a test that checks polling makes it short. */
+  let pollMs = 60_000;
+  const visibility = (state: DocumentVisibilityState) =>
+    Object.defineProperty(document, 'visibilityState', { value: state, configurable: true });
+
+  afterEach(() => {
+    pollMs = 60_000;
+    delete (document as { visibilityState?: unknown }).visibilityState;
+  });
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -168,6 +210,7 @@ describe('DashboardPage', () => {
         provideRouter(routes, withComponentInputBinding()),
         { provide: APP_CONFIG, useValue: { apiBaseUrl: 'http://gw' } },
         provideApiClients(),
+        { provide: PROVIDERS_POLL_MS, useFactory: () => pollMs },
       ],
     });
     http = TestBed.inject(HttpTestingController);
@@ -196,16 +239,29 @@ describe('DashboardPage', () => {
   }
 
   async function open(
-    answers: { stats?: object | 'fail'; queue?: object | 'fail'; ai?: AiAnswers } = {},
+    answers: {
+      stats?: object | 'fail';
+      queue?: object | 'fail';
+      ai?: AiAnswers;
+      platform?: PlatformAnswers;
+    } = {},
     url = '/',
   ): Promise<void> {
     TestBed.inject(SessionStore).start(sessionBody(adminToken({ admin_level: 'support' })));
-    const harness = await RouterTestingHarness.create();
+    harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(url);
     el = harness.fixture.nativeElement as HTMLElement;
     await answer(STATS, answers.stats ?? stats);
     await answer(QUEUE, answers.queue ?? queue());
     await answerAi(answers.ai);
+    await answerPlatform(answers.platform);
+  }
+
+  /** The providers strip and the recent actions: read on open and on refresh. */
+  async function answerPlatform(p: PlatformAnswers = {}): Promise<void> {
+    await answer(PROVIDERS, p.providers ?? registry);
+    await answer(BREAKERS, p.board ?? calmBoard);
+    await answer(AUDIT, p.audit ?? audit());
   }
 
   /** The four AI reads of the period, then the names of the top when it has schools. */
@@ -553,6 +609,140 @@ describe('DashboardPage', () => {
     await answer(STATS, stats);
     await answer(QUEUE, queue());
     await answerAi();
+    await answerPlatform();
     expect(find('kpi-schools')).not.toBeNull();
+  });
+
+  it('draws a chip per provider and keeps the queue calm while everything serves', async () => {
+    await open();
+    const chips = all('provider-chip');
+    expect(chips.map((c) => [c.getAttribute('data-code'), c.getAttribute('data-health')])).toEqual([
+      ['anthropic', 'ok'],
+      ['google', 'ok'],
+      ['openai', 'noKey'],
+    ]);
+    // OpenAI has no key, but no agent uses it: said on the chip, nothing in the queue.
+    expect(chips[2].textContent).toContain('no agent uses it');
+    expect(all('queue-provider')).toHaveLength(0);
+    expect(find('queue-empty')).not.toBeNull();
+  });
+
+  it('puts an open breaker and a used provider without a key in the queue', async () => {
+    await open({
+      platform: {
+        providers: registry.map((p) => (p.code === 'google' ? { ...p, configured: false } : p)),
+        board: breakerBoard,
+      },
+    });
+    const rows = all('queue-provider');
+    expect(rows.map((r) => r.getAttribute('data-kind'))).toEqual(['breakerOpen', 'providerNoKey']);
+    expect(rows[0].textContent).toContain('Breaker open');
+    expect(rows[0].textContent).toContain('Sonnet');
+    expect(text('queue-provider-agents')).toBe('practice, review_draft');
+    expect(rows[1].textContent).toContain('Google');
+    expect(rows[0].querySelector('a')!.getAttribute('href')).toBe('/ai/providers');
+    expect(find('queue-empty')).toBeNull();
+    expect(text('providers')).toContain('breakers open: 1');
+  });
+
+  it('keeps the provider rows when the subscription queue fails', async () => {
+    await open({ queue: 'fail', platform: { board: breakerBoard } });
+    expect(find('queue-failed')).not.toBeNull();
+    expect(all('queue-provider')).toHaveLength(1);
+  });
+
+  it('lets the providers and the board fail on their own, with one retry', async () => {
+    await open({ platform: { board: 'fail' } });
+    expect(all('provider-chip')).toHaveLength(3);
+    expect(text('providers-board-failed')).toContain('Breaker state unavailable');
+    expect(all('queue-provider')).toHaveLength(0);
+
+    find('providers-board-failed')!.querySelector('button')!.click();
+    await answer(BREAKERS, breakerBoard);
+    expect(find('providers-board-failed')).toBeNull();
+    expect(all('queue-provider')).toHaveLength(1);
+  });
+
+  it('says when the breaker store cannot be read', async () => {
+    await open({ platform: { board: { ...calmBoard, storeAvailable: false } } });
+    expect(find('providers-store-down')).not.toBeNull();
+  });
+
+  it('reads the strip again every minute, and only while the tab is visible', async () => {
+    pollMs = 300;
+    visibility('visible');
+    await open();
+
+    await answer(PROVIDERS, registry);
+    await answer(BREAKERS, breakerBoard);
+    expect(all('queue-provider')).toHaveLength(1);
+
+    visibility('hidden');
+    await new Promise((r) => setTimeout(r, pollMs * 2));
+    expect(http.match(PROVIDERS)).toHaveLength(0);
+
+    visibility('visible');
+    document.dispatchEvent(new Event('visibilitychange'));
+    await answer(PROVIDERS, registry);
+    await answer(BREAKERS, calmBoard);
+    expect(all('queue-provider')).toHaveLength(0);
+
+    // No tick may outlive the page.
+    harness.fixture.destroy();
+    await new Promise((r) => setTimeout(r, pollMs * 2));
+    expect(http.match(PROVIDERS)).toHaveLength(0);
+  });
+
+  it('lists the last admin actions, a school linking to its journal', async () => {
+    await open({
+      platform: {
+        audit: audit([
+          entry('e1'),
+          entry('e2', {
+            service: 'ai',
+            action: 'binding.changed',
+            actorLevel: 'super',
+            targetType: 'capability',
+            targetId: 'review_draft',
+            reason: null,
+          }),
+          entry('e3', { action: 'something.new', actorId: null, actorLevel: null }),
+        ]),
+      },
+    });
+    const rows = all('recent-action');
+    expect(rows).toHaveLength(3);
+    expect(rows[0].textContent).toContain('Grant issued');
+    expect(rows[0].textContent).toContain('Reason: pilot');
+    expect(rows[0].querySelector('a')!.getAttribute('href')).toBe(`/schools/${SCHOOL_A}/journal`);
+    expect(rows[1].textContent).toContain('Agent model changed');
+    expect(rows[1].textContent).toContain('capability:review_draft');
+    expect(rows[1].querySelector('a')).toBeNull();
+    // An action the panel has no text for is shown as written; nobody acting is "system".
+    expect(rows[2].textContent).toContain('something.new');
+    expect(rows[2].textContent).toContain('system');
+    expect(find('recent-actions-all')!.getAttribute('href')).toBe('/audit');
+  });
+
+  it('asks the journal for ten entries, and retries it alone', async () => {
+    TestBed.inject(SessionStore).start(sessionBody(adminToken({ admin_level: 'support' })));
+    harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/');
+    el = harness.fixture.nativeElement as HTMLElement;
+    await answer(STATS, stats);
+    await answer(QUEUE, queue());
+    await answerAi();
+    await answer(PROVIDERS, registry);
+    await answer(BREAKERS, calmBoard);
+    const req = await next(AUDIT);
+    expect(req.request.params.get('limit')).toBe('10');
+    req.flush(null, unavailable);
+    await stable();
+    expect(text('recent-actions-failed')).toContain('Could not load the journal');
+    expect(all('provider-chip')).toHaveLength(3);
+
+    find('recent-actions-failed')!.querySelector('button')!.click();
+    await answer(AUDIT, audit());
+    expect(text('recent-actions-empty')).toContain('No admin actions yet');
   });
 });

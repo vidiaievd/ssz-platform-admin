@@ -9,7 +9,9 @@ import { AdminLifecycleAttentionItemDto } from '../../api/organization/models/ad
 import { AdminStatsPeopleDto } from '../../api/organization/models/admin-stats-people-dto';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
+import { formatMoment, isKnownAction } from '../schools/card/journal/journal-format';
 import { schoolTabLink } from '../schools/card/school-tabs';
+import { ProviderHealth } from './dashboard-providers-model';
 import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
 import { DEFAULT_PERIOD, PERIODS, Period, attentionItems, periodRange } from './dashboard-model';
@@ -83,9 +85,134 @@ import { Sparkline } from './sparkline';
         </div>
       </header>
 
+      <!-- Providers strip: ai-service providers + breaker board, polled while the tab is visible -->
+      <section
+        class="border-border flex flex-wrap items-center gap-x-3 gap-y-2 rounded-md border px-4 py-3"
+        data-testid="providers"
+        [attr.aria-label]="'dashboard.providers.title' | transloco"
+      >
+        <a routerLink="/ai/providers" class="text-sm font-semibold underline">
+          {{ 'dashboard.providers.title' | transloco }}
+        </a>
+        @switch (data.providers().kind) {
+          @case ('loading') {
+            <p-skeleton width="16rem" height="1.5rem" />
+          }
+          @case ('error') {
+            <span class="text-sm" role="alert" data-testid="providers-failed">
+              {{ 'dashboard.providers.failed' | transloco }} ·
+              <button type="button" class="text-primary underline" (click)="data.reloadProviders()">
+                {{ 'schools.retry' | transloco }}
+              </button>
+            </span>
+          }
+          @default {
+            @if (data.providerChips().length === 0) {
+              <span class="text-muted-color text-sm" data-testid="providers-empty">
+                {{ 'dashboard.providers.none' | transloco }}
+              </span>
+            }
+            <ul class="flex flex-wrap gap-2">
+              @for (chip of data.providerChips(); track chip.id) {
+                <li
+                  class="flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs"
+                  [class]="chipClass(chip.health)"
+                  data-testid="provider-chip"
+                  [attr.data-code]="chip.code"
+                  [attr.data-health]="chip.health"
+                >
+                  <i [class]="'pi ' + chipIcon(chip.health)" aria-hidden="true"></i>
+                  <span class="font-medium">{{ chip.name }}</span>
+                  <span>
+                    @if (chip.health === 'breakerOpen') {
+                      {{
+                        'dashboard.providers.health.breakerOpen'
+                          | transloco: { n: chip.openBreakers }
+                      }}
+                    } @else {
+                      {{ 'dashboard.providers.health.' + chip.health | transloco }}
+                    }
+                  </span>
+                  @if (chip.used === false && chip.health !== 'ok') {
+                    <span class="opacity-70">· {{ 'dashboard.providers.unused' | transloco }}</span>
+                  }
+                </li>
+              }
+            </ul>
+            @if (data.board().kind === 'error') {
+              <span
+                class="text-muted-color text-xs"
+                role="alert"
+                data-testid="providers-board-failed"
+              >
+                {{ 'dashboard.providers.boardFailed' | transloco }} ·
+                <button
+                  type="button"
+                  class="text-primary underline"
+                  (click)="data.reloadProviders()"
+                >
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </span>
+            } @else if (boardStoreDown()) {
+              <span
+                class="text-xs text-amber-700 dark:text-amber-400"
+                data-testid="providers-store-down"
+              >
+                {{ 'dashboard.providers.storeDown' | transloco }}
+              </span>
+            }
+          }
+        }
+      </section>
+
       <!-- Attention queue -->
       <section class="border-border flex flex-col gap-2 rounded-md border p-4" data-testid="queue">
         <h2 class="text-base font-semibold">{{ 'dashboard.queue.title' | transloco }}</h2>
+        <!-- Provider rows come from ai-service: they stay when the subscription read fails -->
+        @if (data.providerAttention().length > 0) {
+          <ul class="flex flex-col" data-testid="queue-providers">
+            @for (row of data.providerAttention(); track row.id) {
+              <li
+                class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
+                data-testid="queue-provider"
+                [attr.data-kind]="row.kind"
+              >
+                <p-tag
+                  [severity]="row.kind === 'breakerOpen' ? 'danger' : 'warn'"
+                  [value]="'dashboard.queue.kinds.' + row.kind | transloco"
+                />
+                @if (row.kind === 'breakerOpen') {
+                  <span>{{ row.model }}</span>
+                  <span class="text-muted-color text-xs">{{ row.provider }}</span>
+                } @else {
+                  <span>{{ row.provider }}</span>
+                }
+                @if (row.capabilities.length > 0) {
+                  <span
+                    class="text-muted-color font-mono text-xs"
+                    data-testid="queue-provider-agents"
+                  >
+                    {{ row.capabilities.join(', ') }}
+                  </span>
+                }
+                @if (row.kind === 'breakerOpen' && row.reopensAt) {
+                  <span class="text-muted-color ml-auto text-xs tabular-nums">
+                    {{ 'dashboard.queue.reopensAt' | transloco: { time: clock(row.reopensAt) } }}
+                  </span>
+                }
+                <a
+                  routerLink="/ai/providers"
+                  class="text-primary underline"
+                  [class.ml-auto]="row.kind !== 'breakerOpen' || !row.reopensAt"
+                  data-testid="queue-provider-link"
+                >
+                  {{ 'dashboard.queue.openProviders' | transloco }}
+                </a>
+              </li>
+            }
+          </ul>
+        }
         @switch (data.queue().kind) {
           @case ('loading') {
             <p-skeleton height="4rem" />
@@ -100,7 +227,10 @@ import { Sparkline } from './sparkline';
           }
           @default {
             @if (
-              items().length === 0 && seatItems().length === 0 && lifecycleItems().length === 0
+              items().length === 0 &&
+              seatItems().length === 0 &&
+              lifecycleItems().length === 0 &&
+              data.providerAttention().length === 0
             ) {
               <p class="text-sm" data-testid="queue-empty">
                 <i class="pi pi-check-circle text-green-600" aria-hidden="true"></i>
@@ -673,6 +803,95 @@ import { Sparkline } from './sparkline';
           }
         </section>
       </div>
+
+      <!-- Recent admin actions: analytics journal, not bound to the period -->
+      <section
+        class="border-border flex flex-col gap-2 rounded-md border p-4"
+        data-testid="recent-actions"
+      >
+        <h2 class="flex flex-wrap items-baseline gap-x-3 text-base font-semibold">
+          {{ 'dashboard.recent.title' | transloco }}
+          <a
+            routerLink="/audit"
+            class="text-primary text-sm font-normal underline"
+            data-testid="recent-actions-all"
+          >
+            {{ 'dashboard.recent.all' | transloco }}
+          </a>
+        </h2>
+        @switch (data.audit().kind) {
+          @case ('loading') {
+            <p-skeleton height="8rem" />
+          }
+          @case ('error') {
+            <p class="text-sm" role="alert" data-testid="recent-actions-failed">
+              {{ 'dashboard.recent.failed' | transloco }} ·
+              <button type="button" class="text-primary underline" (click)="data.reloadAudit()">
+                {{ 'schools.retry' | transloco }}
+              </button>
+            </p>
+          }
+          @default {
+            @if (recent().length === 0) {
+              <p class="text-muted-color text-sm" data-testid="recent-actions-empty">
+                {{ 'dashboard.recent.none' | transloco }}
+              </p>
+            } @else {
+              <ol class="flex flex-col">
+                @for (entry of recent(); track entry.id) {
+                  <li
+                    class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-t py-2 text-sm first:border-t-0"
+                    data-testid="recent-action"
+                  >
+                    <span class="font-medium" data-testid="recent-action-name">
+                      {{
+                        isKnown(entry.action)
+                          ? ('schools.journal.actions.' + entry.action | transloco)
+                          : entry.action
+                      }}
+                    </span>
+                    <p-tag severity="secondary" [value]="entry.service" />
+                    @if (entry.link; as link) {
+                      <a
+                        [routerLink]="link"
+                        class="text-primary font-mono text-xs underline"
+                        data-testid="recent-action-target"
+                      >
+                        {{ entry.targetId }}
+                      </a>
+                    } @else {
+                      <span
+                        class="text-muted-color font-mono text-xs"
+                        data-testid="recent-action-target"
+                      >
+                        {{ entry.targetType }}:{{ entry.targetId }}
+                      </span>
+                    }
+                    <span class="text-muted-color text-xs" data-testid="recent-action-actor">
+                      @if (entry.actorLevel; as level) {
+                        {{ level }}
+                      } @else if (!entry.actorId) {
+                        {{ 'schools.journal.system' | transloco }}
+                      }
+                    </span>
+                    <time
+                      class="text-muted-color ml-auto text-xs tabular-nums"
+                      [attr.datetime]="entry.occurredAt"
+                    >
+                      {{ moment(entry.occurredAt) }}
+                    </time>
+                    @if (entry.reason) {
+                      <p class="text-muted-color w-full truncate text-xs" [title]="entry.reason">
+                        {{ 'schools.journal.reason' | transloco: { reason: entry.reason } }}
+                      </p>
+                    }
+                  </li>
+                }
+              </ol>
+            }
+          }
+        }
+      </section>
     </div>
   `,
 })
@@ -812,6 +1031,60 @@ export class DashboardPage {
 
   protected share(share: number | null): string {
     return share === null ? '—' : `${Math.round(share * 100)} %`;
+  }
+
+  /** Red for an open breaker, yellow for a key or switch, green when it serves. */
+  protected chipClass(health: ProviderHealth): string {
+    switch (health) {
+      case 'breakerOpen':
+        return 'border-red-300 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-200';
+      case 'noKey':
+      case 'off':
+        return 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200';
+      default:
+        return 'border-border text-muted-color';
+    }
+  }
+
+  protected chipIcon(health: ProviderHealth): string {
+    switch (health) {
+      case 'breakerOpen':
+        return 'pi-times-circle';
+      case 'noKey':
+        return 'pi-key';
+      case 'off':
+        return 'pi-power-off';
+      default:
+        return 'pi-check-circle text-green-600';
+    }
+  }
+
+  protected readonly boardStoreDown = computed(() => {
+    const b = this.data.board();
+    return b.kind === 'ready' && !b.value.storeAvailable;
+  });
+
+  /** The journal's last entries; a school target links to the school's journal tab. */
+  protected readonly recent = computed(() => {
+    const a = this.data.audit();
+    if (a.kind !== 'ready') return [];
+    return a.value.items.map((e) => ({
+      ...e,
+      link: e.targetType === 'workspace' ? schoolTabLink(e.targetId, 'journal') : null,
+    }));
+  });
+
+  protected isKnown(action: string): boolean {
+    return isKnownAction(action);
+  }
+
+  protected moment(iso: string): string {
+    return formatMoment(iso, this.lang());
+  }
+
+  /** Hours and minutes in the panel's language. */
+  protected clock(iso: string): string {
+    return new Date(iso).toLocaleTimeString(this.lang(), { hour: '2-digit', minute: '2-digit' });
   }
 
   protected time(): string {

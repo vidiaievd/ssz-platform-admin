@@ -82,8 +82,13 @@
         "seats_full": "At the ceiling: new students refused",
         "seats_warning": "Over the limit, in the 10 % grace",
         "closing": "Suspended: closing soon",
-        "purging": "In the archive: deletion soon"
-      }
+        "purging": "In the archive: deletion soon",
+        "breakerOpen": "Breaker open: calls go to the fallback",
+        "providerOff": "Provider switched off but in use",
+        "providerNoKey": "Provider in use has no key"
+      },
+      "reopensAt": "retried at {{ time }}",
+      "openProviders": "Providers"
     },
     "kpi": {
       "failed": "Could not load the numbers",
@@ -150,6 +155,26 @@
       "topFailed": "Could not load the top schools",
       "topNone": "No school spent credits in the period.",
       "namesFailed": "Could not read school names; ids are shown."
+    },
+    "providers": {
+      "title": "Providers",
+      "failed": "Could not load the providers",
+      "none": "No providers in the registry.",
+      "health": {
+        "ok": "serving",
+        "off": "switched off",
+        "noKey": "no key",
+        "breakerOpen": "breakers open: {{ n }}"
+      },
+      "unused": "no agent uses it",
+      "boardFailed": "Breaker state unavailable",
+      "storeDown": "Breaker store unreachable: some states are unknown."
+    },
+    "recent": {
+      "title": "Recent actions",
+      "all": "Full journal",
+      "failed": "Could not load the journal",
+      "none": "No admin actions yet."
     }
   },
   "comingSoon": {
@@ -596,7 +621,22 @@
         "school.reactivated": "School reactivated",
         "school.closed": "School closed",
         "school.restored": "School restored",
-        "school.purge_requested": "Early purge requested"
+        "school.purge_requested": "Early purge requested",
+        "admin.granted": "Admin access granted",
+        "admin.level_changed": "Admin level changed",
+        "admin.revoked": "Admin access revoked",
+        "token_lifetime.changed": "Token lifetime changed",
+        "plan.created": "Plan created",
+        "plan.renamed": "Plan renamed",
+        "plan.revised": "New plan version",
+        "plan.archived": "Plan archived",
+        "subscription.migrated": "Moved to the current plan version",
+        "binding.changed": "Agent model changed",
+        "provider.toggled": "Provider switched",
+        "model.status_changed": "Model status changed",
+        "model.tested": "Model tested",
+        "breaker.reset": "Breaker reset",
+        "media.sweep.deleted": "Media cleanup deleted files"
       }
     },
     "allSeats": "All seat levels",

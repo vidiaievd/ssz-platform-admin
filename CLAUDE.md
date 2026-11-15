@@ -97,6 +97,13 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   name, the rest grey "Others"); *Top 5 schools* — `groupBy=payer&payerType=workspace&limit=5`, names from organization
   `admin/schools?ids=` (failed → ids + retry), a named school links to its `ai` tab. Chart colours live in
   `shared/chart-palette.ts` (spend, growth and agents charts share them).
+  Providers strip and recent actions (step 10): ai-service `admin/ai/providers` + `admin/ai/breakers` — the only polled
+  reads of the page (`PROVIDERS_POLL_MS`, 60 s; a tick on a hidden tab only marks the read due, the tab's return reads).
+  `dashboard-providers-model.ts`: a chip per provider (open breaker > no key > off > ok; "used" = an enabled binding on
+  one of its models, known only from the board). The queue gets red "breaker open" rows and yellow "used provider off /
+  without a key" rows (an unused one raises nothing); they come from ai-service, so they stay when the subscription read
+  fails. *Recent actions* — analytics `admin/audit?limit=10` (not bound to the period), a `workspace` target links to the
+  school's journal tab, the header to `/audit`. `journal-format.ts` `KNOWN_ACTIONS` names the platform-wide actions too.
 - **Seats are one rule, copied.** `features/schools/seats.ts` mirrors organization's `seat-policy.vo.ts`: `none` (no
   limit) / `ok` / `near` (≥ 90 %, not over) / `warning` (in the +10 % margin) / `full` (at the ceiling). The list reads
   `seats { used, limit }`; a school without a projected limit shows `87` alone, never a made-up limit. Seats come only

@@ -12,6 +12,22 @@ export const KNOWN_ACTIONS = [
   'school.closed',
   'school.restored',
   'school.purge_requested',
+  // Seen in the platform-wide journal (dashboard, /audit) rather than on a school.
+  'admin.granted',
+  'admin.level_changed',
+  'admin.revoked',
+  'token_lifetime.changed',
+  'plan.created',
+  'plan.renamed',
+  'plan.revised',
+  'plan.archived',
+  'subscription.migrated',
+  'binding.changed',
+  'provider.toggled',
+  'model.status_changed',
+  'model.tested',
+  'breaker.reset',
+  'media.sweep.deleted',
 ] as const;
 
 export function isKnownAction(action: string): boolean {
