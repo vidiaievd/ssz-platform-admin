@@ -12,7 +12,7 @@ Backend: monorepo `ssz-platform`, reached through the nginx gateway (`/api/v1/..
 - `ng-openapi-gen` for API clients, Playwright for e2e, Vitest for unit tests, angular-eslint for lint
 - Keep PrimeNG on the same major as Angular. The global Angular CLI decides the version `ng new` scaffolds; Node must satisfy the CLI's minimum (≥ 24.15)
 
-## Status (plan 90, phase 5 — school lifecycle, branch `feature/admin-lifecycle`)
+## Status (plan 90, phase 8 — dashboard, Platform and Plans, branch `feature/admin-phase-8`)
 
 Built: runtime config, theme and language, sign-in with MFA, session and refresh, layout with guards, generated
 API clients (organization, subscription, ai, analytics, content, user-profile), Ctrl+K palette, schools list, the school
@@ -22,7 +22,16 @@ attention queue, seats KPI). Phase 4 added student seats («Места» column,
 the card header (`closesAt` / `purgeAt` with days left), the dashboard's "Needs attention" queue (a suspended school
 closing in N days; a closed school purged within 7 days in red; each row links to the Danger zone) and the **Danger zone** tab — current status and date scale, moves by level, school name typed
 to close at once or purge early. Phase 7 adds the **AI** section (`features/ai`, `/ai`, tabs in `ai-tabs.ts`, unknown tab → `/ai/models`): *Agent models*
-(`/ai/models`), *Providers* (`/ai/providers`), *Eval* (`/ai/evals`), *Q2 gate* (`/ai/gate`) and *Spend* (`/ai/spend`). Sections other than Dashboard, Schools and AI are a lazy "coming soon" page. Not run against a
+(`/ai/models`), *Providers* (`/ai/providers`), *Eval* (`/ai/evals`), *Q2 gate* (`/ai/gate`) and *Spend* (`/ai/spend`). Phase 8 completes the dashboard (growth and plans bars from `admin/stats` / `admin/subscriptions/stats`, AI KPI, spend by agent per week,
+top-5 schools, a providers strip polled once a minute while the tab is visible, last 10 journal actions) and adds two sections:
+**Platform** (`features/platform`, `/platform`, tabs `sessions` and `media`) — *Session lifetimes* (role × client table, edit by `super`
+one pair at a time with a reason) and *Media cleanup* (four sweeps, history; «Check now» is a dry-run for `admin`, «Delete» is `super`
+and only offered on a fresh — ≤ 30 min, `DRY_RUN_FRESH_MS` — finished non-empty dry-run kept in the root `SweepDryRuns`) —
+and **Plans** (`features/plans`, `/plans`, `/plans/:code`, `/plans/:code/new-version`, `/plans/new`; edits `super`): catalog, card with
+versions, subscribers per version and key diffs (`diffFeatures` in `plan-model.ts`), the shared key editor `plan-features-editor`
+(409 → re-read, input kept), and moving subscribers to the current version (`plan-migration`: preview, then batches of the root
+`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Sections other than Dashboard,
+Schools, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`
