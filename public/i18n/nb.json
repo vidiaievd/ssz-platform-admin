@@ -1252,5 +1252,60 @@
         "bar": "Kreditter, stolpe"
       }
     }
+  },
+  "platform": {
+    "tabsLabel": "Faner for plattform",
+    "tabs": {
+      "sessions": "Øktvarighet"
+    },
+    "sessions": {
+      "title": "Øktvarighet",
+      "intro": "Hvor lenge en innlogging varer uten passord: levetiden til oppdateringstokenet per rolle og klient. Tilgangstokener forblir korte (15 min som standard) uansett hva som står her.",
+      "appliesNote": "En endring gjelder tokener som utstedes eller fornyes etter den. Økter som allerede er åpne, beholder sin slutt til neste fornyelse.",
+      "refresh": "Last inn på nytt",
+      "failed": "Kunne ikke laste øktvarighet",
+      "fallback": "Reservevarighet:",
+      "fallbackHint": "For en rolle × klient uten egen varighet. Settes i auth-konfigurasjonen, ikke her.",
+      "fallbackTag": "reserve",
+      "role": "Rolle",
+      "clients": {
+        "web": "Nett",
+        "mobile": "Mobil",
+        "admin": "Adminpanel"
+      },
+      "roles": {
+        "platform_admin": "Plattformadministrator",
+        "manager_platform": "Plattformleder",
+        "school_admin": "Skoleadministrator",
+        "teacher": "Lærer",
+        "tutor": "Privatlærer",
+        "student": "Elev"
+      },
+      "unusedHint": "Bare plattformadministratorer logger inn i panelet.",
+      "seeded": "standard",
+      "changedOn": "endret {{date}}",
+      "edit": "Endre varigheten for {{role}} på {{client}}",
+      "shortestNote": "En bruker med flere roller får den korteste varigheten blant rollene sine på den klienten.",
+      "duration": {
+        "hours": "{{hours}} t",
+        "days": "{{days}} d",
+        "daysHours": "{{days}} d {{hours}} t"
+      },
+      "dialog": {
+        "title": "Endre øktvarighet",
+        "confirm": "Lagre varighet",
+        "current": "Nå: {{value}}",
+        "fallbackNow": "reservevarigheten; lagring gir paret egen varighet",
+        "value": "Ny varighet",
+        "unit": "Enhet",
+        "units": {
+          "hours": "timer",
+          "days": "dager"
+        },
+        "bounds": "Fra {{min}} til {{max}}.",
+        "wholeNumber": "Skriv et heltall.",
+        "unchanged": "Samme som nå — ingenting å lagre."
+      }
+    }
   }
 }

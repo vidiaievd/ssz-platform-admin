@@ -9,6 +9,7 @@ const SECTION_ROUTES: Partial<Record<NavSectionId, LoadChildren>> = {
   dashboard: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
   schools: () => import('./features/schools/schools.routes').then((m) => m.SCHOOLS_ROUTES),
   ai: () => import('./features/ai/ai.routes').then((m) => m.AI_ROUTES),
+  platform: () => import('./features/platform/platform.routes').then((m) => m.PLATFORM_ROUTES),
 };
 
 /** A menu section: its feature routes, or the same lazy "coming soon" page for each. */

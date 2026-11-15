@@ -212,9 +212,14 @@ describe('CommandPalette', () => {
     await hotkey();
     await type('plat');
     await press('Enter');
-    expect(url()).toBe('/platform');
+    // A lazy section: it opens its first tab a little later, and that tab reads its data.
+    await vi.waitFor(() => expect(url()).toBe('/platform/sessions'));
     // Closing dropped the school search that "plat" had started.
     expect(http.expectOne((r) => r.url === SCHOOLS).cancelled).toBe(true);
+    await vi.waitFor(async () => {
+      await stable();
+      expect(http.match((r) => r.url.endsWith('/auth/admin/token-lifetimes'))).toHaveLength(1);
+    });
 
     await hotkey();
     expect(input()!.value).toBe('');
