@@ -640,7 +640,13 @@
         "model.status_changed": "Model status changed",
         "model.tested": "Model tested",
         "breaker.reset": "Breaker reset",
-        "media.sweep.deleted": "Media cleanup deleted files"
+        "media.sweep.deleted": "Media cleanup deleted files",
+        "user.blocked": "Account blocked",
+        "user.unblocked": "Account unblocked",
+        "user.unlocked": "Lockout lifted",
+        "user.sessions_revoked": "Sessions ended",
+        "user.mfa_reset": "Two-factor sign-in reset",
+        "user.deletion_cancelled": "Deletion request withdrawn"
       }
     },
     "allSeats": "All seat levels",
@@ -747,6 +753,95 @@
       "network": "The gateway is unreachable. Check the connection.",
       "forbidden": "No access to the users list.",
       "generic": "Could not load users."
+    },
+    "card": {
+      "backToList": "All users",
+      "notFound": "User not found",
+      "notFoundText": "Auth does not know this id. The account may have been erased, or the link is mistyped.",
+      "tabsLabel": "Account sections",
+      "tabs": {
+        "overview": "Overview",
+        "schools": "Schools",
+        "plan": "Own plan",
+        "ai": "AI",
+        "journal": "Journal"
+      },
+      "noRoles": "no roles",
+      "plan": "Own plan",
+      "errors": {
+        "forbidden": "No access to this account.",
+        "generic": "Could not load the account."
+      },
+      "account": {
+        "title": "Account",
+        "level": "Admin level"
+      },
+      "access": {
+        "title": "Access",
+        "block": "Administrator's block",
+        "blockedAt": "Blocked {{ at }}: no sign-in, no session.",
+        "blockedBy": "Blocked by",
+        "blockReason": "Reason: {{ reason }}",
+        "notBlocked": "Not blocked.",
+        "signIns": "Sign-ins",
+        "failedLogins": "Wrong passwords since the last sign-in: {{ n }}",
+        "lastFailed": "last {{ at }}",
+        "lockedUntil": "Locked out until {{ at }}",
+        "mfa": "Two-factor sign-in",
+        "mfaOn": "On",
+        "mfaOff": "Off",
+        "backupCodes": "backup codes left: {{ n }}",
+        "codesUnknown": "Wrong two-factor codes could not be read (Redis did not answer).",
+        "codesLocked": "Two-factor codes locked until {{ at }}",
+        "codesFailures": "Wrong two-factor codes in a row: {{ n }}"
+      },
+      "sessions": {
+        "title": "Sessions",
+        "client": "Client",
+        "active": "Open",
+        "lastIssued": "Last token issued",
+        "recent": "Newest open sessions",
+        "noDevice": "device unknown",
+        "hint": "A session is a refresh token. An access token already handed out lives up to 15 minutes after its session ends."
+      },
+      "deletion": {
+        "title": "Deletion request",
+        "requestedAt": "The user asked to delete the account on {{ date }}.",
+        "purgeAt": "Erased on {{ date }} · {{ n }} d left",
+        "hint": "Signing in withdraws the request; a blocked account cannot sign in, so its request runs its course."
+      },
+      "schools": {
+        "owned": "Owns",
+        "ownedEmpty": "Owns no school or tutor workspace.",
+        "teaches": "teaches: {{ groups }}",
+        "memberships": "On the roster of",
+        "membershipsEmpty": "Not on the roster of any school.",
+        "failed": "Could not load the schools"
+      }
+    },
+    "payer": {
+      "plan": {
+        "noAccount": "Subscription service has not seen this learner yet: they are on the free plan. Assigning a plan or issuing a grant opens the account.",
+        "freeHint": "No subscription runs: the learner is on the individual audience's free plan.",
+        "outdated": "The learner is on v{{ version }}; the plan's latest version is v{{ latest }}. Plan edits do not move subscribers.",
+        "noSubscriptions": "The learner has never had a subscription.",
+        "cancelDialog": {
+          "text": "The learner leaves “{{ plan }}” now and falls back to the free plan. Grants stay."
+        },
+        "assignDialog": {
+          "samePlan": "The learner is on this plan already: assigning it moves them to v{{ version }}."
+        }
+      },
+      "ai": {
+        "policyOffBanner": "The payer policy switches all AI on this learner's own account off: every agent refuses, whatever the keys below say. A school that pays for them is not affected.",
+        "policyDialog": {
+          "aiEnabled": "All AI on the learner's own account",
+          "offHint": "Every agent refuses what the learner pays for, whatever the keys."
+        }
+      },
+      "journal": {
+        "empty": "No admin actions on this account yet."
+      }
     }
   },
   "plans": {

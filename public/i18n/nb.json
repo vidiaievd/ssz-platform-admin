@@ -640,7 +640,13 @@
         "model.status_changed": "Modellstatus endret",
         "model.tested": "Modell testet",
         "breaker.reset": "Sikring tilbakestilt",
-        "media.sweep.deleted": "Medieopprydding slettet filer"
+        "media.sweep.deleted": "Medieopprydding slettet filer",
+        "user.blocked": "Konto blokkert",
+        "user.unblocked": "Blokkering opphevet",
+        "user.unlocked": "Låsing opphevet",
+        "user.sessions_revoked": "Økter avsluttet",
+        "user.mfa_reset": "Tofaktorinnlogging tilbakestilt",
+        "user.deletion_cancelled": "Sletteforespørsel trukket"
       }
     },
     "allSeats": "Alle plassnivåer",
@@ -747,6 +753,95 @@
       "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
       "forbidden": "Ingen tilgang til brukerlisten.",
       "generic": "Kunne ikke laste brukere."
+    },
+    "card": {
+      "backToList": "Alle brukere",
+      "notFound": "Fant ikke brukeren",
+      "notFoundText": "Auth kjenner ikke denne id-en. Kontoen kan være slettet, eller lenken er feilskrevet.",
+      "tabsLabel": "Kontoens deler",
+      "tabs": {
+        "overview": "Oversikt",
+        "schools": "Skoler",
+        "plan": "Egen plan",
+        "ai": "KI",
+        "journal": "Logg"
+      },
+      "noRoles": "ingen roller",
+      "plan": "Egen plan",
+      "errors": {
+        "forbidden": "Ingen tilgang til denne kontoen.",
+        "generic": "Kunne ikke laste kontoen."
+      },
+      "account": {
+        "title": "Konto",
+        "level": "Adminnivå"
+      },
+      "access": {
+        "title": "Tilgang",
+        "block": "Blokkering av admin",
+        "blockedAt": "Blokkert {{ at }}: ingen innlogging, ingen økter.",
+        "blockedBy": "Blokkert av",
+        "blockReason": "Grunn: {{ reason }}",
+        "notBlocked": "Ikke blokkert.",
+        "signIns": "Innlogginger",
+        "failedLogins": "Feil passord siden siste innlogging: {{ n }}",
+        "lastFailed": "sist {{ at }}",
+        "lockedUntil": "Låst til {{ at }}",
+        "mfa": "Tofaktorinnlogging",
+        "mfaOn": "På",
+        "mfaOff": "Av",
+        "backupCodes": "reservekoder igjen: {{ n }}",
+        "codesUnknown": "Feil tofaktorkoder kunne ikke leses (Redis svarte ikke).",
+        "codesLocked": "Tofaktorkoder låst til {{ at }}",
+        "codesFailures": "Feil tofaktorkoder på rad: {{ n }}"
+      },
+      "sessions": {
+        "title": "Økter",
+        "client": "Klient",
+        "active": "Åpne",
+        "lastIssued": "Siste token utstedt",
+        "recent": "Nyeste åpne økter",
+        "noDevice": "ukjent enhet",
+        "hint": "En økt er et refresh-token. Et access-token som alt er utdelt, lever opptil 15 minutter etter at økten er slutt."
+      },
+      "deletion": {
+        "title": "Sletteforespørsel",
+        "requestedAt": "Brukeren ba om å slette kontoen {{ date }}.",
+        "purgeAt": "Slettes {{ date }} · {{ n }} d igjen",
+        "hint": "Innlogging trekker forespørselen; en blokkert konto kan ikke logge inn, så forespørselen går sin gang."
+      },
+      "schools": {
+        "owned": "Eier",
+        "ownedEmpty": "Eier ingen skole eller lærerområde.",
+        "teaches": "underviser: {{ groups }}",
+        "memberships": "Medlem av",
+        "membershipsEmpty": "Ikke medlem av noen skole.",
+        "failed": "Kunne ikke laste skolene"
+      }
+    },
+    "payer": {
+      "plan": {
+        "noAccount": "Abonnementstjenesten har ikke sett denne eleven ennå: eleven er på gratisplanen. En plan eller et tillegg åpner kontoen.",
+        "freeHint": "Ingen abonnement løper: eleven er på gratisplanen for individuelle brukere.",
+        "outdated": "Eleven er på v{{ version }}; planens nyeste versjon er v{{ latest }}. Endringer i planen flytter ikke abonnenter.",
+        "noSubscriptions": "Eleven har aldri hatt et abonnement.",
+        "cancelDialog": {
+          "text": "Eleven forlater «{{ plan }}» nå og går tilbake til gratisplanen. Tillegg blir stående."
+        },
+        "assignDialog": {
+          "samePlan": "Eleven er allerede på denne planen: tildeling flytter eleven til v{{ version }}."
+        }
+      },
+      "ai": {
+        "policyOffBanner": "Betalerpolicyen slår av all KI på elevens egen konto: alle agenter avviser, uansett hva nøklene under sier. En skole som betaler for eleven, berøres ikke.",
+        "policyDialog": {
+          "aiEnabled": "All KI på elevens egen konto",
+          "offHint": "Alle agenter avviser det eleven betaler selv for, uansett nøkler."
+        }
+      },
+      "journal": {
+        "empty": "Ingen adminhandlinger på denne kontoen ennå."
+      }
     }
   },
   "plans": {

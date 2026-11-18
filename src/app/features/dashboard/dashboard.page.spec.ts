@@ -394,7 +394,7 @@ describe('DashboardPage', () => {
     // afterEach's verify(): the queue was not read again.
   });
 
-  it('lists what ends within a week, soonest first, a school linking to its plan tab', async () => {
+  it('lists what ends within a week, soonest first, each payer linking to its plan tab', async () => {
     await open({
       queue: queue({
         grants: [
@@ -426,7 +426,9 @@ describe('DashboardPage', () => {
     const items = all('queue-item');
     expect(items).toHaveLength(2);
     expect(items[0].textContent).toContain('Trial ends');
-    expect(items[0].querySelector('[data-testid="queue-link"]')).toBeNull();
+    expect(items[0].querySelector('[data-testid="queue-link"]')!.getAttribute('href')).toBe(
+      '/users/user-1/plan',
+    );
     expect(items[1].textContent).toContain('Grant ends');
     expect(items[1].querySelector('[data-testid="queue-link"]')!.getAttribute('href')).toBe(
       '/schools/school-1/plan',

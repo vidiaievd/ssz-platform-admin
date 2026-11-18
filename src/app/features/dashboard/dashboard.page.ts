@@ -11,6 +11,7 @@ import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { formatMoment, isKnownAction } from '../schools/card/journal/journal-format';
 import { schoolTabLink } from '../schools/card/school-tabs';
+import { userTabLink } from '../users/card/user-tabs';
 import { ProviderHealth } from './dashboard-providers-model';
 import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
@@ -1064,13 +1065,13 @@ export class DashboardPage {
     return b.kind === 'ready' && !b.value.storeAvailable;
   });
 
-  /** The journal's last entries; a school target links to the school's journal tab. */
+  /** The journal's last entries; a school or account target links to its card's journal tab. */
   protected readonly recent = computed(() => {
     const a = this.data.audit();
     if (a.kind !== 'ready') return [];
     return a.value.items.map((e) => ({
       ...e,
-      link: e.targetType === 'workspace' ? schoolTabLink(e.targetId, 'journal') : null,
+      link: journalLink(e.targetType, e.targetId),
     }));
   });
 
@@ -1100,4 +1101,11 @@ export class DashboardPage {
       queryParamsHandling: 'merge',
     });
   }
+}
+
+/** The journal tab of the card the target has: a school (`workspace`) or an account (`user`). */
+function journalLink(targetType: string, targetId: string): string[] | null {
+  if (targetType === 'workspace') return schoolTabLink(targetId, 'journal');
+  if (targetType === 'user') return userTabLink(targetId, 'journal');
+  return null;
 }

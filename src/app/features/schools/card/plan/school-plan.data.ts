@@ -14,10 +14,7 @@ import { PlanResponseDto } from '../../../../api/subscription/models/plan-respon
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ApiError } from '../../../../core/auth/api-error';
 import { ColumnState } from '../../schools-list.data';
-import { SchoolCardData } from '../school-card.data';
-
-/** A school is a `workspace` payer (SOLO included). */
-export const PAYER_TYPE = 'workspace' as const;
+import { PayerCard, PayerType } from '../payer-card';
 
 /** subscription answers 404 for a payer it has never seen: no account yet, the free plan. */
 export function noAccountAsNull<T>(source: Observable<T>): Observable<T | null> {
@@ -26,6 +23,11 @@ export function noAccountAsNull<T>(source: Observable<T>): Observable<T | null> 
       ApiError.from(error).status === 404 ? of(null) : throwError(() => error),
     ),
   );
+}
+
+/** The plan audience of a payer type. */
+export function audienceOf(payerType: PayerType): 'workspace' | 'individual' {
+  return payerType === 'workspace' ? 'workspace' : 'individual';
 }
 
 export function stateOf<T>(resource: {
@@ -39,7 +41,7 @@ export function stateOf<T>(resource: {
 }
 
 /**
- * Data of the "Plan" tab. The plan that applies is the card's lookup (it already settles
+ * Data of the "Plan" tab of a payer — a school or a self-study learner (`PayerCard`). The plan that applies is the card's lookup (it already settles
  * "no account / expired → free plan"); the subscription and live grants come from the account,
  * past ones from its history, and the version's keys from the plan itself. Each read fails on
  * its own: a section shows "retry" and the others stay (§5, rule 5).
@@ -47,21 +49,21 @@ export function stateOf<T>(resource: {
 @Injectable()
 export class SchoolPlanData {
   private readonly subscription = inject(SubscriptionApi);
-  readonly card = inject(SchoolCardData);
+  readonly card = inject(PayerCard);
 
   private readonly accountResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => this.card.payerId(),
     stream: ({ params: externalId }) =>
       this.subscription
-        .invoke(adminAccountsGet, { type: PAYER_TYPE, externalId })
+        .invoke(adminAccountsGet, { type: this.card.payerType, externalId })
         .pipe(noAccountAsNull),
   });
 
   private readonly historyResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => this.card.payerId(),
     stream: ({ params: externalId }) =>
       this.subscription
-        .invoke(adminAccountsHistory, { type: PAYER_TYPE, externalId })
+        .invoke(adminAccountsHistory, { type: this.card.payerType, externalId })
         .pipe(noAccountAsNull),
   });
 
@@ -90,11 +92,12 @@ export class SchoolPlanData {
   );
   readonly plans = computed<ColumnState<PlanResponseDto[]>>(() => stateOf(this.plansResource));
 
-  /** Plans a school may be put on: its audience, not archived. */
+  /** Plans the payer may be put on: its audience (a learner's is `individual`), not archived. */
   readonly assignablePlans = computed(() => {
     const plans = this.plans();
+    const audience = audienceOf(this.card.payerType);
     return plans.kind === 'ready'
-      ? plans.value.filter((p) => p.audience === 'workspace' && p.status === 'active')
+      ? plans.value.filter((p) => p.audience === audience && p.status === 'active')
       : [];
   });
 
@@ -136,7 +139,6 @@ export class SchoolPlanData {
     this.accountResource.reload();
     this.historyResource.reload();
     this.card.reloadPlan();
-    // A seat grant moves the limit; organization's projection follows the snapshot event.
-    this.card.reload();
+    this.card.afterPlanChange();
   }
 }

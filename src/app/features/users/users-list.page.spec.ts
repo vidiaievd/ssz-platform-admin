@@ -235,5 +235,8 @@ describe('UsersListPage', () => {
     await answer([user('a')]);
     el.querySelector<HTMLElement>('[data-testid="user-row"]')!.click();
     await vi.waitFor(() => expect(url()).toBe('/users/a'));
+    // The card reads the account and its plan; this spec stops at the address.
+    await vi.waitFor(() => expect(http.match(`${USERS}/a`)).toHaveLength(1));
+    http.match((r) => r.url.endsWith('/accounts/lookup'));
   });
 });

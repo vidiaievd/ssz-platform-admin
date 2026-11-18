@@ -57,7 +57,7 @@ const EFFECTS = [
           inputId="grant-key"
           class="w-full"
           appendTo="body"
-          [options]="keys"
+          [options]="keys()"
           optionLabel="key"
           optionValue="key"
           [ngModel]="featureKey()"
@@ -230,7 +230,11 @@ export class GrantDialog {
 
   private readonly subscription = inject(SubscriptionApi);
 
-  protected readonly keys = [...FEATURE_KEYS];
+  /** Keys of the payer's audience: a learner gets no `seats.students` (subscription answers 422). */
+  protected readonly keys = computed(() => {
+    const audience = this.payerType() === 'workspace' ? 'workspace' : 'individual';
+    return FEATURE_KEYS.filter((f) => !f.audience || f.audience === audience);
+  });
   protected readonly today = todayUtc();
 
   protected readonly featureKey = signal<string | null>(null);

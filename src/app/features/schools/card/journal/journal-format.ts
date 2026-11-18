@@ -28,6 +28,13 @@ export const KNOWN_ACTIONS = [
   'model.tested',
   'breaker.reset',
   'media.sweep.deleted',
+  // Actions on an account (auth, plan 90, phase 6), seen on the user card's journal.
+  'user.blocked',
+  'user.unblocked',
+  'user.unlocked',
+  'user.sessions_revoked',
+  'user.mfa_reset',
+  'user.deletion_cancelled',
 ] as const;
 
 export function isKnownAction(action: string): boolean {

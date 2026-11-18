@@ -1,5 +1,6 @@
 import { EndingSoonDto } from '../../api/subscription/models/ending-soon-dto';
 import { schoolTabLink } from '../schools/card/school-tabs';
+import { userTabLink } from '../users/card/user-tabs';
 
 /** Periods of the switch, in days; one switch for the whole page (§5, rule 4). */
 export const PERIODS = [7, 30, 90, 365] as const;
@@ -34,14 +35,14 @@ export interface AttentionItem {
   /** For grants the feature key, for subscriptions the plan name. */
   readonly subject: string;
   readonly at: string;
-  /** The tab of the school's card; none for a user (the panel has no user card yet). */
-  readonly link: string[] | null;
+  /** The "Plan" tab of the payer's card: the school's, or the learner's (user card). */
+  readonly link: string[];
 }
 
 /** The queue from the subscription stats, soonest end first. Only what the stats say. */
 export function attentionItems(ending: EndingSoonDto): AttentionItem[] {
   const linkOf = (type: 'workspace' | 'user', id: string) =>
-    type === 'workspace' ? schoolTabLink(id, 'plan') : null;
+    type === 'workspace' ? schoolTabLink(id, 'plan') : userTabLink(id, 'plan');
   const items: AttentionItem[] = [
     ...ending.grants.map((g): AttentionItem => ({
       id: `grant:${g.grantId}`,

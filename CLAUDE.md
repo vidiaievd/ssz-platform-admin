@@ -36,7 +36,14 @@ answer 400; role, status, sort, page in the URL: `q`, `role`, `status`, `sort`, 
 (`user-status.ts`: blocked / locked out / deleted in N d / e-mail not confirmed; no badge = active), the admin level, 2FA, and
 the preset «Deletion requests» = `status=deletion_pending&sort=purgeAt` (soonest erasure first, with an "Erased on" column;
 `purgeAt` outside pending requests falls back to the default order). Ctrl+K searches users beside schools (`page-search.ts`
-`searchPage`, one generic search per group; each fails and retries alone). The card `/users/:id` is "coming soon" until step 7.
+`searchPage`, one generic search per group; each fails and retries alone). The card `/users/:id` (step 7, `features/users/card`,
+tabs in `user-tabs.ts`, unknown tab → overview): *Overview* (account, access — block, lockout, 2FA and its code lockout — sessions
+by client, a pending deletion with its erasure date), *Schools* (organization `admin/users/:userId/schools`: owned + roster rows,
+each a link to the school), and the school card's own *Plan*, *AI* and *Journal* tabs on a `user` payer: those tabs read their payer
+from the abstract `PayerCard` (`schools/card/payer-card.ts`; `SchoolCardData` and `UserCardData` provide it), the few texts that say
+"school" come from `payerText()` (`users.payer.*` for a learner), a learner gets individual plans only, no seats and no school
+settings, and the grant dialog drops `seats.students`. Links to the card: the roster and the owner (members tab, overview), a `user`
+payer in the dashboard queue (its plan tab), a `user` target in recent actions and every journal actor.
 Sections other than Dashboard, Schools, Users, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 

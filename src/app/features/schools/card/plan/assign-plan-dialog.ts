@@ -21,6 +21,7 @@ import { PlanResponseDto } from '../../../../api/subscription/models/plan-respon
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
 import { ColumnState } from '../../schools-list.data';
+import { payerText } from '../payer-card';
 import { dayStartUtc, isFutureDay, todayUtc } from './plan-dates';
 
 const STATUSES = ['active', 'trial'] as const;
@@ -89,7 +90,7 @@ const STATUSES = ['active', 'trial'] as const;
           </span>
         } @else if (sameAsCurrent()) {
           <span class="text-muted-color text-xs" data-testid="assign-same-plan">
-            {{ 'schools.plan.assignDialog.samePlan' | transloco: { version: chosenVersion() } }}
+            {{ text('plan.assignDialog.samePlan') | transloco: { version: chosenVersion() } }}
           </span>
         }
       </div>
@@ -165,6 +166,7 @@ const STATUSES = ['active', 'trial'] as const;
 export class AssignPlanDialog {
   readonly visible = model(false);
   readonly payerType = input<'workspace' | 'user'>('workspace');
+  protected readonly text = (key: string) => payerText(this.payerType(), key);
   readonly payerId = input.required<string>();
   /** Plans the payer may be put on (its audience, not archived). */
   readonly plans = input.required<ColumnState<PlanResponseDto[]>>();

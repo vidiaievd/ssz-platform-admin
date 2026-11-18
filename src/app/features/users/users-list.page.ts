@@ -11,7 +11,6 @@ import { Paginator, PaginatorState } from 'primeng/paginator';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
-import { Tag } from 'primeng/tag';
 import { Subject, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import {
   AdminUserListItem,
@@ -27,6 +26,7 @@ import { LanguageService } from '../../core/i18n/language.service';
 import { LevelBadge } from '../../layout/level-badge';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { UserBadges } from './user-badges';
+import { roleKey } from './user-roles';
 import {
   DEFAULT_USERS_QUERY,
   DELETION_QUEUE_QUERY,
@@ -69,7 +69,6 @@ const SKELETON_ROWS = Array.from({ length: 8 }, (_, i) => i);
     Select,
     Skeleton,
     TableModule,
-    Tag,
     LevelBadge,
     LocalDatePipe,
     UserBadges,
@@ -476,10 +475,7 @@ export class UsersListPage {
     void this.router.navigate([user.id], { relativeTo: this.route });
   }
 
-  /** A role auth may add later still shows, under its own name. */
-  protected roleLabel(role: string): string {
-    return (USER_ROLES as readonly string[]).includes(role) ? `users.role.${role}` : role;
-  }
+  protected readonly roleLabel = roleKey;
 
   /** p-table wants a mutable array; the page is never changed through it. */
   protected rows(page: AdminUserPage): AdminUserListItem[] {

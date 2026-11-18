@@ -11,9 +11,9 @@ import { LanguageService } from '../../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../../shared/local-date.pipe';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
 import { GrantDialog } from '../plan/grant-dialog';
-import { PAYER_TYPE } from '../plan/school-plan.data';
 import { AiKeyRow, formatCredits, usedPercent } from './ai-key-rows';
 import { PolicyDialog } from './policy-dialog';
+import { payerText } from '../payer-card';
 import { SchoolAiData } from './school-ai.data';
 
 const SOURCE_SEVERITY = {
@@ -28,7 +28,9 @@ const SOURCE_SEVERITY = {
  * reads it, where its state comes from (plan or grant) and what the period has spent; switching a
  * key on or off is a grant with the key preset (§6.3, decision 1), and a key off by a grant comes
  * back by revoking that grant. The payer policy (all AI, regions) changes with a reason. The
- * school's own AI and review settings are shown read only — the school changes them.
+ * school's own AI and review settings are shown read only — the school changes them. The user
+ * card (phase 6, step 7) shows the same tab for a self-study learner (`user` payer), without the
+ * school settings.
  */
 @Component({
   selector: 'app-school-ai-tab',
@@ -59,7 +61,7 @@ const SOURCE_SEVERITY = {
             data-testid="ai-policy-off"
           >
             <i class="pi pi-ban text-amber-500" aria-hidden="true"></i>
-            {{ 'schools.ai.policyOffBanner' | transloco }}
+            {{ text('ai.policyOffBanner') | transloco }}
           </p>
         }
 
@@ -296,135 +298,156 @@ const SOURCE_SEVERITY = {
         }
       </section>
 
-      <!-- School settings, read only -->
-      <section
-        class="border-border flex flex-col gap-3 rounded-md border p-4"
-        data-testid="ai-settings"
-      >
-        <div class="flex flex-col gap-1">
-          <h2 class="text-base font-semibold">{{ 'schools.ai.settings' | transloco }}</h2>
-          <p class="text-muted-color text-xs">{{ 'schools.ai.settingsHint' | transloco }}</p>
-        </div>
-        @switch (data.settings().kind) {
-          @case ('loading') {
-            <p-skeleton height="6rem" />
-          }
-          @case ('error') {
-            <p class="text-sm" role="alert" data-testid="ai-settings-failed">
-              {{ 'schools.ai.settingsFailed' | transloco }} ·
-              <button type="button" class="text-primary underline" (click)="data.reloadSettings()">
-                {{ 'schools.retry' | transloco }}
-              </button>
-            </p>
-          }
-          @default {
-            @if (settings(); as s) {
-              <div class="grid gap-3 md:grid-cols-2">
-                <div class="flex flex-col gap-2" data-testid="settings-precheck">
-                  <h3 class="text-sm font-medium">{{ 'schools.ai.precheck.title' | transloco }}</h3>
-                  <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
-                    <dt class="text-muted-color">
-                      {{ 'schools.ai.precheck.enabled' | transloco }}
-                    </dt>
-                    <dd>
-                      {{
-                        'schools.plan.effect.' + (s.aiPrecheck.enabled ? 'on' : 'off') | transloco
-                      }}
-                    </dd>
-                    <dt class="text-muted-color">
-                      {{ 'schools.ai.precheck.perExercise' | transloco }}
-                    </dt>
-                    <dd class="tabular-nums">
-                      {{ s.aiPrecheck.perExerciseLimit ?? ('schools.ai.noLimit' | transloco) }}
-                    </dd>
-                    <dt class="text-muted-color">
-                      {{ 'schools.ai.precheck.perLearner' | transloco }}
-                    </dt>
-                    <dd class="tabular-nums">
-                      {{
-                        s.aiPrecheck.perLearnerMonthlyCredits ?? ('schools.ai.noLimit' | transloco)
-                      }}
-                    </dd>
-                  </dl>
-                </div>
-
-                <div class="flex flex-col gap-2" data-testid="settings-assistant">
-                  <h3 class="text-sm font-medium">
-                    {{ 'schools.ai.assistant.title' | transloco }}
-                  </h3>
-                  <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
-                    <dt class="text-muted-color">{{ 'schools.ai.assistant.mode' | transloco }}</dt>
-                    <dd>
-                      {{ 'schools.ai.assistant.modes.' + s.assistant.mode | transloco }}
-                      @if (s.assistant.mode === 'selected_groups') {
-                        ({{
-                          'schools.ai.assistant.groups'
-                            | transloco: { n: s.assistant.groupIds.length }
-                        }})
-                      } @else if (s.assistant.mode === 'selected_students') {
-                        ({{
-                          'schools.ai.assistant.students'
-                            | transloco: { n: s.assistant.studentIds.length }
-                        }})
-                      }
-                    </dd>
-                  </dl>
-                </div>
-
-                <div class="flex flex-col gap-2" data-testid="settings-review-ai">
-                  <h3 class="text-sm font-medium">{{ 'schools.ai.reviewAi.title' | transloco }}</h3>
-                  <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
-                    <dt class="text-muted-color">{{ 'schools.ai.reviewAi.mode' | transloco }}</dt>
-                    <dd>{{ 'schools.ai.reviewAi.modes.' + s.reviewAi.mode | transloco }}</dd>
-                    @if (s.reviewAi.mode === 'ai_with_sampling') {
+      <!-- School settings, read only; a learner has none -->
+      @if (isSchool) {
+        <section
+          class="border-border flex flex-col gap-3 rounded-md border p-4"
+          data-testid="ai-settings"
+        >
+          <div class="flex flex-col gap-1">
+            <h2 class="text-base font-semibold">{{ 'schools.ai.settings' | transloco }}</h2>
+            <p class="text-muted-color text-xs">{{ 'schools.ai.settingsHint' | transloco }}</p>
+          </div>
+          @switch (data.settings().kind) {
+            @case ('loading') {
+              <p-skeleton height="6rem" />
+            }
+            @case ('error') {
+              <p class="text-sm" role="alert" data-testid="ai-settings-failed">
+                {{ 'schools.ai.settingsFailed' | transloco }} ·
+                <button
+                  type="button"
+                  class="text-primary underline"
+                  (click)="data.reloadSettings()"
+                >
+                  {{ 'schools.retry' | transloco }}
+                </button>
+              </p>
+            }
+            @default {
+              @if (settings(); as s) {
+                <div class="grid gap-3 md:grid-cols-2">
+                  <div class="flex flex-col gap-2" data-testid="settings-precheck">
+                    <h3 class="text-sm font-medium">
+                      {{ 'schools.ai.precheck.title' | transloco }}
+                    </h3>
+                    <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
                       <dt class="text-muted-color">
-                        {{ 'schools.ai.reviewAi.sample' | transloco }}
+                        {{ 'schools.ai.precheck.enabled' | transloco }}
                       </dt>
-                      <dd class="tabular-nums">{{ s.reviewAi.samplePercent }} %</dd>
-                    }
-                    @if (s.reviewAi.mode !== 'teacher_only') {
+                      <dd>
+                        {{
+                          'schools.plan.effect.' + (s.aiPrecheck.enabled ? 'on' : 'off') | transloco
+                        }}
+                      </dd>
                       <dt class="text-muted-color">
-                        {{ 'schools.ai.reviewAi.autoAccept' | transloco }}
+                        {{ 'schools.ai.precheck.perExercise' | transloco }}
                       </dt>
                       <dd class="tabular-nums">
-                        {{ 'schools.ai.hours' | transloco: { n: s.reviewAi.autoAcceptAfterHours } }}
+                        {{ s.aiPrecheck.perExerciseLimit ?? ('schools.ai.noLimit' | transloco) }}
                       </dd>
-                    }
-                  </dl>
-                </div>
+                      <dt class="text-muted-color">
+                        {{ 'schools.ai.precheck.perLearner' | transloco }}
+                      </dt>
+                      <dd class="tabular-nums">
+                        {{
+                          s.aiPrecheck.perLearnerMonthlyCredits ??
+                            ('schools.ai.noLimit' | transloco)
+                        }}
+                      </dd>
+                    </dl>
+                  </div>
 
-                <div class="flex flex-col gap-2" data-testid="settings-review">
-                  <h3 class="text-sm font-medium">{{ 'schools.ai.review.title' | transloco }}</h3>
-                  <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
-                    <dt class="text-muted-color">{{ 'schools.ai.review.respond' | transloco }}</dt>
-                    <dd class="tabular-nums">
-                      {{ 'schools.ai.hours' | transloco: { n: s.review.respondWithinHours } }}
-                    </dd>
-                    <dt class="text-muted-color">{{ 'schools.ai.review.escalate' | transloco }}</dt>
-                    <dd>
-                      {{ 'schools.ai.hours' | transloco: { n: s.review.escalateAfterHours } }}
-                      → {{ 'schools.ai.review.escalateTo.' + s.review.escalateTo | transloco }}
-                    </dd>
-                  </dl>
+                  <div class="flex flex-col gap-2" data-testid="settings-assistant">
+                    <h3 class="text-sm font-medium">
+                      {{ 'schools.ai.assistant.title' | transloco }}
+                    </h3>
+                    <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
+                      <dt class="text-muted-color">
+                        {{ 'schools.ai.assistant.mode' | transloco }}
+                      </dt>
+                      <dd>
+                        {{ 'schools.ai.assistant.modes.' + s.assistant.mode | transloco }}
+                        @if (s.assistant.mode === 'selected_groups') {
+                          ({{
+                            'schools.ai.assistant.groups'
+                              | transloco: { n: s.assistant.groupIds.length }
+                          }})
+                        } @else if (s.assistant.mode === 'selected_students') {
+                          ({{
+                            'schools.ai.assistant.students'
+                              | transloco: { n: s.assistant.studentIds.length }
+                          }})
+                        }
+                      </dd>
+                    </dl>
+                  </div>
+
+                  <div class="flex flex-col gap-2" data-testid="settings-review-ai">
+                    <h3 class="text-sm font-medium">
+                      {{ 'schools.ai.reviewAi.title' | transloco }}
+                    </h3>
+                    <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
+                      <dt class="text-muted-color">{{ 'schools.ai.reviewAi.mode' | transloco }}</dt>
+                      <dd>{{ 'schools.ai.reviewAi.modes.' + s.reviewAi.mode | transloco }}</dd>
+                      @if (s.reviewAi.mode === 'ai_with_sampling') {
+                        <dt class="text-muted-color">
+                          {{ 'schools.ai.reviewAi.sample' | transloco }}
+                        </dt>
+                        <dd class="tabular-nums">{{ s.reviewAi.samplePercent }} %</dd>
+                      }
+                      @if (s.reviewAi.mode !== 'teacher_only') {
+                        <dt class="text-muted-color">
+                          {{ 'schools.ai.reviewAi.autoAccept' | transloco }}
+                        </dt>
+                        <dd class="tabular-nums">
+                          {{
+                            'schools.ai.hours' | transloco: { n: s.reviewAi.autoAcceptAfterHours }
+                          }}
+                        </dd>
+                      }
+                    </dl>
+                  </div>
+
+                  <div class="flex flex-col gap-2" data-testid="settings-review">
+                    <h3 class="text-sm font-medium">{{ 'schools.ai.review.title' | transloco }}</h3>
+                    <dl class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-sm">
+                      <dt class="text-muted-color">
+                        {{ 'schools.ai.review.respond' | transloco }}
+                      </dt>
+                      <dd class="tabular-nums">
+                        {{ 'schools.ai.hours' | transloco: { n: s.review.respondWithinHours } }}
+                      </dd>
+                      <dt class="text-muted-color">
+                        {{ 'schools.ai.review.escalate' | transloco }}
+                      </dt>
+                      <dd>
+                        {{ 'schools.ai.hours' | transloco: { n: s.review.escalateAfterHours } }}
+                        → {{ 'schools.ai.review.escalateTo.' + s.review.escalateTo | transloco }}
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
-              </div>
+              }
             }
           }
-        }
-      </section>
+        </section>
+      }
     </div>
 
-    @if (schoolId(); as schoolId) {
+    @if (payerId(); as payerId) {
       <app-grant-dialog
         [(visible)]="grantOpen"
-        [payerId]="schoolId"
+        [payerType]="payerType"
+        [payerId]="payerId"
         [presetKey]="grantKey()"
         [presetEnabled]="grantEnabled()"
         (done)="data.afterGrantChange()"
       />
       <app-policy-dialog
         [(visible)]="policyOpen"
-        [payerId]="schoolId"
+        [payerType]="payerType"
+        [payerId]="payerId"
         [policy]="policy()"
         (done)="data.reloadPolicy()"
       />
@@ -458,7 +481,10 @@ export class SchoolAiTab {
   protected readonly lang = inject(LanguageService).current;
   protected readonly sourceSeverity = SOURCE_SEVERITY;
 
-  protected readonly schoolId = this.data.card.schoolId;
+  protected readonly payerId = this.data.card.payerId;
+  protected readonly payerType = this.data.card.payerType;
+  protected readonly isSchool = this.payerType === 'workspace';
+  protected readonly text = (key: string) => payerText(this.payerType, key);
 
   protected readonly grantOpen = signal(false);
   protected readonly grantKey = signal<string | null>(null);
@@ -485,8 +511,8 @@ export class SchoolAiTab {
 
   protected readonly revoke = (reason: string) =>
     this.subscription.invoke(adminAccountsRevokeGrant, {
-      type: PAYER_TYPE,
-      externalId: this.schoolId()!,
+      type: this.payerType,
+      externalId: this.payerId()!,
       grantId: this.revoking()!.id,
       body: { reason },
     });

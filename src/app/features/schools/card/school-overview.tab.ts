@@ -10,6 +10,7 @@ import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
 import { SchoolCardData } from './school-card.data';
 import { CourseSummary, SchoolCoursesData } from './school-courses.data';
+import { userTabLink } from '../../users/card/user-tabs';
 import { schoolTabLink } from './school-tabs';
 import { toMembersQueryParams } from './members-query';
 
@@ -139,9 +140,12 @@ const GROUP_STATUS_SEVERITY = {
                 >{{ email }}</a
               >
             }
-            <span class="text-muted-color font-mono text-xs break-all">{{
-              school.owner.userId
-            }}</span>
+            <a
+              class="text-primary font-mono text-xs break-all hover:underline"
+              [routerLink]="ownerLink()"
+              data-testid="owner-user-link"
+              >{{ school.owner.userId }}</a
+            >
           </div>
           <p class="text-muted-color text-xs">{{ 'schools.overview.ownerHint' | transloco }}</p>
         </section>
@@ -317,6 +321,10 @@ export class SchoolOverviewTab {
     schoolTabLink(this.data.schoolId() ?? '', 'members'),
   );
   protected readonly groupStatusSeverity = GROUP_STATUS_SEVERITY;
+  protected readonly ownerLink = computed(() => {
+    const school = this.data.school();
+    return school ? userTabLink(school.owner.userId) : [];
+  });
 
   protected readonly solo = computed(() => this.data.school()?.kind === 'SOLO');
   protected readonly courseIds = computed(() => this.courses.ids() ?? []);

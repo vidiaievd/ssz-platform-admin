@@ -14,7 +14,7 @@ describe('dashboard model', () => {
     expect(periodRange(365, now).from).toBe('2025-11-11');
   });
 
-  it('orders the queue by the end and links a school to its plan tab only', () => {
+  it('orders the queue by the end and links each payer to the plan tab of its card', () => {
     const items = attentionItems({
       truncated: false,
       grants: [
@@ -42,7 +42,7 @@ describe('dashboard model', () => {
       ],
     });
     expect(items.map((i) => i.kind)).toEqual(['trialEnds', 'grantOffEnds']);
-    expect(items[0].link).toBeNull();
+    expect(items[0].link).toEqual(['/users', 'user-1', 'plan']);
     expect(items[1].link).toEqual(['/schools', 's1', 'plan']);
   });
 
