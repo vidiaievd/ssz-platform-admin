@@ -42,3 +42,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Runtime config with this machine's values (PrimeUI key); template: public/config.example.json
+/public/config.json

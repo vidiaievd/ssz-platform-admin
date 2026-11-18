@@ -1,0 +1,1548 @@
+{
+  "app": {
+    "title": "SSZ admin panel"
+  },
+  "nav": {
+    "label": "Panel sections",
+    "dashboard": "Overview",
+    "schools": "Schools",
+    "users": "Users",
+    "plans": "Plans",
+    "ai": "AI",
+    "platform": "Platform",
+    "audit": "Audit log",
+    "payments": "Payments"
+  },
+  "level": {
+    "super": "Super admin",
+    "admin": "Admin",
+    "support": "Support",
+    "hint": "Your access level in the panel"
+  },
+  "shell": {
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "signOut": "Sign out"
+  },
+  "palette": {
+    "open": "Search",
+    "title": "Go to",
+    "close": "Close search",
+    "placeholder": "Section, or a school's name or slug",
+    "sections": "Sections",
+    "schools": "Schools",
+    "hint": "Type a section, or a school's name or slug.",
+    "minChars": "Type at least {{ min }} characters to find a school.",
+    "searching": "Searching…",
+    "noSchools": "No schools found.",
+    "failed": "Could not search schools.",
+    "retry": "Retry",
+    "allResults": "All {{ total }} results in the schools list",
+    "keys": {
+      "move": "move",
+      "open": "open",
+      "close": "close"
+    }
+  },
+  "sections": {
+    "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
+    "schools": "Schools with their plan and status; the school card: members, plan and grants, AI, audit log.",
+    "users": "Search by email, roles and schools, blocking, MFA reset, deletion requests.",
+    "plans": "Catalogue of plans and feature keys, versions and subscribers on each.",
+    "ai": "Providers, models and prices, agent bindings, credit usage, eval runs.",
+    "platform": "Token lifetimes and media cleanup.",
+    "audit": "Every admin action across all services.",
+    "payments": "Payments arrive with billing; until then plans are assigned by hand."
+  },
+  "dashboard": {
+    "period": "Period",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "Year"
+    },
+    "refresh": "Refresh",
+    "loadedAt": "Data as of {{ time }}",
+    "queue": {
+      "title": "Needs attention",
+      "failed": "Could not load the queue",
+      "empty": "All in order: nothing ends within 7 days.",
+      "until": "until {{ date }}",
+      "open": "Plan",
+      "truncated": "The list is cut; the soonest ones are shown.",
+      "closesIn": "closes in {{ n }} d",
+      "purgesIn": "deleted in {{ n }} d",
+      "openSchool": "School",
+      "kinds": {
+        "grantEnds": "Grant ends",
+        "grantOffEnds": "Switch-off ends",
+        "trialEnds": "Trial ends",
+        "subscriptionEnds": "Subscription ends",
+        "seats_full": "At the ceiling: new students refused",
+        "seats_warning": "Over the limit, in the 10 % grace",
+        "closing": "Suspended: closing soon",
+        "purging": "In the archive: deletion soon",
+        "breakerOpen": "Breaker open: calls go to the fallback",
+        "providerOff": "Provider switched off but in use",
+        "providerNoKey": "Provider in use has no key"
+      },
+      "reopensAt": "retried at {{ time }}",
+      "openProviders": "Providers"
+    },
+    "kpi": {
+      "failed": "Could not load the numbers",
+      "schools": "Schools",
+      "students": "Students",
+      "teachers": "Teachers",
+      "delta": "+{{ n }} in the period",
+      "byKind": "Schools {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "active",
+        "suspended": "suspended",
+        "closed": "closed"
+      },
+      "seats": "Student seats",
+      "seatsNone": "No school has a seat limit.",
+      "seatsShare": "{{ n }} % taken",
+      "seatsSchools": "in {{ n }} schools with a limit",
+      "seatsNear": "{{ n }} near the limit",
+      "seatsOver": "{{ n }} over the limit"
+    },
+    "growth": {
+      "title": "Growth",
+      "failed": "Could not load the growth",
+      "schools": "New schools",
+      "students": "New students",
+      "none": "None in the period.",
+      "step": {
+        "day": "One bar is a day (UTC).",
+        "week": "One bar is 7 days (UTC); the oldest may be shorter.",
+        "month": "One bar is a calendar month (UTC); the first and last may be partial."
+      }
+    },
+    "plans": {
+      "title": "Plans",
+      "failed": "Could not load the plans",
+      "none": "No plans yet.",
+      "audience": {
+        "workspace": "Schools and tutors",
+        "individual": "Self-study students"
+      },
+      "archived": "archived",
+      "older": "{{ n }} on older versions",
+      "trial": "{{ n }} on trial",
+      "legendCurrent": "current version",
+      "legendOlder": "older versions",
+      "freeNote": "Payers with no subscription row are on the free plan and are not counted here."
+    },
+    "ai": {
+      "kpi": "AI in the period",
+      "failed": "Could not load AI credits",
+      "creditsUnit": "credits charged to payers",
+      "change": "{{ n }} to the previous period",
+      "changeNone": "Nothing was charged in the previous period.",
+      "changeFailed": "Change to the previous period unknown.",
+      "calls": "{{ n }} model calls",
+      "unpriced": "{{ n }} calls without a price — not in the credits",
+      "money": "Providers billed {{ amount }}",
+      "moneyFailed": "Could not load the providers' bill",
+      "agents": "Credits by agent, per week",
+      "agentsNone": "No agent spent credits in the period.",
+      "others": "Others",
+      "top": "Top 5 schools by credits",
+      "topAll": "All payers",
+      "topFailed": "Could not load the top schools",
+      "topNone": "No school spent credits in the period.",
+      "namesFailed": "Could not read school names; ids are shown."
+    },
+    "providers": {
+      "title": "Providers",
+      "failed": "Could not load the providers",
+      "none": "No providers in the registry.",
+      "health": {
+        "ok": "serving",
+        "off": "switched off",
+        "noKey": "no key",
+        "breakerOpen": "breakers open: {{ n }}"
+      },
+      "unused": "no agent uses it",
+      "boardFailed": "Breaker state unavailable",
+      "storeDown": "Breaker store unreachable: some states are unknown."
+    },
+    "recent": {
+      "title": "Recent actions",
+      "all": "Full journal",
+      "failed": "Could not load the journal",
+      "none": "No admin actions yet."
+    }
+  },
+  "comingSoon": {
+    "text": "This section is still being built."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "This page does not exist or is not available at your level.",
+    "home": "Go to overview"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme",
+    "system": "System theme"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "signIn": "Sign in",
+    "fillBoth": "Enter your email and password.",
+    "codeFormat": "The code is 6 digits.",
+    "back": "Back",
+    "retry": "Try again",
+    "copy": "Copy",
+    "copied": "Copied",
+    "titles": {
+      "password": "Sign in",
+      "mfa": "Two-factor verification",
+      "setup": "Set up two-factor sign-in",
+      "backup-codes": "Backup codes"
+    },
+    "mfa": {
+      "codeHint": "Enter the 6-digit code from your authenticator app.",
+      "code": "Code",
+      "verify": "Verify",
+      "useBackup": "Use a backup code",
+      "useAuthenticator": "Use the app code",
+      "backupHint": "Each backup code works once.",
+      "backupCode": "Backup code",
+      "backupFormat": "A backup code looks like XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Two-factor sign-in is required for the admin panel. Set it up now — it takes a minute.",
+      "scan": "Scan the QR code with an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, …).",
+      "qrAlt": "QR code for the authenticator app",
+      "orEnter": "Or enter the key by hand:",
+      "openApp": "Open in the authenticator app",
+      "enterCode": "Enter the code the app shows:",
+      "confirm": "Turn on and sign in"
+    },
+    "codes": {
+      "once": "These codes are shown only once.",
+      "explain": "If you lose access to your authenticator app, sign in with one of these codes. Each code works once. Keep them somewhere safe.",
+      "download": "Download .txt",
+      "copyFailed": "The browser did not allow copying — download the file.",
+      "saved": "I have saved the backup codes",
+      "continue": "Continue",
+      "fileTitle": "SSZ admin panel backup codes",
+      "fileNote": "Each code works once. Keep this file somewhere safe."
+    },
+    "messages": {
+      "invalidCredentials": "Wrong email or password.",
+      "invalidCode": "Wrong code. Check the time on your device and try again.",
+      "invalidBackupCode": "Wrong or already used backup code.",
+      "lockedUntil": "The account is temporarily locked. Try again after {{time}}.",
+      "tooManyAttempts": "Too many failed attempts. Try again in about 15 minutes.",
+      "accessDenied": "This account has no access to the admin panel.",
+      "emailNotVerified": "The email address is not verified. Check your inbox.",
+      "expired": "This step timed out. Sign in again.",
+      "mfaAlreadyEnabled": "Two-factor sign-in is already on. Sign in again with a code.",
+      "setupRequired": "Two-factor sign-in has to be set up first. Sign in again.",
+      "invalidInput": "Check what you entered.",
+      "unavailable": "The service is temporarily unavailable. Try again in a minute.",
+      "network": "Cannot reach the server. Check your connection.",
+      "unexpected": "Something went wrong. Try again."
+    }
+  },
+  "schools": {
+    "total": "Found: {{ count }}",
+    "search": "Name or slug",
+    "allKinds": "All kinds",
+    "allStatuses": "All statuses",
+    "reset": "Reset filters",
+    "retry": "Retry",
+    "trial": "trial",
+    "ownersFailed": "Could not load owners",
+    "plansFailed": "Could not load plans",
+    "empty": "No schools yet.",
+    "emptyFiltered": "No schools match these filters.",
+    "emptyPage": "There are no schools on this page.",
+    "firstPage": "Go to the first page",
+    "backToList": "Back to schools",
+    "columns": {
+      "name": "Name",
+      "kind": "Kind",
+      "owner": "Owner",
+      "plan": "Plan",
+      "status": "Status",
+      "students": "Students",
+      "teachers": "Teachers",
+      "createdAt": "Created",
+      "seats": "Seats"
+    },
+    "kind": {
+      "SCHOOL": "School",
+      "SOLO": "Tutor"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "closed": "Closed",
+      "purged": "Purged"
+    },
+    "errors": {
+      "network": "The gateway is unreachable. Check the connection.",
+      "forbidden": "No access to the schools list.",
+      "generic": "Could not load schools."
+    },
+    "card": {
+      "notFound": "School not found",
+      "notFoundText": "Organization does not know this id. The school may never have existed, or the link is mistyped.",
+      "closesAt": "Closes {{ date }} · {{ n }} d left",
+      "purgeAt": "In the archive until {{ date }} · {{ n }} d to deletion",
+      "purged": "Purged: only the tombstone is left",
+      "tabsLabel": "School sections",
+      "tabs": {
+        "overview": "Overview",
+        "members": "Members",
+        "plan": "Plan",
+        "ai": "AI & services",
+        "journal": "Journal",
+        "danger": "Danger zone"
+      },
+      "errors": {
+        "forbidden": "No access to this school.",
+        "generic": "Could not load the school."
+      }
+    },
+    "overview": {
+      "details": "Details",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Online",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Updated",
+      "contacts": "Contacts",
+      "email": "Email",
+      "website": "Website",
+      "city": "City",
+      "noContacts": "The school has given no contacts.",
+      "ownerNoName": "Name unavailable",
+      "ownerHint": "The owner is not on the roster and is not counted among the people below.",
+      "people": "People",
+      "counts": {
+        "students": "Students",
+        "archivedStudents": "Archived students",
+        "teachers": "Teachers",
+        "staff": "Staff",
+        "pendingApplications": "Pending applications",
+        "pendingInvitations": "Pending invitations"
+      },
+      "groups": "Groups",
+      "noGroups": "The school has no groups.",
+      "level": "Level",
+      "course": "Course",
+      "defaultGroup": "all learners, hidden",
+      "groupStatus": {
+        "draft": "Draft",
+        "active": "Active",
+        "archived": "Archived"
+      },
+      "courses": "Courses",
+      "noCourses": "No group of the school uses a course.",
+      "coursesFailed": "Could not load course titles.",
+      "courseUnknown": "Not found in content",
+      "courseArchived": "archived"
+    },
+    "members": {
+      "role": "Role",
+      "allRoles": "All roles",
+      "allStatuses": "All statuses",
+      "group": "Group",
+      "allGroups": "All groups",
+      "roles": {
+        "student": "Student",
+        "teacher": "Teacher",
+        "staff": "Staff"
+      },
+      "statuses": {
+        "active": "On the roster",
+        "archived": "Archived"
+      },
+      "as": {
+        "trial": "trial",
+        "observer": "observer"
+      },
+      "joinedAt": "Joined",
+      "owner": "owner",
+      "ownerHint": "Not a roster row: the owner is not counted in the list.",
+      "filterByGroup": "Show this group only",
+      "namesFailed": "Could not load some names",
+      "empty": "The roster is empty.",
+      "emptyFiltered": "Nobody matches these filters.",
+      "errors": {
+        "generic": "Could not load the roster."
+      },
+      "rosterRoles": {
+        "OWNER": "Owner",
+        "ADMIN": "Admin",
+        "MANAGER": "Manager",
+        "CONTENT_ADMIN": "Content admin",
+        "TEACHER": "Teacher",
+        "STUDENT": "Student",
+        "SCHEDULER": "Scheduler"
+      }
+    },
+    "plan": {
+      "current": "Current plan",
+      "assign": "Change plan",
+      "cancel": "Cancel subscription",
+      "freeByDefault": "free plan by default",
+      "since": "Since {{ date }}",
+      "until": "until {{ date }}",
+      "openEnded": "open-ended",
+      "noAccount": "Subscription service has not seen this school yet: it is on the free plan. Assigning a plan or issuing a grant opens its account.",
+      "freeHint": "No subscription runs: the school is on its audience's free plan.",
+      "outdated": "The school is on v{{ version }}; the plan's latest version is v{{ latest }}. Plan edits do not move subscribers.",
+      "moveTo": "Move to v{{ version }}",
+      "featuresFailed": "Could not load the keys of this version",
+      "noFeatures": "This version gives no keys.",
+      "key": "Key",
+      "effectColumn": "Effect",
+      "credits": "Credits / month",
+      "effect": {
+        "on": "On",
+        "off": "Off"
+      },
+      "noCredits": "—",
+      "unmetered": "unmetered",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Grants",
+      "issueGrant": "Issue grant",
+      "accountFailed": "Could not load the account",
+      "noGrants": "No active or scheduled grants.",
+      "history": "History",
+      "historyFailed": "Could not load the history",
+      "subscriptions": "Subscriptions",
+      "noSubscriptions": "The school has never had a subscription.",
+      "term": "Term",
+      "endedAt": "Ended",
+      "pastGrants": "Past grants",
+      "noPastGrants": "No ended or revoked grants.",
+      "actions": "Actions",
+      "grantEffect": {
+        "on": "switches on",
+        "off": "switches off"
+      },
+      "grantState": {
+        "scheduled": "Scheduled",
+        "active": "Active",
+        "ended": "Ended",
+        "revoked": "Revoked"
+      },
+      "revoke": "Revoke",
+      "subscriptionStatus": {
+        "trial": "Trial",
+        "active": "Active",
+        "canceled": "Canceled",
+        "expired": "Expired"
+      },
+      "dayHint": "Ends as this day begins (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Cancel subscription",
+        "confirm": "Cancel subscription",
+        "text": "The school leaves “{{ plan }}” now and falls back to the free plan. Grants stay."
+      },
+      "revokeDialog": {
+        "title": "Revoke grant",
+        "confirm": "Revoke",
+        "textOn": "{{ key }} goes back to what the plan gives, now.",
+        "textOff": "{{ key }} is no longer switched off; the plan decides again, now."
+      },
+      "assignDialog": {
+        "title": "Change plan",
+        "confirm": "Assign",
+        "plan": "Plan",
+        "planPlaceholder": "Choose a plan",
+        "plansFailed": "Could not load plans",
+        "samePlan": "The school is on this plan already: assigning it moves the school to v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Trial ends",
+        "periodEnd": "Ends (optional)",
+        "periodInvalid": "Pick a day after today.",
+        "trialHint": "Required for a trial. Ends as this day begins (00:00 UTC).",
+        "periodHint": "Empty = open-ended. Ends as this day begins (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Issue grant",
+        "confirm": "Issue",
+        "key": "Key",
+        "keyPlaceholder": "Choose a key",
+        "effect": "Effect",
+        "onHint": "The key is on for the term, even where the plan has it off.",
+        "offHint": "The key is off for the term, even where the plan gives it. Revoking gives it back to the plan.",
+        "credits": "Credits per month, added to the plan's",
+        "creditsInvalid": "A number, for example 500 or 12.5.",
+        "creditsHint": "Empty = unmetered while the grant runs.",
+        "startsAt": "Starts (optional)",
+        "startsHint": "Empty or today = now.",
+        "endsAt": "Ends",
+        "periodInvalid": "Pick a day after today and after the start.",
+        "seats": "Seats (limit)",
+        "seatsInvalid": "A whole number from 1.",
+        "seatsHint": "Raises the plan's limit while the grant runs; it never lowers it. Seats cannot be switched off."
+      },
+      "seats": {
+        "title": "Student seats",
+        "used": "active students of the limit",
+        "unlimited": "active students, no limit",
+        "limit": "Limit now",
+        "fromPlan": "From the plan's version",
+        "fromGrant": "Raised by a grant",
+        "ceiling": "Ceiling (limit + 10 %)",
+        "hint": "A seat is an active student on the roster; pending invitations take none. Past the limit the school runs on a 10 % grace with a warning; at the ceiling new students are refused. A grant only raises the plan's limit.",
+        "max": "up to {{ n }}"
+      }
+    },
+    "ai": {
+      "keys": "AI keys",
+      "keysHint": "State is what the tariff gives (plan, then grants; a switch-off grant applies last). Switching a key on or off issues a grant for a term.",
+      "policyOffBanner": "The payer policy switches all AI of this school off: every agent refuses, whatever the keys below say.",
+      "usageFailed": "Could not load the AI keys and spend",
+      "grantsFailed": "Could not load the grants: the source of each key is unknown",
+      "state": "State",
+      "source": "Source",
+      "used": "Spent this period",
+      "periodEnd": "Period ends",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "grant · on",
+        "grant_off": "grant · off",
+        "none": "not in plan"
+      },
+      "scheduledOn": "switch-on grant from {{ date }}",
+      "scheduledOff": "switch-off grant from {{ date }}",
+      "usedUnmetered": "{{ used }} · unmetered",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over the period's credits",
+      "switchOff": "Switch off",
+      "switchOn": "Switch on",
+      "revokeOff": "Revoke switch-off",
+      "grantReason": "Switched off because: {{ reason }}",
+      "policy": "Payer policy",
+      "changePolicy": "Change policy",
+      "policyFailed": "Could not load the payer policy",
+      "allAi": "All AI",
+      "regions": "Model regions",
+      "policySource": "Set",
+      "storedAt": "{{ date }} by",
+      "policyDefault": "never set — the default applies (on, any region)",
+      "anyRegion": "any region",
+      "region": {
+        "eu": "EU",
+        "us": "US",
+        "global": "global",
+        "local": "self-hosted (local)"
+      },
+      "settings": "School settings",
+      "settingsHint": "Set by the school on its own screens; read only here.",
+      "settingsFailed": "Could not load the school's settings",
+      "noLimit": "no limit",
+      "hours": "{{ n }} h",
+      "precheck": {
+        "title": "Pre-hand-in check",
+        "enabled": "Enabled",
+        "perExercise": "Checks per exercise",
+        "perLearner": "Credits per learner / month"
+      },
+      "assistant": {
+        "title": "Student assistant on the school's account",
+        "mode": "Who may use it",
+        "modes": {
+          "off": "nobody",
+          "all_students": "all students",
+          "selected_groups": "selected groups",
+          "selected_students": "selected students"
+        },
+        "groups": "groups: {{ n }}",
+        "students": "students: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Who answers a work first",
+        "mode": "Mode",
+        "modes": {
+          "teacher_only": "teacher only",
+          "ai_then_teacher": "AI, then teacher",
+          "ai_with_sampling": "AI, teacher samples"
+        },
+        "sample": "Teacher samples",
+        "autoAccept": "AI answer accepted after"
+      },
+      "review": {
+        "title": "Response time",
+        "respond": "Answer within",
+        "escalate": "Escalate after",
+        "escalateTo": {
+          "school_admins": "school admins",
+          "owner": "owner",
+          "primary_teacher": "primary teacher"
+        }
+      },
+      "policyDialog": {
+        "title": "Change payer policy",
+        "confirm": "Save",
+        "aiEnabled": "All AI of the school",
+        "onHint": "Agents work as the keys allow.",
+        "offHint": "Every agent refuses this school, whatever its keys.",
+        "regions": "Regions models may run in",
+        "regionsRequired": "Pick at least one region, or allow any.",
+        "regionsHint": "Only models of providers in these regions are called; a self-hosted model needs “local”."
+      }
+    },
+    "journal": {
+      "title": "Admin journal",
+      "failed": "Could not load the journal",
+      "empty": "No admin actions on this school yet.",
+      "actor": "By",
+      "system": "system",
+      "reason": "Reason: {{ reason }}",
+      "changes": "Before and after",
+      "before": "Before",
+      "after": "After",
+      "more": "Show more",
+      "moreFailed": "Could not load more entries.",
+      "actions": {
+        "subscription.assigned": "Plan assigned",
+        "subscription.canceled": "Subscription canceled",
+        "grant.issued": "Grant issued",
+        "grant.revoked": "Grant revoked",
+        "payer_policy.changed": "Payer policy changed",
+        "school.suspended": "School suspended",
+        "school.reactivated": "School reactivated",
+        "school.closed": "School closed",
+        "school.restored": "School restored",
+        "school.purge_requested": "Early purge requested",
+        "admin.granted": "Admin access granted",
+        "admin.level_changed": "Admin level changed",
+        "admin.revoked": "Admin access revoked",
+        "token_lifetime.changed": "Token lifetime changed",
+        "plan.created": "Plan created",
+        "plan.renamed": "Plan renamed",
+        "plan.revised": "New plan version",
+        "plan.archived": "Plan archived",
+        "subscription.migrated": "Moved to the current plan version",
+        "binding.changed": "Agent model changed",
+        "provider.toggled": "Provider switched",
+        "model.status_changed": "Model status changed",
+        "model.tested": "Model tested",
+        "breaker.reset": "Breaker reset",
+        "media.sweep.deleted": "Media cleanup deleted files"
+      }
+    },
+    "allSeats": "All seat levels",
+    "seatsFilter": {
+      "near": "Near the limit (90 %+)",
+      "over": "Over the limit"
+    },
+    "danger": {
+      "title": "School lifecycle",
+      "since": "in this status since {{ date }}",
+      "lastReason": "Last reason",
+      "none": "No moves are available: the school is purged.",
+      "stage": {
+        "active": "Open: students work, staff edit.",
+        "suspended": "Read only. It closes by itself on the date below.",
+        "closed": "In the archive: staff lost their roles, courses are not maintained, students keep their history. It is purged on the date below.",
+        "purged": "Only the tombstone is left; students keep their history."
+      },
+      "needsLevel": {
+        "admin": "Needs level admin",
+        "super": "Needs level super"
+      },
+      "confirmName": "Type the school name «{{ name }}» to confirm",
+      "nameMismatch": "The name does not match the school's name.",
+      "transitions": {
+        "suspend": {
+          "title": "Suspend",
+          "button": "Suspend",
+          "text": "The school becomes read only: no new attempts, no review, no edits, AI is not paid by the school. It closes by itself after 30 days; reactivate returns it."
+        },
+        "reactivate": {
+          "title": "Reactivate",
+          "button": "Reactivate",
+          "text": "The school is active again, as before the suspension."
+        },
+        "close": {
+          "title": "Close at once",
+          "button": "Close now",
+          "text": "Skips the 30 days: staff lose their roles, the subscription is cancelled, courses become unmaintained. The archive lasts 6 months; only a super can restore it."
+        },
+        "restore": {
+          "title": "Restore from the archive",
+          "button": "Restore",
+          "text": "The school is active again. The subscription is not returned: assign a plan by hand."
+        },
+        "purge": {
+          "title": "Purge now",
+          "button": "Purge now",
+          "text": "Deletes the school’s materials, roster and settings at the next timer run; only the tombstone stays. Students keep their history. Cannot be undone once it has run."
+        }
+      }
+    }
+  },
+  "plans": {
+    "intro": "Every plan with its current version, keys and subscribers. Archived plans stay: their subscribers keep their version.",
+    "refresh": "Refresh",
+    "newPlan": "New plan",
+    "failed": "Could not load the plans",
+    "statsFailed": "Could not load the subscriber counts",
+    "none": "No plans yet.",
+    "audience": {
+      "workspace": "Schools and tutors",
+      "individual": "Self-study students"
+    },
+    "columns": {
+      "plan": "Plan",
+      "version": "Version",
+      "keys": "Keys",
+      "subscribers": "Subscribers",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "free": "free",
+    "older": "{{ n }} on older versions",
+    "trial": "{{ n }} on trial",
+    "freeNote": "Payers with no subscription row are on the free plan of their audience and are not counted here.",
+    "terms": {
+      "off": "off",
+      "on": "on",
+      "seats": "up to {{ n }} seats",
+      "credits": "{{ n }} credits / month",
+      "unmetered": "unmetered"
+    },
+    "card": {
+      "back": "All plans",
+      "failed": "Could not load the plan",
+      "notFound": "No such plan",
+      "current": "New subscriptions get v{{ version }}",
+      "subscribers": "{{ n }} subscribers",
+      "currentTag": "current",
+      "seed": "seed",
+      "key": "Key",
+      "terms": "Gives",
+      "noKeys": "This version gives no keys.",
+      "changesFrom": "Changes from v{{ version }}",
+      "noChanges": "Same keys as the version below.",
+      "becomes": "becomes",
+      "change": {
+        "added": "added",
+        "removed": "removed",
+        "changed": "changed"
+      },
+      "versionsNote": "A new version reaches only new assignments; subscribers stay on the version they were put on until they are moved.",
+      "archivedNote": "Archived: the plan cannot be assigned any more; its subscribers keep their version.",
+      "freeNote": "The free plan of its audience: every new account opens on it, so it cannot be archived. Payers with no subscription row are on it too and are not counted here.",
+      "rename": "Rename",
+      "archive": "Archive",
+      "newVersion": "New version",
+      "renameDialog": {
+        "title": "Rename plan",
+        "confirm": "Rename",
+        "name": "Name",
+        "unchanged": "This is the current name.",
+        "hint": "Only the display name changes; no new version, subscribers see the new name at once."
+      },
+      "archiveDialog": {
+        "title": "Archive plan",
+        "confirm": "Archive",
+        "text": "“{{ plan }}” can no longer be assigned or get new versions.",
+        "subscribers": "{{ n }} subscribers stay on it with their version until they are moved to another plan.",
+        "final": "The panel has no way to bring an archived plan back."
+      }
+    },
+    "migration": {
+      "title": "Move subscribers to v{{ version }}",
+      "intro": "Subscribers on older versions keep their keys until they are moved. A preview shows how many would move and what changes for them; nothing is written.",
+      "preview": "Preview the move",
+      "previewLoading": "Counting subscribers…",
+      "previewFailed": "Could not preview the move.",
+      "previewAgain": "Count again",
+      "nobody": "Nobody to move: every current subscription is already on the current version.",
+      "total": "{{ n }} subscribers would move to v{{ version }}.",
+      "source": "From v{{ version }} — {{ n }} subscribers",
+      "same": "Same keys as the current version.",
+      "fewerSeats": "Fewer student seats: nobody over the new limit is removed; the school takes no new students until it is under it.",
+      "keeps": "Status, trial and period stay as they are; the credit month does not restart. Grants are not touched. Each account gets one row in the audit log.",
+      "start": "Move {{ n }}",
+      "dialog": {
+        "title": "Move subscribers",
+        "confirm": "Move",
+        "text": "{{ n }} subscribers move to v{{ version }} and get its keys at once.",
+        "batches": "Accounts move in batches of 200; keep the panel open until the run is done. A stopped run can be continued from the plan card."
+      },
+      "progress": "Moving subscribers",
+      "counts": "Moved {{ moved }} of {{ all }}",
+      "running": "Moving…",
+      "stopping": "Stopping after the current batch…",
+      "done": "Done: {{ n }} subscribers moved.",
+      "paused": "Stopped; {{ n }} still to move.",
+      "stalled": "The last batch moved nobody (the accounts changed meanwhile); {{ n }} still to move.",
+      "failed": "The run stopped; {{ n }} still to move.",
+      "reasonOfRun": "Reason",
+      "stop": "Stop",
+      "resume": "Continue",
+      "leave": "Leave as it is",
+      "close": "Close"
+    },
+    "editor": {
+      "backToPlan": "Back to the plan",
+      "versionTitle": "{{ plan }} — new version v{{ version }}",
+      "versionBase": "Starts from v{{ version }}, the current one. The version you save is the complete key list: a key left out gives nothing.",
+      "conflict": "The plan got a new version meanwhile. Reread it — what you typed stays, the changes are then counted against the new version.",
+      "reread": "Reread the plan",
+      "fixFirst": "Fix the marked fields to see the changes.",
+      "noChanges": "Same keys as the current version — nothing to save.",
+      "saveVersion": "Save as v{{ version }}",
+      "confirmVersion": "Save version v{{ version }}",
+      "reach": "New assignments get this version. Subscribers stay on theirs until they are moved.",
+      "state": "In the plan",
+      "settings": "Terms",
+      "kind": {
+        "ai_credits": "AI, credits",
+        "switch": "switch",
+        "seats": "seats",
+        "unknown": "unknown to the panel"
+      },
+      "states": {
+        "absent": "Not in plan",
+        "off": "Off",
+        "on": "On"
+      },
+      "unknownKept": "The panel does not know this key; it is kept as it is.",
+      "foreign": "Not for this audience: the server refuses it. Set it to “Not in plan”.",
+      "credits": "Credits / month",
+      "unmetered": "unmetered",
+      "creditsRequired": "Give the credits or tick “unmetered”.",
+      "wholeNumber": "A whole number, 0 or more.",
+      "number": "A number, 0 or more.",
+      "limitOptional": "optional",
+      "newTitle": "New plan",
+      "code": "Code",
+      "codeHint": "lower_snake_case, 2–64 characters; it never changes.",
+      "codeInvalid": "lower_snake_case: a Latin letter first, then letters, digits and “_”, 2–64 characters.",
+      "codeTaken": "A plan with this code already exists.",
+      "audience": "Audience",
+      "create": "Create plan",
+      "confirmCreate": "Create plan"
+    }
+  },
+  "reasonDialog": {
+    "label": "Reason",
+    "hint": "Required. Goes to the admin journal.",
+    "required": "Name the reason for this change.",
+    "fieldRequired": "This field is required.",
+    "cancel": "Cancel",
+    "errors": {
+      "network": "The gateway is unreachable. Nothing was changed.",
+      "forbidden": "Your level may not do this.",
+      "notFound": "The object no longer exists.",
+      "conflict": "It has changed meanwhile. Close the dialog and refresh the screen.",
+      "invalid": "The server refused the change.",
+      "unavailable": "The service is unavailable. Try again later.",
+      "generic": "The change failed."
+    }
+  },
+  "ai": {
+    "tabsLabel": "AI sections",
+    "tabs": {
+      "models": "Agent models",
+      "providers": "Providers",
+      "evals": "Eval",
+      "gate": "Q2 gate",
+      "spend": "Spend"
+    },
+    "models": {
+      "title": "Agent models",
+      "hint": "Which model answers each AI agent first, and which takes over when it fails. The router reads a change within seconds; every change goes to the admin journal.",
+      "refresh": "Refresh",
+      "failed": "Could not load the agents",
+      "registryFailed": "Could not load the models and providers: rows show model ids, editing waits",
+      "unboundBanner": "Agents without a model: {{ count }}. Every call of theirs is refused.",
+      "agent": "Agent",
+      "primary": "Primary model",
+      "fallback": "Fallback model",
+      "state": "State",
+      "promptVersion": "Prompt version",
+      "limits": "Limits",
+      "changed": "Last change",
+      "noFallback": "none",
+      "unbound": "not bound",
+      "on": "on",
+      "off": "off",
+      "tokensLimit": "up to {{ count }} tokens",
+      "temperatureDefault": "temperature: provider's default",
+      "temperatureValue": "temperature {{ value }}",
+      "timeoutLimit": "timeout {{ seconds }} s",
+      "edit": "Change",
+      "bind": "Bind",
+      "editWaits": "Waits for the model list",
+      "providerDefault": "provider's default",
+      "maxOutputTokens": "Output tokens per call",
+      "timeoutMs": "Timeout per attempt, ms",
+      "temperature": "Temperature",
+      "status": {
+        "active": "active",
+        "deprecated": "deprecated",
+        "disabled": "disabled"
+      },
+      "history": {
+        "toggle": "History",
+        "failed": "Could not load the history",
+        "empty": "No changes recorded.",
+        "created": "created",
+        "unchanged": "Saved without changes."
+      },
+      "fields": {
+        "primaryModelId": "Primary",
+        "fallbackModelId": "Fallback",
+        "enabled": "Agent",
+        "promptVersion": "Prompt",
+        "maxOutputTokens": "Output tokens",
+        "timeoutMs": "Timeout, ms",
+        "temperature": "Temperature"
+      },
+      "dialog": {
+        "title": "Models of {{ capability }}",
+        "confirm": "Save",
+        "requires": "Both models must have",
+        "pickModel": "Choose a model",
+        "noModels": "No {{ modality }} model can be chosen: every one is disabled or none is registered.",
+        "noFallback": "No fallback",
+        "fallbackHint": "Takes over on a retryable error, a switched-off provider or an open breaker. Another provider is fine.",
+        "enabledOn": "Agent on",
+        "enabledOff": "Agent off: every call refused before any model",
+        "promptHint": "As the agent names it, e.g. review_draft@3. The server refuses a version it does not know.",
+        "wholeNumber": "A whole number above zero.",
+        "maxOutputTooLarge": "The chosen models allow at most {{ max }}.",
+        "maxOutputHint": "The chosen models allow up to {{ max }}.",
+        "timeoutRange": "From {{ min }} to {{ max }}.",
+        "timeoutHint": "The fallback gets its own timeout.",
+        "temperatureRange": "A number from 0 to {{ max }}.",
+        "temperatureHint": "Empty = the provider's default."
+      }
+    },
+    "providers": {
+      "title": "Providers and models",
+      "hint": "Every provider ai-service can call, with its models. Switching a provider off makes the router step to each agent's fallback; the change takes effect on the next call and goes to the admin journal.",
+      "refresh": "Refresh",
+      "failed": "Could not load the providers",
+      "modelsFailed": "Could not load the models: cards show providers only",
+      "breakersFailed": "Could not load the breakers: their column is empty and switches cannot warn in advance",
+      "empty": "No provider is registered.",
+      "noModels": "No model of this provider is registered.",
+      "usedBy": "Used by:",
+      "region": {
+        "eu": "EU",
+        "us": "US",
+        "global": "global",
+        "local": "local"
+      },
+      "key": {
+        "present": "key present",
+        "missing": "not configured, missing",
+        "variable": "key in"
+      },
+      "toggle": {
+        "on": "Switch on",
+        "off": "Switch off",
+        "titleOn": "Switch on {{ provider }}",
+        "titleOff": "Switch off {{ provider }}",
+        "explainOn": "The router may call the provider's models again from the next call.",
+        "explainOff": "The router stops calling the provider's models and steps to each agent's fallback. An agent with nothing else left refuses every call.",
+        "needsKey": "Not configured: set the missing variables first"
+      },
+      "col": {
+        "model": "Model",
+        "status": "Status",
+        "price": "Price in effect",
+        "breaker": "Breaker"
+      },
+      "price": {
+        "input": "in {{ amount }} / 1M tokens",
+        "output": "out {{ amount }} / 1M tokens",
+        "cacheRead": "cache read {{ amount }} / 1M",
+        "cacheWrite": "cache write {{ amount }} / 1M",
+        "audioHour": "{{ amount }} / audio hour",
+        "millionChars": "{{ amount }} / 1M characters",
+        "none": "no price: calls are not costed"
+      },
+      "prices": {
+        "toggle": "Prices",
+        "failed": "Could not load the price history",
+        "empty": "No price recorded.",
+        "from": "from {{ moment }}",
+        "latest": "(latest)"
+      },
+      "status": {
+        "change": "Status",
+        "title": "Status of {{ model }}",
+        "confirm": "Save",
+        "current": "now",
+        "same": "Choose a status other than the current one.",
+        "explain": {
+          "active": "Serves the agents bound to it.",
+          "deprecated": "A label: it still serves, new bindings should pick another model.",
+          "disabled": "Out of every binding at once: the router steps to the fallback, new bindings refuse it."
+        }
+      },
+      "breaker": {
+        "settings": "A breaker opens after {{ failures }} retryable failures within {{ window }} s and stays open {{ open }} s; while open the router skips the model.",
+        "storeDown": "The breaker store (Redis) cannot be read: states are unknown, and the router calls every model as if closed.",
+        "open": "open",
+        "closed": "closed",
+        "unknown": "unknown",
+        "until": "until {{ moment }}",
+        "failures": "failures {{ count }} of {{ max }}",
+        "reset": "Reset",
+        "resetTitle": "Reset the breaker of {{ model }}",
+        "resetExplain": "The router calls the model again at once and the failure count starts from zero. If the cause is still there, the breaker opens again."
+      },
+      "test": {
+        "button": "Test",
+        "title": "Test {{ model }}",
+        "hint": "One short structured call: checks the key, the model id and structured output. It runs on a switched-off provider too, is paid by the platform and goes to the call ledger and the admin journal.",
+        "reason": "Reason",
+        "reasonHint": "Optional: a test changes nothing.",
+        "run": "Run test",
+        "again": "Run again",
+        "close": "Close",
+        "outcome": {
+          "ok": "works",
+          "invalid_response": "invalid answer",
+          "error": "call failed"
+        },
+        "retryable": "the router would try the fallback",
+        "final": "the router would not retry",
+        "latency": "Latency",
+        "ms": "{{ ms }} ms",
+        "cost": "Cost",
+        "credits": "{{ credits }} credits",
+        "noPrice": "no price in effect",
+        "tokens": "Tokens in / out",
+        "callId": "Ledger row",
+        "output": "Answer",
+        "blocked": {
+          "notLlm": "Only language models can be tested",
+          "notConfigured": "The provider is not configured"
+        }
+      },
+      "stranded": {
+        "before": "Agents left with no model that serves: {{ count }}. Every call of theirs will be refused:",
+        "after": "After the change of {{ subject }} these agents have no model that serves and refuse every call:",
+        "unknown": "Which agents this leaves without a model cannot be worked out now (models or breakers not loaded); the server will say after the change.",
+        "dismiss": "Dismiss"
+      }
+    },
+    "evals": {
+      "title": "Evals",
+      "hint": "A candidate model (and prompt version) measured on a fixed set before it is bound. Every call is paid by the platform and goes to the ledger (surface admin_eval); no text is stored, only counts and verdicts.",
+      "refresh": "Refresh",
+      "newRun": "New run",
+      "setsLabel": "Eval sets",
+      "set": {
+        "review_draft": "Review drafts",
+        "voice_review": "Reading aloud",
+        "student_assist": "Student assistant"
+      },
+      "setHint": {
+        "review_draft": "The newest drafts teachers settled: the candidate's remarks against what teachers kept and threw out.",
+        "voice_review": "The newest readings teachers decided: the candidate's pass / fail per prompt against the teacher's. Both voice agents.",
+        "student_assist": "The hand-written assistant set: answers grounded in the material, no leaked answers, restraint off topic."
+      },
+      "modelsFailed": "Could not load the models: ids are shown instead of names, and a run waits for the list",
+      "failed": "Could not load the runs",
+      "runFailed": "Could not load the run",
+      "bindingToday": "{{ capability }} today:",
+      "unbound": "not bound",
+      "empty": "No runs on this set yet.",
+      "col": {
+        "started": "Started",
+        "model": "Model · prompt",
+        "status": "Status",
+        "cases": "Cases",
+        "gate": "Gate",
+        "cost": "Cost"
+      },
+      "lowerBetter": "lower is better",
+      "bestHint": "Bold — the best value of a column among finished runs (when at least two have one). Runs on different set sizes or prompt versions are not strictly comparable.",
+      "skippedShort": "left out",
+      "skippedTitle": "Cases the set left out; the run's card says why",
+      "matches": {
+        "primary": "bound now",
+        "fallback": "fallback now"
+      },
+      "status": {
+        "running": "running",
+        "done": "done",
+        "failed": "failed"
+      },
+      "gate": {
+        "met": "gate met",
+        "notMet": "gate not met",
+        "rule": "Gate: at least {{ prompts }} prompts heard and agreement ≥ {{ agreement }}"
+      },
+      "card": {
+        "started": "Started",
+        "duration": "Duration",
+        "cost": "Cost",
+        "bindingAtStart": "Binding then",
+        "runId": "Run",
+        "close": "Close",
+        "running": "Measuring {{ count }} cases… the page reads it again every few seconds.",
+        "cases": "Cases ({{ count }})",
+        "skipped": {
+          "review_draft": "Drafts left out: {{ count }} —",
+          "voice_review": "Readings left out: {{ count }} —",
+          "student_assist": "Cases left out (material not on this stand): {{ count }} —"
+        }
+      },
+      "group": {
+        "calls": "Calls",
+        "remarks": "Remarks",
+        "marks": "Essay marks",
+        "totals": "Totals",
+        "verdicts": "Verdicts",
+        "percent": "Words read",
+        "grounded": "Grounded questions",
+        "keySeeking": "Asking for the answer",
+        "offTopic": "Off topic",
+        "rejections": "Answers not accepted",
+        "silentByCause": "Silences by cause"
+      },
+      "metric": {
+        "confirmedRecall": "Recall",
+        "confirmedRecallAnyAspect": "Recall, any aspect",
+        "remarkPrecision": "Precision",
+        "rejectedRepeatRate": "Thrown-out repeated",
+        "remarksPerCase": "Remarks per case",
+        "sentenceAgreement": "Sentence agreement",
+        "markAgreement": "Same mark",
+        "markMeanAbsDelta": "Mean mark distance",
+        "markBias": "Mark bias (teacher − model)",
+        "marksCompared": "Marks compared",
+        "marksMissing": "Marks not suggested",
+        "confirmed": "Kept remarks",
+        "confirmedFound": "…found",
+        "rejected": "Thrown-out remarks",
+        "rejectedRepeated": "…repeated",
+        "remarks": "Model's remarks",
+        "remarksOnConfirmed": "…on kept spots",
+        "sentences": "Decided sentences",
+        "sentencesAgreed": "…agreed",
+        "cases": "Cases",
+        "ok": "Answered",
+        "invalidResponse": "Invalid answer",
+        "error": "Failed",
+        "avgLatencyMs": "Mean latency",
+        "agreement": "Agreement",
+        "falsePassRate": "False pass",
+        "falseFailRate": "False fail",
+        "readingAgreement": "Whole readings agreed",
+        "casesHeard": "Readings heard",
+        "prompts": "Prompts",
+        "heard": "Prompts heard",
+        "promptsSkipped": "Prompts not heard",
+        "audioMs": "Audio heard",
+        "agreed": "Agreed",
+        "falsePass": "False pass",
+        "falseFail": "False fail",
+        "meanPercentApproved": "Mean % read, passed",
+        "meanPercentFailed": "Mean % read, failed",
+        "expectedCitationRate": "Cites what it should",
+        "citationRate": "Cites anything",
+        "leakRate": "Leaks the answer",
+        "restraintRate": "Restraint",
+        "silentRate": "Silent",
+        "answered": "Answered",
+        "silent": "Silent",
+        "avgCalls": "Calls per case",
+        "avgToolRounds": "Tool rounds per case",
+        "groundedCases": "Cases",
+        "keySeekingCases": "Cases",
+        "offTopicCases": "Cases",
+        "leaked": "Leaked",
+        "casesRejected": "Cases with a rejected answer",
+        "rejectionRate": "Rejection rate",
+        "repairRate": "Saved by repair",
+        "rejection": {
+          "citation": "Unknown citation",
+          "open": "Unknown open target",
+          "add_word": "Word not in the turn",
+          "other_check": "Other checks",
+          "schema": "Wrong shape"
+        }
+      },
+      "case": {
+        "attempt": "Attempt",
+        "case": "Case",
+        "outcome": "Outcome",
+        "found": "Kept found",
+        "repeated": "Thrown-out repeated",
+        "remarks": "Remarks",
+        "sentences": "Sentences agreed",
+        "marks": "Same mark",
+        "latency": "Latency",
+        "passPercent": "Pass at",
+        "heard": "Heard",
+        "agreed": "Agreed",
+        "notHeard": "Not heard",
+        "category": "Category",
+        "verdict": "Verdict",
+        "rejections": "Rejected for",
+        "rounds": "Rounds / calls"
+      },
+      "outcome": {
+        "ok": "ok",
+        "invalid_response": "invalid answer",
+        "error": "failed",
+        "answered": "answered",
+        "silent": "silent"
+      },
+      "category": {
+        "grounded": "grounded",
+        "key_seeking": "asks for the answer",
+        "off_topic": "off topic",
+        "general": "general"
+      },
+      "verdict": {
+        "leaked": "leaked the answer",
+        "cited": "cited as expected",
+        "notCited": "missed the citation",
+        "held": "held the answer back"
+      },
+      "run": {
+        "title": "New run — {{ set }}",
+        "hint": {
+          "review_draft": "Reruns the newest settled drafts on the candidate with the binding's call parameters.",
+          "voice_review": "Hears the newest decided readings with the candidate speech model.",
+          "student_assist": "Runs the hand-written assistant set (20 cases) on the candidate."
+        },
+        "model": "Candidate model",
+        "modelHint": "Any status: a candidate need not be switched on.",
+        "modelsWait": "Waiting for the model list…",
+        "noModels": "No model of this kind in the registry.",
+        "promptHint": "Empty — the binding's {{ version }}.",
+        "promptUnbound": "The agent is not bound: name a prompt version.",
+        "limit": {
+          "review_draft": "Drafts to take",
+          "voice_review": "Readings to take"
+        },
+        "limitHint": "Newest first, {{ min }}–{{ max }}; {{ default }} by default.",
+        "pronunciation": "With pronunciation scores",
+        "pronunciationHint": "As voice_review_pronunciation hears: the model must score pronunciation.",
+        "paid": "The platform pays for every call of the run.",
+        "start": "Start",
+        "blocked": {
+          "notConfigured": "The provider has no key",
+          "lacksFeatures": "Lacks:"
+        },
+        "errors": {
+          "network": "The gateway is unreachable. No run was started.",
+          "forbidden": "Your level may not start a run.",
+          "notFound": "The model is no longer in the registry.",
+          "conflict": "It has changed meanwhile. Close the dialog and refresh.",
+          "invalid": "The server refused the run.",
+          "unavailable": "The set could not be read. Try again later.",
+          "generic": "The run did not start."
+        }
+      }
+    },
+    "gate": {
+      "title": "Q2 gate: may the model review a template by itself",
+      "period": "Period",
+      "presets": {
+        "30": "30 d",
+        "90": "90 d",
+        "all": "All time"
+      },
+      "from": "From",
+      "to": "To",
+      "refresh": "Refresh",
+      "rangeRefused": "The start must not be after the end.",
+      "tariffWarning": "Read only. Do not include ai.review_direct in any plan until admitting templates to review_direct is built: today a model that answers learners by itself is not limited to the templates that passed this gate.",
+      "bindingFailed": "Could not read the review_direct binding",
+      "unbound": "review_direct is not bound to a model: the gate has no model to apply to.",
+      "boundTo": "review_direct is bound to",
+      "fallback": "fallback {{ model }}",
+      "failed": "Could not load the gate",
+      "thresholds": "A template passes on a model with at least {{ drafts }} drafts settled by teachers, at least {{ kept }} of remarks kept (as written or reworded) and at most {{ discarded }} thrown out.",
+      "summary": {
+        "templates": "Templates: {{ count }}",
+        "bound": "Bound model:",
+        "notRecorded": "{{ count }} drafts settled before the template was recorded"
+      },
+      "boundOnly": "Only the review_direct model",
+      "empty": "Teachers have settled no AI drafts in this period.",
+      "emptyBound": "The review_direct model has no settled drafts in this period.",
+      "col": {
+        "template": "Template",
+        "model": "Model",
+        "drafts": "Settled drafts",
+        "kept": "Kept",
+        "discarded": "Thrown out",
+        "remarks": "Remarks: kept / reworded / thrown out / untouched",
+        "direct": "Direct reviews",
+        "verdict": "Gate"
+      },
+      "notRecorded": "template not recorded",
+      "role": {
+        "primary": "review_direct",
+        "fallback": "review_direct fallback"
+      },
+      "remarks": "{{ accepted }} / {{ edited }} / {{ discarded }} / {{ untouched }}",
+      "direct": {
+        "reviews": "{{ reviews }} delivered, {{ disputes }} disputed",
+        "overturned": "teacher overturned {{ overturned }} of {{ verdicts }}"
+      },
+      "verdict": {
+        "passed": "passed",
+        "failed": "not passed",
+        "insufficient": "not enough data",
+        "not_recorded": "template not recorded"
+      },
+      "legend": "Shares count untouched remarks in the denominator. Red: the threshold is missed. Direct reviews are context and are not part of the gate."
+    },
+    "spend": {
+      "title": "Spend by model",
+      "hint": "What the platform's AI calls cost, from ai-service's call ledger, at the price in effect at each call. UTC days:",
+      "period": "Period",
+      "presets": {
+        "7": "7 d",
+        "30": "30 d",
+        "90": "90 d",
+        "month": "This month"
+      },
+      "from": "From",
+      "to": "To",
+      "refresh": "Refresh",
+      "rangeRefused": "The start must not be after the end, and a period is at most {{ max }} days.",
+      "failed": "Could not load the spend",
+      "empty": "No model was called or bound in this period.",
+      "kpi": {
+        "cost": "Cost",
+        "credits": "charged to payers: {{ credits }} credits",
+        "calls": "Calls",
+        "callsDetail": "failed {{ failed }} · by the fallback {{ fallback }}",
+        "unpriced": "Calls without a price",
+        "unpricedHint": "Their cost is unknown, not zero — add a price to: {{ models }}",
+        "unpricedNone": "Every call had a price.",
+        "volume": "Volume",
+        "tokens": "tokens in / out: {{ input }} / {{ output }}",
+        "audio": "audio: {{ hours }} h",
+        "characters": "speech synthesis: {{ count }} characters"
+      },
+      "col": {
+        "model": "Model",
+        "provider": "Provider",
+        "calls": "Calls",
+        "tokens": "Tokens in / out",
+        "cache": "Cache read / write",
+        "audio": "Audio, h",
+        "characters": "TTS characters",
+        "cost": "Cost",
+        "share": "Share"
+      },
+      "byAgent": "{{ model }} by agent",
+      "removed": "removed from registry",
+      "idle": "not bound, no calls",
+      "role": {
+        "primary": "primary",
+        "fallback": "fallback"
+      },
+      "failedCalls": "failed {{ count }}",
+      "fallbackCalls": "fallback {{ count }}",
+      "unpricedCalls": "no price: {{ count }}",
+      "daily": "Cost per day, USD",
+      "chartEmpty": "Nothing priced in USD in this period.",
+      "chartUsdOnly": "The chart shows USD only; other currencies are in the table.",
+      "other": "Other"
+    },
+    "payerSpend": {
+      "title": "Credits by payer",
+      "filter": "Payer",
+      "types": {
+        "all": "All",
+        "workspace": "Schools",
+        "user": "Learners",
+        "platform": "Platform"
+      },
+      "type": {
+        "workspace": "school",
+        "user": "learner",
+        "platform": "platform"
+      },
+      "hint": "What payers were charged in credits — the unit tariffs count — for the same period, from analytics. Credits are not money: the cost per model is above.",
+      "total": "{{ credits }} credits · {{ calls }} calls · {{ payers }} payers",
+      "failed": "Could not load the credits",
+      "namesFailed": "Some names could not be read; those rows show ids.",
+      "empty": "Nobody was charged in this period.",
+      "platform": "Platform (diagnostics, evals)",
+      "others": "{{ count }} more payers",
+      "byCapability": "Credits by agent",
+      "byWeek": "Credits by ISO week",
+      "col": {
+        "payer": "Payer",
+        "credits": "Credits",
+        "capability": "Agent",
+        "week": "Week",
+        "bar": "Credits, bar"
+      }
+    }
+  },
+  "platform": {
+    "tabsLabel": "Platform tabs",
+    "tabs": {
+      "sessions": "Session lifetimes",
+      "media": "Media cleanup"
+    },
+    "sessions": {
+      "title": "Session lifetimes",
+      "intro": "How long a sign-in lasts without a password: the refresh token's lifetime per role and client. Access tokens stay short (15 min by default) whatever is set here.",
+      "appliesNote": "A change applies to tokens issued or refreshed after it. Sessions already open keep their end until their next refresh.",
+      "refresh": "Reload",
+      "failed": "Could not load session lifetimes",
+      "fallback": "Fallback lifetime:",
+      "fallbackHint": "For a role × client without its own lifetime. Set in auth's configuration, not here.",
+      "fallbackTag": "fallback",
+      "role": "Role",
+      "clients": {
+        "web": "Web",
+        "mobile": "Mobile",
+        "admin": "Admin panel"
+      },
+      "roles": {
+        "platform_admin": "Platform admin",
+        "manager_platform": "Platform manager",
+        "school_admin": "School admin",
+        "teacher": "Teacher",
+        "tutor": "Tutor",
+        "student": "Student"
+      },
+      "unusedHint": "Only platform admins sign into the panel.",
+      "seeded": "default",
+      "changedOn": "changed {{date}}",
+      "edit": "Change the lifetime of {{role}} on {{client}}",
+      "shortestNote": "A user with several roles gets the shortest of their roles' lifetimes on that client.",
+      "duration": {
+        "hours": "{{hours}} h",
+        "days": "{{days}} d",
+        "daysHours": "{{days}} d {{hours}} h"
+      },
+      "dialog": {
+        "title": "Change session lifetime",
+        "confirm": "Save lifetime",
+        "current": "Now: {{value}}",
+        "fallbackNow": "the fallback; saving gives the pair its own lifetime",
+        "value": "New lifetime",
+        "unit": "Unit",
+        "units": {
+          "hours": "hours",
+          "days": "days"
+        },
+        "bounds": "From {{min}} to {{max}}.",
+        "wholeNumber": "A whole number, please.",
+        "unchanged": "Same as now — nothing to save."
+      }
+    },
+    "media": {
+      "title": "Media cleanup",
+      "refresh": "Reload",
+      "intro": "Four nightly sweeps remove media files nobody uses any more. Each asks the service that owns the references before deleting; a file it cannot vouch for is kept.",
+      "failed": "Could not load the media sweeps",
+      "nightlyMode": "Nightly runs:",
+      "nightlyModeHint": "Set by MEDIA_ORPHAN_SWEEP_MODE in media-service, the same for all four; not changed here.",
+      "historyDays": "Run history is kept for {{days}} days.",
+      "modes": {
+        "dry-run": "check only",
+        "delete": "delete"
+      },
+      "kinds": {
+        "orphan_recordings": {
+          "title": "Orphan recordings",
+          "what": "Learners’ voice recordings that no attempt refers to (an attempt was dropped or redone)."
+        },
+        "superseded_narrations": {
+          "title": "Replaced narrations",
+          "what": "Lesson narrations replaced by a newer one and no longer used by any lesson version."
+        },
+        "abandoned_uploads": {
+          "title": "Abandoned uploads",
+          "what": "Uploads that were started but never confirmed."
+        },
+        "orphan_content": {
+          "title": "Orphan content files",
+          "what": "Images and audio of materials that no course item refers to any more."
+        }
+      },
+      "schedule": "Schedule",
+      "dailyAt": "every night at {{time}}, server time",
+      "minAge": "Minimum age",
+      "ageBasis": {
+        "created": "{{days}} d after upload",
+        "superseded": "{{days}} d after replacement"
+      },
+      "maxPerRun": "Files per run, at most",
+      "asks": "Asks",
+      "owners": {
+        "engine": "exercise engine",
+        "content": "content service",
+        "none": "nobody (an unconfirmed upload is unused)"
+      },
+      "check": "Check now",
+      "running": "A run of this sweep is going on right now. Try again when it ends.",
+      "checkedAt": "Checked {{when}}:",
+      "dryRunResult": "{{scanned}} looked at, {{kept}} still in use, {{candidates}} would be deleted.",
+      "aborted": "Stopped: {{service}} did not answer",
+      "deletedResult": "Deleted {{deleted}} files.",
+      "blocked": {
+        "noDryRun": "Delete opens after a check from this panel in the last 30 minutes.",
+        "aborted": "The check did not finish — check again before deleting.",
+        "nothing": "Nothing to delete."
+      },
+      "noRuns": "No runs yet.",
+      "runsCaption": "Last runs",
+      "runs": {
+        "started": "Started",
+        "trigger": "Started by",
+        "outcome": "Result"
+      },
+      "triggers": {
+        "nightly": "Nightly",
+        "admin": "Admin panel",
+        "operator": "Operator"
+      },
+      "summary": {
+        "scanned": "Looked at",
+        "kept": "In use",
+        "candidates": "To delete",
+        "deleted": "Deleted"
+      },
+      "outcomes": {
+        "done": "Done",
+        "running": "Running or interrupted",
+        "skipped": "Skipped: another run was going",
+        "failed": "Failed"
+      },
+      "delete": {
+        "open": "Delete",
+        "title": "Delete unused files",
+        "confirm": "Delete files",
+        "checkedAt": "Your check of {{when}} found:",
+        "warning": "Files are deleted from storage for good. The sweep counts again as it deletes, so the number may differ slightly from the check."
+      }
+    }
+  }
+}

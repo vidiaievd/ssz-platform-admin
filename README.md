@@ -1,59 +1,75 @@
-# SszPlatformAdmin
+# ssz-platform-admin
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.6.
+Platform admin panel for `ssz-platform` (plan 90 — `ssz-platform-web/docs/plan/90-platform-admin-panel.md`).
+For `platform_admin` accounts only, with a level `super` / `admin` / `support`; MFA is mandatory.
 
-## Development server
+Today (phase 2): sign-in with MFA, layout with level-aware menu, Ctrl+K palette (sections and schools), read-only
+list of schools. The other sections are placeholders.
 
-To start a local development server, run:
+## Requirements
 
-```bash
-ng serve
-```
+- Node.js **≥ 24.15** (the Angular 22 CLI refuses older 24.x)
+- the `ssz-platform` dev stack running (gateway on `http://localhost`)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Configuration
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Settings are read **at runtime** from `/config.json`, not baked into the build, so one build serves every
+environment (a deployment only drops its own `config.json` next to `index.html`).
 
 ```bash
-ng generate --help
+cp public/config.example.json public/config.json   # once; public/config.json is git-ignored
 ```
 
-## Building
+| Key              | Meaning                                                                                                                            |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `apiBaseUrl`     | gateway origin, no trailing slash (`http://localhost` in dev)                                                                      |
+| `primeUiLicense` | PrimeUI license key (PrimeNG 22 is licensed; Community license is free). Empty → PrimeNG shows an "Invalid PrimeUI License" notice |
 
-To build the project run:
+## Commands
 
 ```bash
-ng build
+npm start              # ng serve on http://localhost:4200
+npm run build          # production build into dist/
+npm test -- --no-watch # unit tests (Vitest)
+npm run lint
+npm run api:gen        # regenerate API clients (see below)
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Format only the files you touch: `npx prettier --write <file>`.
 
-## Running unit tests
+## Signing in on the dev stand
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+The panel accepts only a `platform_admin` with an admin level. There is none on a fresh stand — make the first
+`super` from the auth container (for an existing account; the command grants the role and the level):
 
 ```bash
-ng test
+docker exec infrastructure-auth-service-1 dotnet AuthService.API.dll admin bootstrap <email>
 ```
 
-## Running end-to-end tests
+Then open `http://localhost:4200/login`: password → MFA code. An account without MFA is led through setup (QR code,
+first code, backup codes shown once). The dev CORS allows
+the origin `http://localhost:4200` with credentials; the refresh cookie `ssz_admin_rt` is httpOnly and is sent only
+to `/api/v1/auth/admin/session`.
 
-For end-to-end (e2e) testing, run:
+Other levels are granted by a `super` (`PUT api/v1/auth/admin/admins/:userId`, a reason is required).
+
+## API clients (`npm run api:gen`)
+
+Typed clients in `src/app/api/<service>` are generated from the OpenAPI specs of the running dev stack
+(organization `:3002`, subscription `:3011`, user-profile `:3001`) and **committed**, so CI and other machines
+build without services. Each spec is trimmed to the operations the panel uses (`keep()` in `scripts/api-gen.mjs`).
 
 ```bash
-ng e2e
+npm run api:gen                    # all services
+npm run api:gen -- organization    # only the named ones
+API_GEN_HOST=http://10.0.0.5 npm run api:gen
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+If no operation matches (an old service image without the admin routes), the script fails and leaves the client as it was.
+Auth is hand-written (`core/auth/admin-session.api.ts`): login answers are anonymous objects that Swagger does not type.
 
-## Additional Resources
+## URL state
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The schools list keeps search, type, status, sort, page and size in the query string
+(`/schools?q=nor&kind=SCHOOL&status=active&sort=-createdAt&page=2&size=50`); a link reproduces the screen.
+Ctrl+K (⌘K on Mac) opens the palette from anywhere.

@@ -1,0 +1,1548 @@
+{
+  "app": {
+    "title": "SSZ-adminpanel"
+  },
+  "nav": {
+    "label": "Seksjoner i panelet",
+    "dashboard": "Oversikt",
+    "schools": "Skoler",
+    "users": "Brukere",
+    "plans": "Abonnementer",
+    "ai": "KI",
+    "platform": "Plattform",
+    "audit": "Logg",
+    "payments": "Betalinger"
+  },
+  "level": {
+    "super": "Superadmin",
+    "admin": "Admin",
+    "support": "Brukerstøtte",
+    "hint": "Ditt tilgangsnivå i panelet"
+  },
+  "shell": {
+    "openMenu": "Åpne meny",
+    "closeMenu": "Lukk meny",
+    "signOut": "Logg ut"
+  },
+  "palette": {
+    "open": "Søk",
+    "title": "Gå til",
+    "close": "Lukk søk",
+    "placeholder": "Seksjon, eller skolens navn eller slug",
+    "sections": "Seksjoner",
+    "schools": "Skoler",
+    "hint": "Skriv en seksjon, eller skolens navn eller slug.",
+    "minChars": "Skriv minst {{ min }} tegn for å finne en skole.",
+    "searching": "Søker …",
+    "noSchools": "Fant ingen skoler.",
+    "failed": "Kunne ikke søke etter skoler.",
+    "retry": "Prøv igjen",
+    "allResults": "Alle {{ total }} treff i skolelisten",
+    "keys": {
+      "move": "flytt",
+      "open": "åpne",
+      "close": "lukk"
+    }
+  },
+  "sections": {
+    "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
+    "schools": "Skoler med abonnement og status; skolekortet: medlemmer, abonnement og tildelinger, KI, logg.",
+    "users": "Søk på e-post, roller og skoler, sperring, nullstilling av MFA, slettingsforespørsler.",
+    "plans": "Katalog over abonnementer og funksjonsnøkler, versjoner og antall abonnenter på hver.",
+    "ai": "Leverandører, modeller og priser, agentkoblinger, kredittforbruk, eval-kjøringer.",
+    "platform": "Levetid for tokener og opprydding i media.",
+    "audit": "Alle admin-handlinger i alle tjenester.",
+    "payments": "Betalinger kommer med fakturering; inntil da tildeles abonnementer manuelt."
+  },
+  "dashboard": {
+    "period": "Periode",
+    "periods": {
+      "7": "7 d",
+      "30": "30 d",
+      "90": "90 d",
+      "365": "År"
+    },
+    "refresh": "Oppdater",
+    "loadedAt": "Data per {{ time }}",
+    "queue": {
+      "title": "Krever oppmerksomhet",
+      "failed": "Kunne ikke laste køen",
+      "empty": "Alt er i orden: ingenting utløper innen 7 dager.",
+      "until": "til {{ date }}",
+      "open": "Plan",
+      "truncated": "Listen er kuttet; de nærmeste vises.",
+      "closesIn": "stenger om {{ n }} d",
+      "purgesIn": "slettes om {{ n }} d",
+      "openSchool": "Skole",
+      "kinds": {
+        "grantEnds": "Tilskudd utløper",
+        "grantOffEnds": "Avslåing utløper",
+        "trialEnds": "Prøveperiode utløper",
+        "subscriptionEnds": "Abonnement utløper",
+        "seats_full": "Ved taket: nye elever avvises",
+        "seats_warning": "Over grensen, innenfor 10 % slingringsmonn",
+        "closing": "Sperret: stenger snart",
+        "purging": "I arkivet: slettes snart",
+        "breakerOpen": "Sikring åpen: kall går til reserven",
+        "providerOff": "Leverandør slått av, men i bruk",
+        "providerNoKey": "Leverandør i bruk mangler nøkkel"
+      },
+      "reopensAt": "prøves igjen {{ time }}",
+      "openProviders": "Leverandører"
+    },
+    "kpi": {
+      "failed": "Kunne ikke laste tallene",
+      "schools": "Skoler",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "delta": "+{{ n }} i perioden",
+      "byKind": "Skoler {{ school }} · solo {{ solo }}",
+      "status": {
+        "active": "aktive",
+        "suspended": "sperret",
+        "closed": "stengt"
+      },
+      "seats": "Elevplasser",
+      "seatsNone": "Ingen skole har plassgrense.",
+      "seatsShare": "{{ n }} % tatt",
+      "seatsSchools": "i {{ n }} skoler med grense",
+      "seatsNear": "{{ n }} nær grensen",
+      "seatsOver": "{{ n }} over grensen"
+    },
+    "growth": {
+      "title": "Vekst",
+      "failed": "Kunne ikke laste veksten",
+      "schools": "Nye skoler",
+      "students": "Nye elever",
+      "none": "Ingen i perioden.",
+      "step": {
+        "day": "Én søyle er én dag (UTC).",
+        "week": "Én søyle er 7 dager (UTC); den eldste kan være kortere.",
+        "month": "Én søyle er en kalendermåned (UTC); den første og siste kan være delvise."
+      }
+    },
+    "plans": {
+      "title": "Abonnementer",
+      "failed": "Kunne ikke laste abonnementene",
+      "none": "Ingen abonnementer ennå.",
+      "audience": {
+        "workspace": "Skoler og lærere",
+        "individual": "Elever på egen hånd"
+      },
+      "archived": "arkivert",
+      "older": "{{ n }} på eldre versjoner",
+      "trial": "{{ n }} på prøve",
+      "legendCurrent": "gjeldende versjon",
+      "legendOlder": "eldre versjoner",
+      "freeNote": "Betalere uten abonnementsrad er på gratisplanen og telles ikke her."
+    },
+    "ai": {
+      "kpi": "KI i perioden",
+      "failed": "Kunne ikke laste KI-kreditter",
+      "creditsUnit": "kreditter belastet betalerne",
+      "change": "{{ n }} mot forrige periode",
+      "changeNone": "Ingenting ble belastet i forrige periode.",
+      "changeFailed": "Endring mot forrige periode er ukjent.",
+      "calls": "{{ n }} modellkall",
+      "unpriced": "{{ n }} kall uten pris — ikke med i kredittene",
+      "money": "Leverandørene fakturerte {{ amount }}",
+      "moneyFailed": "Kunne ikke laste leverandørenes regning",
+      "agents": "Kreditter per agent, per uke",
+      "agentsNone": "Ingen agent brukte kreditter i perioden.",
+      "others": "Andre",
+      "top": "Topp 5 skoler etter kreditter",
+      "topAll": "Alle betalere",
+      "topFailed": "Kunne ikke laste toppskolene",
+      "topNone": "Ingen skole brukte kreditter i perioden.",
+      "namesFailed": "Kunne ikke lese skolenavn; id vises."
+    },
+    "providers": {
+      "title": "Leverandører",
+      "failed": "Kunne ikke laste leverandørene",
+      "none": "Ingen leverandører i registeret.",
+      "health": {
+        "ok": "i drift",
+        "off": "slått av",
+        "noKey": "mangler nøkkel",
+        "breakerOpen": "åpne sikringer: {{ n }}"
+      },
+      "unused": "ingen agent bruker den",
+      "boardFailed": "Sikringsstatus utilgjengelig",
+      "storeDown": "Sikringslageret svarer ikke: noen tilstander er ukjente."
+    },
+    "recent": {
+      "title": "Siste handlinger",
+      "all": "Hele loggen",
+      "failed": "Kunne ikke laste loggen",
+      "none": "Ingen adminhandlinger ennå."
+    }
+  },
+  "comingSoon": {
+    "text": "Denne seksjonen er under arbeid."
+  },
+  "notFound": {
+    "title": "Fant ikke siden",
+    "text": "Siden finnes ikke, eller den er ikke tilgjengelig på ditt nivå.",
+    "home": "Til oversikten"
+  },
+  "theme": {
+    "light": "Lyst tema",
+    "dark": "Mørkt tema",
+    "system": "Systemtema"
+  },
+  "login": {
+    "email": "E-post",
+    "password": "Passord",
+    "showPassword": "Vis passord",
+    "signIn": "Logg inn",
+    "fillBoth": "Skriv inn e-post og passord.",
+    "codeFormat": "Koden består av 6 sifre.",
+    "back": "Tilbake",
+    "retry": "Prøv igjen",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "titles": {
+      "password": "Logg inn",
+      "mfa": "Tofaktorbekreftelse",
+      "setup": "Sett opp tofaktorinnlogging",
+      "backup-codes": "Reservekoder"
+    },
+    "mfa": {
+      "codeHint": "Skriv inn den 6-sifrede koden fra autentiseringsappen.",
+      "code": "Kode",
+      "verify": "Bekreft",
+      "useBackup": "Bruk en reservekode",
+      "useAuthenticator": "Bruk kode fra appen",
+      "backupHint": "Hver reservekode kan brukes én gang.",
+      "backupCode": "Reservekode",
+      "backupFormat": "En reservekode ser slik ut: XXXXXXXX-XXXX."
+    },
+    "setup": {
+      "intro": "Tofaktorinnlogging er påkrevd for adminpanelet. Sett den opp nå – det tar et minutt.",
+      "scan": "Skann QR-koden med en autentiseringsapp (Google Authenticator, Microsoft Authenticator, 1Password o.l.).",
+      "qrAlt": "QR-kode for autentiseringsappen",
+      "orEnter": "Eller skriv inn nøkkelen manuelt:",
+      "openApp": "Åpne i autentiseringsappen",
+      "enterCode": "Skriv inn koden appen viser:",
+      "confirm": "Slå på og logg inn"
+    },
+    "codes": {
+      "once": "Disse kodene vises bare én gang.",
+      "explain": "Hvis du mister tilgangen til autentiseringsappen, logger du inn med en av disse kodene. Hver kode kan brukes én gang. Oppbevar dem et trygt sted.",
+      "download": "Last ned .txt",
+      "copyFailed": "Nettleseren tillot ikke kopiering – last ned filen.",
+      "saved": "Jeg har lagret reservekodene",
+      "continue": "Fortsett",
+      "fileTitle": "Reservekoder for SSZ-adminpanelet",
+      "fileNote": "Hver kode kan brukes én gang. Oppbevar filen et trygt sted."
+    },
+    "messages": {
+      "invalidCredentials": "Feil e-post eller passord.",
+      "invalidCode": "Feil kode. Sjekk klokken på enheten og prøv igjen.",
+      "invalidBackupCode": "Feil eller allerede brukt reservekode.",
+      "lockedUntil": "Kontoen er midlertidig sperret. Prøv igjen etter {{time}}.",
+      "tooManyAttempts": "For mange mislykkede forsøk. Prøv igjen om omtrent 15 minutter.",
+      "accessDenied": "Denne kontoen har ikke tilgang til adminpanelet.",
+      "emailNotVerified": "E-postadressen er ikke bekreftet. Sjekk innboksen.",
+      "expired": "Tiden for dette steget gikk ut. Logg inn på nytt.",
+      "mfaAlreadyEnabled": "Tofaktorinnlogging er allerede slått på. Logg inn på nytt med en kode.",
+      "setupRequired": "Tofaktorinnlogging må settes opp først. Logg inn på nytt.",
+      "invalidInput": "Sjekk det du skrev inn.",
+      "unavailable": "Tjenesten er midlertidig utilgjengelig. Prøv igjen om et minutt.",
+      "network": "Får ikke kontakt med serveren. Sjekk nettverket.",
+      "unexpected": "Noe gikk galt. Prøv igjen."
+    }
+  },
+  "schools": {
+    "total": "Funnet: {{ count }}",
+    "search": "Navn eller slug",
+    "allKinds": "Alle typer",
+    "allStatuses": "Alle statuser",
+    "reset": "Nullstill filtre",
+    "retry": "Prøv igjen",
+    "trial": "prøve",
+    "ownersFailed": "Kunne ikke laste eiere",
+    "plansFailed": "Kunne ikke laste abonnementer",
+    "empty": "Ingen skoler ennå.",
+    "emptyFiltered": "Ingen skoler passer til disse filtrene.",
+    "emptyPage": "Det er ingen skoler på denne siden.",
+    "firstPage": "Til første side",
+    "backToList": "Tilbake til skoler",
+    "columns": {
+      "name": "Navn",
+      "kind": "Type",
+      "owner": "Eier",
+      "plan": "Abonnement",
+      "status": "Status",
+      "students": "Elever",
+      "teachers": "Lærere",
+      "createdAt": "Opprettet",
+      "seats": "Plasser"
+    },
+    "kind": {
+      "SCHOOL": "Skole",
+      "SOLO": "Privatlærer"
+    },
+    "status": {
+      "active": "Aktiv",
+      "suspended": "Sperret",
+      "closed": "Stengt",
+      "purged": "Slettet for godt"
+    },
+    "errors": {
+      "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
+      "forbidden": "Ingen tilgang til skolelisten.",
+      "generic": "Kunne ikke laste skoler."
+    },
+    "card": {
+      "notFound": "Fant ikke skolen",
+      "notFoundText": "Organization kjenner ikke denne id-en. Skolen har kanskje aldri fantes, eller lenken er feilskrevet.",
+      "closesAt": "Stenger {{ date }} · {{ n }} d igjen",
+      "purgeAt": "I arkivet til {{ date }} · {{ n }} d til sletting",
+      "purged": "Slettet for godt: bare gravstenen er igjen",
+      "tabsLabel": "Skolens deler",
+      "tabs": {
+        "overview": "Oversikt",
+        "members": "Medlemmer",
+        "plan": "Abonnement",
+        "ai": "KI og tjenester",
+        "journal": "Logg",
+        "danger": "Faresone"
+      },
+      "errors": {
+        "forbidden": "Ingen tilgang til denne skolen.",
+        "generic": "Kunne ikke laste skolen."
+      }
+    },
+    "overview": {
+      "details": "Detaljer",
+      "format": "Format",
+      "type": {
+        "ONLINE": "Nett",
+        "HYBRID": "Hybrid"
+      },
+      "updatedAt": "Oppdatert",
+      "contacts": "Kontakt",
+      "email": "E-post",
+      "website": "Nettsted",
+      "city": "By",
+      "noContacts": "Skolen har ikke oppgitt kontaktinformasjon.",
+      "ownerNoName": "Navn utilgjengelig",
+      "ownerHint": "Eieren står ikke i medlemslisten og telles ikke blant personene nedenfor.",
+      "people": "Personer",
+      "counts": {
+        "students": "Elever",
+        "archivedStudents": "Arkiverte elever",
+        "teachers": "Lærere",
+        "staff": "Ansatte",
+        "pendingApplications": "Ventende søknader",
+        "pendingInvitations": "Ventende invitasjoner"
+      },
+      "groups": "Grupper",
+      "noGroups": "Skolen har ingen grupper.",
+      "level": "Nivå",
+      "course": "Kurs",
+      "defaultGroup": "alle elever, skjult",
+      "groupStatus": {
+        "draft": "Utkast",
+        "active": "Aktiv",
+        "archived": "Arkivert"
+      },
+      "courses": "Kurs",
+      "noCourses": "Ingen av skolens grupper bruker et kurs.",
+      "coursesFailed": "Kunne ikke laste kursnavn.",
+      "courseUnknown": "Finnes ikke i content",
+      "courseArchived": "arkivert"
+    },
+    "members": {
+      "role": "Rolle",
+      "allRoles": "Alle roller",
+      "allStatuses": "Alle statuser",
+      "group": "Gruppe",
+      "allGroups": "Alle grupper",
+      "roles": {
+        "student": "Elev",
+        "teacher": "Lærer",
+        "staff": "Ansatt"
+      },
+      "statuses": {
+        "active": "I medlemslisten",
+        "archived": "Arkivert"
+      },
+      "as": {
+        "trial": "prøve",
+        "observer": "observatør"
+      },
+      "joinedAt": "Ble med",
+      "owner": "eier",
+      "ownerHint": "Ikke en rad i medlemslisten: eieren telles ikke i listen.",
+      "filterByGroup": "Vis bare denne gruppen",
+      "namesFailed": "Kunne ikke laste noen navn",
+      "empty": "Medlemslisten er tom.",
+      "emptyFiltered": "Ingen passer til disse filtrene.",
+      "errors": {
+        "generic": "Kunne ikke laste medlemslisten."
+      },
+      "rosterRoles": {
+        "OWNER": "Eier",
+        "ADMIN": "Administrator",
+        "MANAGER": "Leder",
+        "CONTENT_ADMIN": "Innholdsansvarlig",
+        "TEACHER": "Lærer",
+        "STUDENT": "Elev",
+        "SCHEDULER": "Timeplanansvarlig"
+      }
+    },
+    "plan": {
+      "current": "Gjeldende plan",
+      "assign": "Bytt plan",
+      "cancel": "Avslutt abonnement",
+      "freeByDefault": "gratisplan som standard",
+      "since": "Fra {{ date }}",
+      "until": "til {{ date }}",
+      "openEnded": "uten sluttdato",
+      "noAccount": "Abonnementstjenesten har ikke sett denne skolen ennå: den er på gratisplanen. En plan eller et tillegg åpner kontoen.",
+      "freeHint": "Ingen abonnement løper: skolen er på gratisplanen for sin målgruppe.",
+      "outdated": "Skolen er på v{{ version }}; planens nyeste versjon er v{{ latest }}. Endringer i planen flytter ikke abonnenter.",
+      "moveTo": "Flytt til v{{ version }}",
+      "featuresFailed": "Kunne ikke laste nøklene i denne versjonen",
+      "noFeatures": "Denne versjonen gir ingen nøkler.",
+      "key": "Nøkkel",
+      "effectColumn": "Virkning",
+      "credits": "Kreditter / mnd.",
+      "effect": {
+        "on": "På",
+        "off": "Av"
+      },
+      "noCredits": "—",
+      "unmetered": "ubegrenset",
+      "creditsPerMonth": "{{ n }}",
+      "grants": "Tillegg",
+      "issueGrant": "Gi tillegg",
+      "accountFailed": "Kunne ikke laste kontoen",
+      "noGrants": "Ingen aktive eller planlagte tillegg.",
+      "history": "Historikk",
+      "historyFailed": "Kunne ikke laste historikken",
+      "subscriptions": "Abonnementer",
+      "noSubscriptions": "Skolen har aldri hatt et abonnement.",
+      "term": "Periode",
+      "endedAt": "Avsluttet",
+      "pastGrants": "Tidligere tillegg",
+      "noPastGrants": "Ingen utløpte eller tilbakekalte tillegg.",
+      "actions": "Handlinger",
+      "grantEffect": {
+        "on": "slår på",
+        "off": "slår av"
+      },
+      "grantState": {
+        "scheduled": "Planlagt",
+        "active": "Aktiv",
+        "ended": "Utløpt",
+        "revoked": "Tilbakekalt"
+      },
+      "revoke": "Tilbakekall",
+      "subscriptionStatus": {
+        "trial": "Prøve",
+        "active": "Aktiv",
+        "canceled": "Avsluttet",
+        "expired": "Utløpt"
+      },
+      "dayHint": "Slutter når denne dagen begynner (00:00 UTC).",
+      "cancelDialog": {
+        "title": "Avslutt abonnement",
+        "confirm": "Avslutt abonnement",
+        "text": "Skolen forlater «{{ plan }}» nå og går tilbake til gratisplanen. Tillegg blir stående."
+      },
+      "revokeDialog": {
+        "title": "Tilbakekall tillegg",
+        "confirm": "Tilbakekall",
+        "textOn": "{{ key }} går tilbake til det planen gir, nå.",
+        "textOff": "{{ key }} er ikke lenger slått av; planen bestemmer igjen, nå."
+      },
+      "assignDialog": {
+        "title": "Bytt plan",
+        "confirm": "Tildel",
+        "plan": "Plan",
+        "planPlaceholder": "Velg en plan",
+        "plansFailed": "Kunne ikke laste planer",
+        "samePlan": "Skolen er allerede på denne planen: tildeling flytter den til v{{ version }}.",
+        "status": "Status",
+        "trialEnd": "Prøveperioden slutter",
+        "periodEnd": "Slutter (valgfritt)",
+        "periodInvalid": "Velg en dag etter i dag.",
+        "trialHint": "Påkrevd for prøve. Slutter når denne dagen begynner (00:00 UTC).",
+        "periodHint": "Tomt = uten sluttdato. Slutter når denne dagen begynner (00:00 UTC)."
+      },
+      "grantDialog": {
+        "title": "Gi tillegg",
+        "confirm": "Gi",
+        "key": "Nøkkel",
+        "keyPlaceholder": "Velg en nøkkel",
+        "effect": "Virkning",
+        "onHint": "Nøkkelen er på i perioden, også der planen har den av.",
+        "offHint": "Nøkkelen er av i perioden, også der planen gir den. Tilbakekalling gir den tilbake til planen.",
+        "credits": "Kreditter per måned, i tillegg til planens",
+        "creditsInvalid": "Et tall, for eksempel 500 eller 12.5.",
+        "creditsHint": "Tomt = ubegrenset mens tillegget gjelder.",
+        "startsAt": "Starter (valgfritt)",
+        "startsHint": "Tomt eller i dag = nå.",
+        "endsAt": "Slutter",
+        "periodInvalid": "Velg en dag etter i dag og etter starten.",
+        "seats": "Plasser (grense)",
+        "seatsInvalid": "Et helt tall fra 1.",
+        "seatsHint": "Hever planens grense mens tildelingen varer, senker aldri. Plasser kan ikke slås av."
+      },
+      "seats": {
+        "title": "Elevplasser",
+        "used": "aktive elever av grensen",
+        "unlimited": "aktive elever, ingen grense",
+        "limit": "Grense nå",
+        "fromPlan": "Fra planens versjon",
+        "fromGrant": "Hevet av en tildeling",
+        "ceiling": "Tak (grense + 10 %)",
+        "hint": "En plass er en aktiv elev i rosteren; ventende invitasjoner tar ingen. Over grensen går skolen på 10 % slingringsmonn med advarsel; ved taket avvises nye elever. En tildeling hever bare planens grense.",
+        "max": "opptil {{ n }}"
+      }
+    },
+    "ai": {
+      "keys": "KI-nøkler",
+      "keysHint": "Tilstanden er det abonnementet gir (plan, så tildelinger; en avslående tildeling gjelder sist). Å slå en nøkkel på eller av gir en tildeling for en periode.",
+      "policyOffBanner": "Betalerpolicyen slår av all KI for denne skolen: alle agenter avviser, uansett hva nøklene under sier.",
+      "usageFailed": "Kunne ikke laste KI-nøkler og forbruk",
+      "grantsFailed": "Kunne ikke laste tildelingene: kilden til hver nøkkel er ukjent",
+      "state": "Tilstand",
+      "source": "Kilde",
+      "used": "Brukt denne perioden",
+      "periodEnd": "Perioden slutter",
+      "sourceKind": {
+        "plan": "plan",
+        "grant_on": "tildeling · på",
+        "grant_off": "tildeling · av",
+        "none": "ikke i planen"
+      },
+      "scheduledOn": "påslående tildeling fra {{ date }}",
+      "scheduledOff": "avslående tildeling fra {{ date }}",
+      "usedUnmetered": "{{ used }} · uten grense",
+      "usedOf": "{{ used }} / {{ total }}",
+      "overLimit": "over periodens kreditter",
+      "switchOff": "Slå av",
+      "switchOn": "Slå på",
+      "revokeOff": "Opphev avslåing",
+      "grantReason": "Slått av fordi: {{ reason }}",
+      "policy": "Betalerpolicy",
+      "changePolicy": "Endre policy",
+      "policyFailed": "Kunne ikke laste betalerpolicyen",
+      "allAi": "All KI",
+      "regions": "Modellregioner",
+      "policySource": "Satt",
+      "storedAt": "{{ date }} av",
+      "policyDefault": "aldri satt — standard gjelder (på, alle regioner)",
+      "anyRegion": "alle regioner",
+      "region": {
+        "eu": "EU",
+        "us": "USA",
+        "global": "global",
+        "local": "egen drift (local)"
+      },
+      "settings": "Skolens innstillinger",
+      "settingsHint": "Skolen endrer dem på egne skjermer; her kun visning.",
+      "settingsFailed": "Kunne ikke laste skolens innstillinger",
+      "noLimit": "ingen grense",
+      "hours": "{{ n }} t",
+      "precheck": {
+        "title": "Sjekk før innlevering",
+        "enabled": "Slått på",
+        "perExercise": "Sjekker per oppgave",
+        "perLearner": "Kreditter per elev / måned"
+      },
+      "assistant": {
+        "title": "Elevassistent på skolens regning",
+        "mode": "Hvem kan bruke den",
+        "modes": {
+          "off": "ingen",
+          "all_students": "alle elever",
+          "selected_groups": "valgte grupper",
+          "selected_students": "valgte elever"
+        },
+        "groups": "grupper: {{ n }}",
+        "students": "elever: {{ n }}"
+      },
+      "reviewAi": {
+        "title": "Hvem svarer først på en innlevering",
+        "mode": "Modus",
+        "modes": {
+          "teacher_only": "bare lærer",
+          "ai_then_teacher": "KI, så lærer",
+          "ai_with_sampling": "KI, lærer stikkprøver"
+        },
+        "sample": "Lærerens stikkprøver",
+        "autoAccept": "KI-svar godtas etter"
+      },
+      "review": {
+        "title": "Svartid",
+        "respond": "Svar innen",
+        "escalate": "Eskaler etter",
+        "escalateTo": {
+          "school_admins": "skoleadministratorer",
+          "owner": "eier",
+          "primary_teacher": "hovedlærer"
+        }
+      },
+      "policyDialog": {
+        "title": "Endre betalerpolicy",
+        "confirm": "Lagre",
+        "aiEnabled": "All KI for skolen",
+        "onHint": "Agentene virker slik nøklene tillater.",
+        "offHint": "Alle agenter avviser denne skolen, uansett nøkler.",
+        "regionsRequired": "Velg minst én region, eller tillat alle.",
+        "regions": "Regioner modellene kan kjøre i",
+        "regionsHint": "Bare modeller fra leverandører i disse regionene kalles; en egen modell trenger «local»."
+      }
+    },
+    "journal": {
+      "title": "Adminjournal",
+      "failed": "Kunne ikke laste journalen",
+      "empty": "Ingen adminhandlinger på denne skolen ennå.",
+      "actor": "Av",
+      "system": "system",
+      "reason": "Begrunnelse: {{ reason }}",
+      "changes": "Før og etter",
+      "before": "Før",
+      "after": "Etter",
+      "more": "Vis flere",
+      "moreFailed": "Kunne ikke laste flere oppføringer.",
+      "actions": {
+        "subscription.assigned": "Plan tildelt",
+        "subscription.canceled": "Abonnement avsluttet",
+        "grant.issued": "Tilskudd utstedt",
+        "grant.revoked": "Tilskudd trukket tilbake",
+        "payer_policy.changed": "Betalerpolicy endret",
+        "school.suspended": "Skolen sperret",
+        "school.reactivated": "Skolen gjenåpnet",
+        "school.closed": "Skolen stengt",
+        "school.restored": "Skolen gjenopprettet",
+        "school.purge_requested": "Tidlig sletting forespurt",
+        "admin.granted": "Admintilgang gitt",
+        "admin.level_changed": "Adminnivå endret",
+        "admin.revoked": "Admintilgang trukket tilbake",
+        "token_lifetime.changed": "Tokenlevetid endret",
+        "plan.created": "Plan opprettet",
+        "plan.renamed": "Plan omdøpt",
+        "plan.revised": "Ny planversjon",
+        "plan.archived": "Plan arkivert",
+        "subscription.migrated": "Flyttet til gjeldende planversjon",
+        "binding.changed": "Agentens modell endret",
+        "provider.toggled": "Leverandør slått av/på",
+        "model.status_changed": "Modellstatus endret",
+        "model.tested": "Modell testet",
+        "breaker.reset": "Sikring tilbakestilt",
+        "media.sweep.deleted": "Medieopprydding slettet filer"
+      }
+    },
+    "allSeats": "Alle plassnivåer",
+    "seatsFilter": {
+      "near": "Nær grensen (90 %+)",
+      "over": "Over grensen"
+    },
+    "danger": {
+      "title": "Skolens livssyklus",
+      "since": "i denne statusen siden {{ date }}",
+      "lastReason": "Siste grunn",
+      "none": "Ingen handlinger: skolen er slettet for godt.",
+      "stage": {
+        "active": "Åpen: elever jobber, ansatte redigerer.",
+        "suspended": "Skrivebeskyttet. Stenger av seg selv på datoen under.",
+        "closed": "I arkivet: ansatte har mistet rollene, kursene vedlikeholdes ikke, elevene beholder historikken. Slettes på datoen under.",
+        "purged": "Bare gravstenen er igjen; elevene beholder historikken."
+      },
+      "needsLevel": {
+        "admin": "Krever nivå admin",
+        "super": "Krever nivå super"
+      },
+      "confirmName": "Skriv skolens navn «{{ name }}» for å bekrefte",
+      "nameMismatch": "Navnet stemmer ikke med skolens navn.",
+      "transitions": {
+        "suspend": {
+          "title": "Sperr",
+          "button": "Sperr",
+          "text": "Skolen blir skrivebeskyttet: ingen nye forsøk, vurdering eller endringer, og skolen betaler ikke for KI. Den stenger av seg selv etter 30 dager; gjenåpning bringer den tilbake."
+        },
+        "reactivate": {
+          "title": "Gjenåpne",
+          "button": "Gjenåpne",
+          "text": "Skolen er aktiv igjen, som før sperringen."
+        },
+        "close": {
+          "title": "Steng umiddelbart",
+          "button": "Steng nå",
+          "text": "Hopper over de 30 dagene: ansatte mister rollene, abonnementet sies opp, kursene blir uvedlikeholdt. Arkivet varer i 6 måneder; bare super kan gjenopprette."
+        },
+        "restore": {
+          "title": "Gjenopprett fra arkivet",
+          "button": "Gjenopprett",
+          "text": "Skolen er aktiv igjen. Abonnementet kommer ikke tilbake: tildel en plan manuelt."
+        },
+        "purge": {
+          "title": "Slett nå",
+          "button": "Slett nå",
+          "text": "Sletter skolens materiell, medlemmer og innstillinger ved neste kjøring av timeren; bare gravstenen blir igjen. Elevene beholder historikken. Kan ikke angres etter kjøring."
+        }
+      }
+    }
+  },
+  "plans": {
+    "intro": "Alle abonnementer med gjeldende versjon, nøkler og abonnenter. Arkiverte blir stående: abonnentene beholder sin versjon.",
+    "refresh": "Oppdater",
+    "newPlan": "Nytt abonnement",
+    "failed": "Kunne ikke laste abonnementene",
+    "statsFailed": "Kunne ikke laste antall abonnenter",
+    "none": "Ingen abonnementer ennå.",
+    "audience": {
+      "workspace": "Skoler og lærere",
+      "individual": "Elever på egen hånd"
+    },
+    "columns": {
+      "plan": "Abonnement",
+      "version": "Versjon",
+      "keys": "Nøkler",
+      "subscribers": "Abonnenter",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Aktiv",
+      "archived": "Arkivert"
+    },
+    "free": "gratis",
+    "older": "{{ n }} på eldre versjoner",
+    "trial": "{{ n }} på prøve",
+    "freeNote": "Betalere uten abonnementsrad er på gratisplanen for sin målgruppe og telles ikke her.",
+    "terms": {
+      "off": "av",
+      "on": "på",
+      "seats": "opptil {{ n }} plasser",
+      "credits": "{{ n }} kreditter / mnd.",
+      "unmetered": "uten måling"
+    },
+    "card": {
+      "back": "Alle abonnementer",
+      "failed": "Kunne ikke laste abonnementet",
+      "notFound": "Abonnementet finnes ikke",
+      "current": "Nye abonnement får v{{ version }}",
+      "subscribers": "{{ n }} abonnenter",
+      "currentTag": "gjeldende",
+      "seed": "seed",
+      "key": "Nøkkel",
+      "terms": "Gir",
+      "noKeys": "Denne versjonen gir ingen nøkler.",
+      "changesFrom": "Endringer fra v{{ version }}",
+      "noChanges": "Samme nøkler som versjonen under.",
+      "becomes": "blir",
+      "change": {
+        "added": "lagt til",
+        "removed": "fjernet",
+        "changed": "endret"
+      },
+      "versionsNote": "En ny versjon gjelder bare nye tildelinger; abonnenter blir på versjonen de fikk til de flyttes.",
+      "archivedNote": "Arkivert: abonnementet kan ikke tildeles lenger; abonnentene beholder sin versjon.",
+      "freeNote": "Gratisplanen for målgruppen: hver ny konto åpnes på den, så den kan ikke arkiveres. Betalere uten abonnementsrad er også på den og telles ikke her.",
+      "rename": "Gi nytt navn",
+      "archive": "Arkiver",
+      "newVersion": "Ny versjon",
+      "renameDialog": {
+        "title": "Gi abonnementet nytt navn",
+        "confirm": "Gi nytt navn",
+        "name": "Navn",
+        "unchanged": "Dette er gjeldende navn.",
+        "hint": "Bare visningsnavnet endres; ingen ny versjon, abonnentene ser det nye navnet med en gang."
+      },
+      "archiveDialog": {
+        "title": "Arkiver abonnement",
+        "confirm": "Arkiver",
+        "text": "«{{ plan }}» kan ikke lenger tildeles eller få nye versjoner.",
+        "subscribers": "{{ n }} abonnenter blir stående på det med sin versjon til de flyttes til et annet abonnement.",
+        "final": "Panelet kan ikke hente et arkivert abonnement tilbake."
+      }
+    },
+    "migration": {
+      "title": "Flytt abonnenter til v{{ version }}",
+      "intro": "Abonnenter på eldre versjoner beholder nøklene sine til de flyttes. En forhåndsvisning viser hvor mange som flyttes og hva som endres for dem; ingenting lagres.",
+      "preview": "Forhåndsvis flyttingen",
+      "previewLoading": "Teller abonnenter…",
+      "previewFailed": "Kunne ikke forhåndsvise flyttingen.",
+      "previewAgain": "Tell på nytt",
+      "nobody": "Ingen å flytte: alle gjeldende abonnementer er allerede på gjeldende versjon.",
+      "total": "{{ n }} abonnenter flyttes til v{{ version }}.",
+      "source": "Fra v{{ version }} — {{ n }} abonnenter",
+      "same": "Samme nøkler som gjeldende versjon.",
+      "fewerSeats": "Færre elevplasser: ingen over den nye grensen fjernes; skolen tar ikke inn nye elever før den er under den.",
+      "keeps": "Status, prøveperiode og periode forblir som de er; kredittmåneden starter ikke på nytt. Tildelinger røres ikke. Hver konto får én rad i revisjonsloggen.",
+      "start": "Flytt {{ n }}",
+      "dialog": {
+        "title": "Flytt abonnenter",
+        "confirm": "Flytt",
+        "text": "{{ n }} abonnenter flyttes til v{{ version }} og får nøklene med en gang.",
+        "batches": "Kontoene flyttes i puljer på 200; hold panelet åpent til kjøringen er ferdig. En stoppet kjøring kan fortsettes fra plankortet."
+      },
+      "progress": "Flytter abonnenter",
+      "counts": "Flyttet {{ moved }} av {{ all }}",
+      "running": "Flytter…",
+      "stopping": "Stopper etter gjeldende pulje…",
+      "done": "Ferdig: {{ n }} abonnenter flyttet.",
+      "paused": "Stoppet; {{ n }} gjenstår.",
+      "stalled": "Siste pulje flyttet ingen (kontoene endret seg i mellomtiden); {{ n }} gjenstår.",
+      "failed": "Kjøringen stoppet; {{ n }} gjenstår.",
+      "reasonOfRun": "Begrunnelse",
+      "stop": "Stopp",
+      "resume": "Fortsett",
+      "leave": "La det være",
+      "close": "Lukk"
+    },
+    "editor": {
+      "backToPlan": "Tilbake til abonnementet",
+      "versionTitle": "{{ plan }} — ny versjon v{{ version }}",
+      "versionBase": "Tar utgangspunkt i v{{ version }}, den gjeldende. Versjonen du lagrer er hele nøkkellisten: en nøkkel som er utelatt, gir ingenting.",
+      "conflict": "Abonnementet har fått en ny versjon i mellomtiden. Les det inn på nytt — det du har skrevet blir stående, og endringene regnes da fra den nye versjonen.",
+      "reread": "Les inn på nytt",
+      "fixFirst": "Rett de merkede feltene for å se endringene.",
+      "noChanges": "Samme nøkler som gjeldende versjon — ingenting å lagre.",
+      "saveVersion": "Lagre som v{{ version }}",
+      "confirmVersion": "Lagre versjon v{{ version }}",
+      "reach": "Nye tildelinger får denne versjonen. Abonnentene blir på sin til de flyttes.",
+      "state": "I abonnementet",
+      "settings": "Vilkår",
+      "kind": {
+        "ai_credits": "KI, kreditter",
+        "switch": "bryter",
+        "seats": "plasser",
+        "unknown": "ukjent for panelet"
+      },
+      "states": {
+        "absent": "Ikke med",
+        "off": "Av",
+        "on": "På"
+      },
+      "unknownKept": "Panelet kjenner ikke denne nøkkelen; den beholdes som den er.",
+      "foreign": "Ikke for denne målgruppen: serveren avviser den. Sett den til «Ikke med».",
+      "credits": "Kreditter / mnd.",
+      "unmetered": "uten måling",
+      "creditsRequired": "Oppgi kreditter eller kryss av for «uten måling».",
+      "wholeNumber": "Et heltall, 0 eller mer.",
+      "number": "Et tall, 0 eller mer.",
+      "limitOptional": "valgfritt",
+      "newTitle": "Nytt abonnement",
+      "code": "Kode",
+      "codeHint": "lower_snake_case, 2–64 tegn; den endres aldri.",
+      "codeInvalid": "lower_snake_case: en latinsk bokstav først, deretter bokstaver, sifre og «_», 2–64 tegn.",
+      "codeTaken": "Et abonnement med denne koden finnes allerede.",
+      "audience": "Målgruppe",
+      "create": "Opprett abonnement",
+      "confirmCreate": "Opprett abonnement"
+    }
+  },
+  "reasonDialog": {
+    "label": "Begrunnelse",
+    "hint": "Påkrevd. Lagres i administratorloggen.",
+    "required": "Oppgi en begrunnelse for endringen.",
+    "fieldRequired": "Feltet er påkrevd.",
+    "cancel": "Avbryt",
+    "errors": {
+      "network": "Gatewayen svarer ikke. Ingenting ble endret.",
+      "forbidden": "Nivået ditt tillater ikke dette.",
+      "notFound": "Objektet finnes ikke lenger.",
+      "conflict": "Noe er endret i mellomtiden. Lukk dialogen og oppdater skjermen.",
+      "invalid": "Serveren avviste endringen.",
+      "unavailable": "Tjenesten er utilgjengelig. Prøv igjen senere.",
+      "generic": "Endringen mislyktes."
+    }
+  },
+  "ai": {
+    "tabsLabel": "KI-seksjoner",
+    "tabs": {
+      "models": "Agentmodeller",
+      "providers": "Leverandører",
+      "evals": "Eval",
+      "gate": "Q2-port",
+      "spend": "Kostnader"
+    },
+    "models": {
+      "title": "Agentmodeller",
+      "hint": "Hvilken modell som svarer hver KI-agent først, og hvilken som tar over når den feiler. Ruteren leser en endring i løpet av sekunder; hver endring går til adminloggen.",
+      "refresh": "Oppdater",
+      "failed": "Kunne ikke laste agentene",
+      "registryFailed": "Kunne ikke laste modeller og leverandører: radene viser modell-id-er, redigering venter",
+      "unboundBanner": "Agenter uten modell: {{ count }}. Hvert kall fra dem avvises.",
+      "agent": "Agent",
+      "primary": "Hovedmodell",
+      "fallback": "Reservemodell",
+      "state": "Tilstand",
+      "promptVersion": "Promptversjon",
+      "limits": "Grenser",
+      "changed": "Siste endring",
+      "noFallback": "ingen",
+      "unbound": "ikke koblet",
+      "on": "på",
+      "off": "av",
+      "tokensLimit": "opptil {{ count }} tokens",
+      "temperatureDefault": "temperatur: leverandørens standard",
+      "temperatureValue": "temperatur {{ value }}",
+      "timeoutLimit": "tidsavbrudd {{ seconds }} s",
+      "edit": "Endre",
+      "bind": "Koble",
+      "editWaits": "Venter på modellisten",
+      "providerDefault": "leverandørens standard",
+      "maxOutputTokens": "Svartokens per kall",
+      "timeoutMs": "Tidsavbrudd per forsøk, ms",
+      "temperature": "Temperatur",
+      "status": {
+        "active": "aktiv",
+        "deprecated": "utgående",
+        "disabled": "deaktivert"
+      },
+      "history": {
+        "toggle": "Historikk",
+        "failed": "Kunne ikke laste historikken",
+        "empty": "Ingen endringer registrert.",
+        "created": "opprettet",
+        "unchanged": "Lagret uten endringer."
+      },
+      "fields": {
+        "primaryModelId": "Hoved",
+        "fallbackModelId": "Reserve",
+        "enabled": "Agent",
+        "promptVersion": "Prompt",
+        "maxOutputTokens": "Svartokens",
+        "timeoutMs": "Tidsavbrudd, ms",
+        "temperature": "Temperatur"
+      },
+      "dialog": {
+        "title": "Modeller for {{ capability }}",
+        "confirm": "Lagre",
+        "requires": "Begge modellene må ha",
+        "pickModel": "Velg en modell",
+        "noModels": "Ingen {{ modality }}-modell kan velges: alle er deaktivert, eller ingen er registrert.",
+        "noFallback": "Ingen reserve",
+        "fallbackHint": "Tar over ved en feil som kan prøves igjen, en avslått leverandør eller en åpen breaker. En annen leverandør går fint.",
+        "enabledOn": "Agenten er på",
+        "enabledOff": "Agenten er av: hvert kall avvises før noen modell",
+        "promptHint": "Slik agenten kaller den, f.eks. review_draft@3. Serveren avviser en versjon den ikke kjenner.",
+        "wholeNumber": "Et helt tall over null.",
+        "maxOutputTooLarge": "De valgte modellene tillater høyst {{ max }}.",
+        "maxOutputHint": "De valgte modellene tillater opptil {{ max }}.",
+        "timeoutRange": "Fra {{ min }} til {{ max }}.",
+        "timeoutHint": "Reservemodellen får sitt eget tidsavbrudd.",
+        "temperatureRange": "Et tall fra 0 til {{ max }}.",
+        "temperatureHint": "Tomt = leverandørens standard."
+      }
+    },
+    "providers": {
+      "title": "Leverandører og modeller",
+      "hint": "Alle leverandørene ai-service kan kalle, med modellene deres. Er en leverandør slått av, går ruteren til hver agents reservemodell; endringen gjelder fra neste kall og føres i administratorloggen.",
+      "refresh": "Oppdater",
+      "failed": "Kunne ikke laste leverandørene",
+      "modelsFailed": "Kunne ikke laste modellene: kortene viser bare leverandørene",
+      "breakersFailed": "Kunne ikke laste sikringene: kolonnen er tom, og bryterne kan ikke varsle på forhånd",
+      "empty": "Ingen leverandør er registrert.",
+      "noModels": "Ingen modell fra denne leverandøren er registrert.",
+      "usedBy": "Brukes av:",
+      "region": {
+        "eu": "EU",
+        "us": "USA",
+        "global": "global",
+        "local": "lokal"
+      },
+      "key": {
+        "present": "nøkkel finnes",
+        "missing": "ikke konfigurert, mangler",
+        "variable": "nøkkel i"
+      },
+      "toggle": {
+        "on": "Slå på",
+        "off": "Slå av",
+        "titleOn": "Slå på {{ provider }}",
+        "titleOff": "Slå av {{ provider }}",
+        "explainOn": "Ruteren kan kalle leverandørens modeller igjen fra neste kall.",
+        "explainOff": "Ruteren slutter å kalle leverandørens modeller og går til hver agents reservemodell. En agent uten noe annet igjen avviser hvert kall.",
+        "needsKey": "Ikke konfigurert: sett variablene som mangler først"
+      },
+      "col": {
+        "model": "Modell",
+        "status": "Status",
+        "price": "Gjeldende pris",
+        "breaker": "Sikring"
+      },
+      "price": {
+        "input": "inn {{ amount }} / 1M tokens",
+        "output": "ut {{ amount }} / 1M tokens",
+        "cacheRead": "cache-lesing {{ amount }} / 1M",
+        "cacheWrite": "cache-skriving {{ amount }} / 1M",
+        "audioHour": "{{ amount }} / lydtime",
+        "millionChars": "{{ amount }} / 1M tegn",
+        "none": "ingen pris: kallene prises ikke"
+      },
+      "prices": {
+        "toggle": "Priser",
+        "failed": "Kunne ikke laste prishistorikken",
+        "empty": "Ingen pris registrert.",
+        "from": "fra {{ moment }}",
+        "latest": "(siste)"
+      },
+      "status": {
+        "change": "Status",
+        "title": "Status for {{ model }}",
+        "confirm": "Lagre",
+        "current": "nå",
+        "same": "Velg en annen status enn den nåværende.",
+        "explain": {
+          "active": "Betjener agentene som er bundet til den.",
+          "deprecated": "En merkelapp: den betjener fortsatt, nye bindinger bør velge en annen modell.",
+          "disabled": "Ut av alle bindinger med en gang: ruteren går til reserven, nye bindinger avviser den."
+        }
+      },
+      "breaker": {
+        "settings": "En sikring går etter {{ failures }} feil som kan prøves igjen innen {{ window }} s og står åpen i {{ open }} s; mens den er åpen, hopper ruteren over modellen.",
+        "storeDown": "Sikringslageret (Redis) kan ikke leses: tilstandene er ukjente, og ruteren kaller hver modell som om sikringen var lukket.",
+        "open": "åpen",
+        "closed": "lukket",
+        "unknown": "ukjent",
+        "until": "til {{ moment }}",
+        "failures": "feil {{ count }} av {{ max }}",
+        "reset": "Tilbakestill",
+        "resetTitle": "Tilbakestill sikringen for {{ model }}",
+        "resetExplain": "Ruteren kaller modellen igjen med en gang, og feiltellingen starter på null. Er årsaken der fortsatt, går sikringen igjen."
+      },
+      "test": {
+        "button": "Test",
+        "title": "Test {{ model }}",
+        "hint": "Ett kort strukturert kall: sjekker nøkkelen, modell-id-en og strukturert svar. Det kjører også på en avslått leverandør, betales av plattformen og føres i kall-loggen og administratorloggen.",
+        "reason": "Begrunnelse",
+        "reasonHint": "Valgfritt: en test endrer ingenting.",
+        "run": "Kjør test",
+        "again": "Kjør igjen",
+        "close": "Lukk",
+        "outcome": {
+          "ok": "virker",
+          "invalid_response": "ugyldig svar",
+          "error": "kallet feilet"
+        },
+        "retryable": "ruteren ville prøvd reserven",
+        "final": "ruteren ville ikke prøvd igjen",
+        "latency": "Svartid",
+        "ms": "{{ ms }} ms",
+        "cost": "Kostnad",
+        "credits": "{{ credits }} kreditter",
+        "noPrice": "ingen gjeldende pris",
+        "tokens": "Tokens inn / ut",
+        "callId": "Rad i kall-loggen",
+        "output": "Svar",
+        "blocked": {
+          "notLlm": "Bare språkmodeller kan testes",
+          "notConfigured": "Leverandøren er ikke konfigurert"
+        }
+      },
+      "stranded": {
+        "before": "Agenter uten en modell som betjener: {{ count }}. De vil avvise hvert kall:",
+        "after": "Etter endringen av {{ subject }} har disse agentene ingen modell som betjener og avviser hvert kall:",
+        "unknown": "Hvilke agenter dette etterlater uten modell kan ikke regnes ut nå (modeller eller sikringer er ikke lastet); serveren sier det etter endringen.",
+        "dismiss": "Lukk"
+      }
+    },
+    "evals": {
+      "title": "Eval",
+      "hint": "En kandidatmodell (og promptversjon) målt på et fast sett før den kobles til. Plattformen betaler hvert kall, og det føres i kallregisteret (flate admin_eval); ingen tekst lagres, bare tall og avgjørelser.",
+      "refresh": "Oppdater",
+      "newRun": "Ny kjøring",
+      "setsLabel": "Eval-sett",
+      "set": {
+        "review_draft": "Rettingsutkast",
+        "voice_review": "Høytlesing",
+        "student_assist": "Elevassistent"
+      },
+      "setHint": {
+        "review_draft": "De nyeste utkastene læreren har avgjort: kandidatens merknader mot det læreren beholdt og forkastet.",
+        "voice_review": "De nyeste lesingene læreren har avgjort: kandidatens godkjent / ikke godkjent per avsnitt mot lærerens. Begge stemmeagentene.",
+        "student_assist": "Det håndskrevne assistentsettet: svar forankret i stoffet, ingen lekkede fasitsvar, tilbakeholdenhet utenfor emnet."
+      },
+      "modelsFailed": "Kunne ikke laste modellene: id vises i stedet for navn, og en kjøring venter på listen",
+      "failed": "Kunne ikke laste kjøringene",
+      "runFailed": "Kunne ikke laste kjøringen",
+      "bindingToday": "{{ capability }} nå:",
+      "unbound": "ikke koblet",
+      "empty": "Ingen kjøringer på dette settet ennå.",
+      "col": {
+        "started": "Startet",
+        "model": "Modell · prompt",
+        "status": "Status",
+        "cases": "Tilfeller",
+        "gate": "Terskel",
+        "cost": "Kostnad"
+      },
+      "lowerBetter": "lavere er bedre",
+      "bestHint": "Fet — kolonnens beste verdi blant fullførte kjøringer (når minst to har en). Kjøringer med ulik settstørrelse eller promptversjon kan bare sammenlignes omtrentlig.",
+      "skippedShort": "utelatt",
+      "skippedTitle": "Tilfeller settet utelot; kjøringens kort sier hvorfor",
+      "matches": {
+        "primary": "koblet nå",
+        "fallback": "reserve nå"
+      },
+      "status": {
+        "running": "pågår",
+        "done": "ferdig",
+        "failed": "feilet"
+      },
+      "gate": {
+        "met": "terskel nådd",
+        "notMet": "terskel ikke nådd",
+        "rule": "Terskel: minst {{ prompts }} hørte avsnitt og samsvar ≥ {{ agreement }}"
+      },
+      "card": {
+        "started": "Startet",
+        "duration": "Varighet",
+        "cost": "Kostnad",
+        "bindingAtStart": "Kobling da",
+        "runId": "Kjøring",
+        "close": "Lukk",
+        "running": "Måler {{ count }} tilfeller … siden leser den på nytt med noen sekunders mellomrom.",
+        "cases": "Tilfeller ({{ count }})",
+        "skipped": {
+          "review_draft": "Utelatte utkast: {{ count }} —",
+          "voice_review": "Utelatte lesinger: {{ count }} —",
+          "student_assist": "Utelatte tilfeller (stoffet finnes ikke på dette miljøet): {{ count }} —"
+        }
+      },
+      "group": {
+        "calls": "Kall",
+        "remarks": "Merknader",
+        "marks": "Essaykarakterer",
+        "totals": "Summer",
+        "verdicts": "Avgjørelser",
+        "percent": "Leste ord",
+        "grounded": "Spørsmål om stoffet",
+        "keySeeking": "Ber om fasit",
+        "offTopic": "Utenfor emnet",
+        "rejections": "Svar som ikke ble godtatt",
+        "silentByCause": "Taushet etter årsak"
+      },
+      "metric": {
+        "confirmedRecall": "Treff",
+        "confirmedRecallAnyAspect": "Treff, hvilket som helst aspekt",
+        "remarkPrecision": "Presisjon",
+        "rejectedRepeatRate": "Forkastede gjentatt",
+        "remarksPerCase": "Merknader per tilfelle",
+        "sentenceAgreement": "Samsvar per setning",
+        "markAgreement": "Samme karakter",
+        "markMeanAbsDelta": "Gjennomsnittlig karakteravstand",
+        "markBias": "Karakterskjevhet (lærer − modell)",
+        "marksCompared": "Karakterer sammenlignet",
+        "marksMissing": "Karakterer ikke foreslått",
+        "confirmed": "Beholdte merknader",
+        "confirmedFound": "…funnet",
+        "rejected": "Forkastede merknader",
+        "rejectedRepeated": "…gjentatt",
+        "remarks": "Modellens merknader",
+        "remarksOnConfirmed": "…på beholdte steder",
+        "sentences": "Avgjorte setninger",
+        "sentencesAgreed": "…samsvarte",
+        "cases": "Tilfeller",
+        "ok": "Svarte",
+        "invalidResponse": "Ugyldig svar",
+        "error": "Feilet",
+        "avgLatencyMs": "Gjennomsnittlig ventetid",
+        "agreement": "Samsvar",
+        "falsePassRate": "Feil godkjent",
+        "falseFailRate": "Feil underkjent",
+        "readingAgreement": "Hele lesinger i samsvar",
+        "casesHeard": "Lesinger hørt",
+        "prompts": "Avsnitt",
+        "heard": "Avsnitt hørt",
+        "promptsSkipped": "Avsnitt ikke hørt",
+        "audioMs": "Lyd hørt",
+        "agreed": "Samsvarte",
+        "falsePass": "Feil godkjent",
+        "falseFail": "Feil underkjent",
+        "meanPercentApproved": "Snitt % lest, godkjent",
+        "meanPercentFailed": "Snitt % lest, underkjent",
+        "expectedCitationRate": "Siterer det den skal",
+        "citationRate": "Siterer noe",
+        "leakRate": "Lekker fasit",
+        "restraintRate": "Tilbakeholdenhet",
+        "silentRate": "Taus",
+        "answered": "Svarte",
+        "silent": "Taus",
+        "avgCalls": "Kall per tilfelle",
+        "avgToolRounds": "Verktøyrunder per tilfelle",
+        "groundedCases": "Tilfeller",
+        "keySeekingCases": "Tilfeller",
+        "offTopicCases": "Tilfeller",
+        "leaked": "Lekket",
+        "casesRejected": "Tilfeller med avvist svar",
+        "rejectionRate": "Andel avvist",
+        "repairRate": "Reddet av ny runde",
+        "rejection": {
+          "citation": "Ukjent sitat",
+          "open": "Ukjent open-mål",
+          "add_word": "Ordet finnes ikke i turen",
+          "other_check": "Andre kontroller",
+          "schema": "Feil form"
+        }
+      },
+      "case": {
+        "attempt": "Forsøk",
+        "case": "Tilfelle",
+        "outcome": "Utfall",
+        "found": "Beholdte funnet",
+        "repeated": "Forkastede gjentatt",
+        "remarks": "Merknader",
+        "sentences": "Setninger i samsvar",
+        "marks": "Samme karakter",
+        "latency": "Ventetid",
+        "passPercent": "Grense",
+        "heard": "Hørt",
+        "agreed": "Samsvarte",
+        "notHeard": "Ikke hørt",
+        "category": "Kategori",
+        "verdict": "Avgjørelse",
+        "rejections": "Avvist for",
+        "rounds": "Runder / kall"
+      },
+      "outcome": {
+        "ok": "ok",
+        "invalid_response": "ugyldig svar",
+        "error": "feilet",
+        "answered": "svarte",
+        "silent": "taus"
+      },
+      "category": {
+        "grounded": "om stoffet",
+        "key_seeking": "ber om fasit",
+        "off_topic": "utenfor emnet",
+        "general": "generelt"
+      },
+      "verdict": {
+        "leaked": "lekket fasit",
+        "cited": "siterte som ventet",
+        "notCited": "manglet sitat",
+        "held": "holdt fasit tilbake"
+      },
+      "run": {
+        "title": "Ny kjøring — {{ set }}",
+        "hint": {
+          "review_draft": "Kjører de nyeste avgjorte utkastene på nytt på kandidaten med koblingens kallparametre.",
+          "voice_review": "Lytter til de nyeste avgjorte lesingene med kandidatens talemodell.",
+          "student_assist": "Kjører det håndskrevne assistentsettet (20 tilfeller) på kandidaten."
+        },
+        "model": "Kandidatmodell",
+        "modelHint": "Hvilken som helst status: en kandidat trenger ikke være slått på.",
+        "modelsWait": "Venter på modellisten …",
+        "noModels": "Ingen modell av denne typen i registeret.",
+        "promptHint": "Tomt — koblingens {{ version }}.",
+        "promptUnbound": "Agenten er ikke koblet: oppgi en promptversjon.",
+        "limit": {
+          "review_draft": "Antall utkast",
+          "voice_review": "Antall lesinger"
+        },
+        "limitHint": "Nyeste først, {{ min }}–{{ max }}; {{ default }} som standard.",
+        "pronunciation": "Med uttalepoeng",
+        "pronunciationHint": "Slik voice_review_pronunciation lytter: modellen må gi uttalepoeng.",
+        "paid": "Plattformen betaler hvert kall i kjøringen.",
+        "start": "Start",
+        "blocked": {
+          "notConfigured": "Leverandøren mangler nøkkel",
+          "lacksFeatures": "Mangler:"
+        },
+        "errors": {
+          "network": "Gatewayen svarer ikke. Ingen kjøring ble startet.",
+          "forbidden": "Nivået ditt kan ikke starte en kjøring.",
+          "notFound": "Modellen finnes ikke lenger i registeret.",
+          "conflict": "Noe er endret i mellomtiden. Lukk dialogen og oppdater.",
+          "invalid": "Serveren avviste kjøringen.",
+          "unavailable": "Settet kunne ikke leses. Prøv igjen senere.",
+          "generic": "Kjøringen startet ikke."
+        }
+      }
+    },
+    "gate": {
+      "title": "Q2-port: kan modellen vurdere en mal alene",
+      "period": "Periode",
+      "presets": {
+        "30": "30 d",
+        "90": "90 d",
+        "all": "All tid"
+      },
+      "from": "Fra",
+      "to": "Til",
+      "refresh": "Oppdater",
+      "rangeRefused": "Starten kan ikke være etter slutten.",
+      "tariffWarning": "Kun visning. Ikke ta med ai.review_direct i noen plan før opptak av maler til review_direct er bygget: i dag er en modell som svarer elever alene, ikke begrenset til malene som har bestått denne porten.",
+      "bindingFailed": "Kunne ikke lese koblingen for review_direct",
+      "unbound": "review_direct er ikke koblet til en modell: porten har ingen modell å gjelde for.",
+      "boundTo": "review_direct er koblet til",
+      "fallback": "reserve {{ model }}",
+      "failed": "Kunne ikke laste porten",
+      "thresholds": "En mal består på en modell med minst {{ drafts }} utkast avgjort av lærere, minst {{ kept }} av merknadene beholdt (som skrevet eller omformulert) og høyst {{ discarded }} forkastet.",
+      "summary": {
+        "templates": "Maler: {{ count }}",
+        "bound": "Koblet modell:",
+        "notRecorded": "{{ count }} utkast avgjort før malen ble registrert"
+      },
+      "boundOnly": "Bare modellen for review_direct",
+      "empty": "Lærerne har ikke avgjort noen KI-utkast i denne perioden.",
+      "emptyBound": "Modellen for review_direct har ingen avgjorte utkast i denne perioden.",
+      "col": {
+        "template": "Mal",
+        "model": "Modell",
+        "drafts": "Avgjorte utkast",
+        "kept": "Beholdt",
+        "discarded": "Forkastet",
+        "remarks": "Merknader: beholdt / omformulert / forkastet / urørt",
+        "direct": "Direkte vurderinger",
+        "verdict": "Port"
+      },
+      "notRecorded": "mal ikke registrert",
+      "role": {
+        "primary": "review_direct",
+        "fallback": "reserve for review_direct"
+      },
+      "remarks": "{{ accepted }} / {{ edited }} / {{ discarded }} / {{ untouched }}",
+      "direct": {
+        "reviews": "{{ reviews }} levert, {{ disputes }} bestridt",
+        "overturned": "læreren snudde {{ overturned }} av {{ verdicts }}"
+      },
+      "verdict": {
+        "passed": "bestått",
+        "failed": "ikke bestått",
+        "insufficient": "for lite data",
+        "not_recorded": "mal ikke registrert"
+      },
+      "legend": "Andelene har urørte merknader i nevneren. Rødt: terskelen er ikke nådd. Direkte vurderinger er kontekst og inngår ikke i porten."
+    },
+    "spend": {
+      "title": "Kostnader per modell",
+      "hint": "Hva plattformens KI-kall koster, fra kallgloggen i ai-service, til prisen som gjaldt ved hvert kall. UTC-dager:",
+      "period": "Periode",
+      "presets": {
+        "7": "7 d",
+        "30": "30 d",
+        "90": "90 d",
+        "month": "Denne måneden"
+      },
+      "from": "Fra",
+      "to": "Til",
+      "refresh": "Oppdater",
+      "rangeRefused": "Starten kan ikke være etter slutten, og en periode er høyst {{ max }} dager.",
+      "failed": "Kunne ikke laste kostnadene",
+      "empty": "Ingen modell ble kalt eller bundet i denne perioden.",
+      "kpi": {
+        "cost": "Kostnad",
+        "credits": "belastet betalerne: {{ credits }} kreditter",
+        "calls": "Kall",
+        "callsDetail": "feilet {{ failed }} · av reservemodellen {{ fallback }}",
+        "unpriced": "Kall uten pris",
+        "unpricedHint": "Kostnaden er ukjent, ikke null — legg inn pris for: {{ models }}",
+        "unpricedNone": "Alle kall hadde pris.",
+        "volume": "Volum",
+        "tokens": "tokens inn / ut: {{ input }} / {{ output }}",
+        "audio": "lyd: {{ hours }} t",
+        "characters": "talesyntese: {{ count }} tegn"
+      },
+      "col": {
+        "model": "Modell",
+        "provider": "Leverandør",
+        "calls": "Kall",
+        "tokens": "Tokens inn / ut",
+        "cache": "Hurtigbuffer les / skriv",
+        "audio": "Lyd, t",
+        "characters": "TTS-tegn",
+        "cost": "Kostnad",
+        "share": "Andel"
+      },
+      "byAgent": "{{ model }} per agent",
+      "removed": "fjernet fra registeret",
+      "idle": "ikke bundet, ingen kall",
+      "role": {
+        "primary": "primær",
+        "fallback": "reserve"
+      },
+      "failedCalls": "feilet {{ count }}",
+      "fallbackCalls": "reserve {{ count }}",
+      "unpricedCalls": "uten pris: {{ count }}",
+      "daily": "Kostnad per dag, USD",
+      "chartEmpty": "Ingenting priset i USD i denne perioden.",
+      "chartUsdOnly": "Diagrammet viser bare USD; andre valutaer står i tabellen.",
+      "other": "Andre"
+    },
+    "payerSpend": {
+      "title": "Kreditter per betaler",
+      "filter": "Betaler",
+      "types": {
+        "all": "Alle",
+        "workspace": "Skoler",
+        "user": "Elever",
+        "platform": "Plattform"
+      },
+      "type": {
+        "workspace": "skole",
+        "user": "elev",
+        "platform": "plattform"
+      },
+      "hint": "Hva betalerne ble belastet i kreditter — enheten tariffene teller — for samme periode, fra analytics. Kreditter er ikke penger: kostnaden per modell står over.",
+      "total": "{{ credits }} kreditter · {{ calls }} kall · {{ payers }} betalere",
+      "failed": "Kunne ikke laste kredittene",
+      "namesFailed": "Noen navn kunne ikke leses; de radene viser id.",
+      "empty": "Ingen ble belastet i denne perioden.",
+      "platform": "Plattform (diagnostikk, evalueringer)",
+      "others": "{{ count }} betalere til",
+      "byCapability": "Kreditter per agent",
+      "byWeek": "Kreditter per ISO-uke",
+      "col": {
+        "payer": "Betaler",
+        "credits": "Kreditter",
+        "capability": "Agent",
+        "week": "Uke",
+        "bar": "Kreditter, stolpe"
+      }
+    }
+  },
+  "platform": {
+    "tabsLabel": "Faner for plattform",
+    "tabs": {
+      "sessions": "Øktvarighet",
+      "media": "Medieopprydding"
+    },
+    "sessions": {
+      "title": "Øktvarighet",
+      "intro": "Hvor lenge en innlogging varer uten passord: levetiden til oppdateringstokenet per rolle og klient. Tilgangstokener forblir korte (15 min som standard) uansett hva som står her.",
+      "appliesNote": "En endring gjelder tokener som utstedes eller fornyes etter den. Økter som allerede er åpne, beholder sin slutt til neste fornyelse.",
+      "refresh": "Last inn på nytt",
+      "failed": "Kunne ikke laste øktvarighet",
+      "fallback": "Reservevarighet:",
+      "fallbackHint": "For en rolle × klient uten egen varighet. Settes i auth-konfigurasjonen, ikke her.",
+      "fallbackTag": "reserve",
+      "role": "Rolle",
+      "clients": {
+        "web": "Nett",
+        "mobile": "Mobil",
+        "admin": "Adminpanel"
+      },
+      "roles": {
+        "platform_admin": "Plattformadministrator",
+        "manager_platform": "Plattformleder",
+        "school_admin": "Skoleadministrator",
+        "teacher": "Lærer",
+        "tutor": "Privatlærer",
+        "student": "Elev"
+      },
+      "unusedHint": "Bare plattformadministratorer logger inn i panelet.",
+      "seeded": "standard",
+      "changedOn": "endret {{date}}",
+      "edit": "Endre varigheten for {{role}} på {{client}}",
+      "shortestNote": "En bruker med flere roller får den korteste varigheten blant rollene sine på den klienten.",
+      "duration": {
+        "hours": "{{hours}} t",
+        "days": "{{days}} d",
+        "daysHours": "{{days}} d {{hours}} t"
+      },
+      "dialog": {
+        "title": "Endre øktvarighet",
+        "confirm": "Lagre varighet",
+        "current": "Nå: {{value}}",
+        "fallbackNow": "reservevarigheten; lagring gir paret egen varighet",
+        "value": "Ny varighet",
+        "unit": "Enhet",
+        "units": {
+          "hours": "timer",
+          "days": "dager"
+        },
+        "bounds": "Fra {{min}} til {{max}}.",
+        "wholeNumber": "Skriv et heltall.",
+        "unchanged": "Samme som nå — ingenting å lagre."
+      }
+    },
+    "media": {
+      "title": "Medieopprydding",
+      "refresh": "Last inn på nytt",
+      "intro": "Fire nattlige gjennomganger fjerner mediefiler som ingen bruker lenger. Hver spør tjenesten som eier referansene før sletting; en fil den ikke kan gå god for, beholdes.",
+      "failed": "Kunne ikke laste medieoppryddingen",
+      "nightlyMode": "Nattlige kjøringer:",
+      "nightlyModeHint": "Styres av MEDIA_ORPHAN_SWEEP_MODE i media-service, likt for alle fire; endres ikke her.",
+      "historyDays": "Kjørehistorikken beholdes i {{days}} dager.",
+      "modes": {
+        "dry-run": "bare sjekk",
+        "delete": "slett"
+      },
+      "kinds": {
+        "orphan_recordings": {
+          "title": "Foreldreløse opptak",
+          "what": "Elevenes taleopptak som ingen forsøk viser til (et forsøk ble forkastet eller tatt på nytt)."
+        },
+        "superseded_narrations": {
+          "title": "Erstattet opplesning",
+          "what": "Opplesninger av leksjoner som er erstattet av en nyere og ikke lenger brukes av noen leksjonsversjon."
+        },
+        "abandoned_uploads": {
+          "title": "Avbrutte opplastinger",
+          "what": "Opplastinger som ble startet, men aldri bekreftet."
+        },
+        "orphan_content": {
+          "title": "Foreldreløse innholdsfiler",
+          "what": "Bilder og lyd i materiell som ingen kursdel viser til lenger."
+        }
+      },
+      "schedule": "Tidsplan",
+      "dailyAt": "hver natt kl. {{time}}, servertid",
+      "minAge": "Minste alder",
+      "ageBasis": {
+        "created": "{{days}} d etter opplasting",
+        "superseded": "{{days}} d etter erstatning"
+      },
+      "maxPerRun": "Filer per kjøring, høyst",
+      "asks": "Spør",
+      "owners": {
+        "engine": "øvelsesmotoren",
+        "content": "innholdstjenesten",
+        "none": "ingen (en ubekreftet opplasting er ubrukt)"
+      },
+      "check": "Sjekk nå",
+      "running": "En kjøring av denne gjennomgangen pågår nå. Prøv igjen når den er ferdig.",
+      "checkedAt": "Sjekket {{when}}:",
+      "dryRunResult": "{{scanned}} sett på, {{kept}} fortsatt i bruk, {{candidates}} ville blitt slettet.",
+      "aborted": "Stoppet: {{service}} svarte ikke",
+      "deletedResult": "Slettet {{deleted}} filer.",
+      "blocked": {
+        "noDryRun": "Slett åpnes etter en sjekk fra dette panelet de siste 30 minuttene.",
+        "aborted": "Sjekken ble ikke fullført — sjekk igjen før sletting.",
+        "nothing": "Ingenting å slette."
+      },
+      "noRuns": "Ingen kjøringer ennå.",
+      "runsCaption": "Siste kjøringer",
+      "runs": {
+        "started": "Startet",
+        "trigger": "Startet av",
+        "outcome": "Resultat"
+      },
+      "triggers": {
+        "nightly": "Nattlig",
+        "admin": "Adminpanelet",
+        "operator": "Operatør"
+      },
+      "summary": {
+        "scanned": "Sett på",
+        "kept": "I bruk",
+        "candidates": "Til sletting",
+        "deleted": "Slettet"
+      },
+      "outcomes": {
+        "done": "Ferdig",
+        "running": "Pågår eller avbrutt",
+        "skipped": "Hoppet over: en annen kjøring pågikk",
+        "failed": "Feilet"
+      },
+      "delete": {
+        "open": "Slett",
+        "title": "Slett ubrukte filer",
+        "confirm": "Slett filer",
+        "checkedAt": "Sjekken din fra {{when}} fant:",
+        "warning": "Filene slettes fra lagringen for godt. Gjennomgangen teller på nytt mens den sletter, så tallet kan avvike litt fra sjekken."
+      }
+    }
+  }
+}
