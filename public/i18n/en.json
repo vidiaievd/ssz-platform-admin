@@ -89,10 +89,14 @@
         "purging": "In the archive: deletion soon",
         "breakerOpen": "Breaker open: calls go to the fallback",
         "providerOff": "Provider switched off but in use",
-        "providerNoKey": "Provider in use has no key"
+        "providerNoKey": "Provider in use has no key",
+        "deletionRequests": "Deletion requests"
       },
       "reopensAt": "retried at {{ time }}",
-      "openProviders": "Providers"
+      "openProviders": "Providers",
+      "deletionCount": "{{ n }} pending",
+      "openUsers": "Users",
+      "deletionFailed": "Could not count deletion requests"
     },
     "kpi": {
       "failed": "Could not load the numbers",
@@ -841,6 +845,58 @@
       },
       "journal": {
         "empty": "No admin actions on this account yet."
+      }
+    },
+    "actions": {
+      "self": "This is your own account: no action here applies to it. Ask another administrator.",
+      "nothingChanged": "Nothing to change — someone was faster, or the card was out of date. The card has been read again.",
+      "dismiss": "Close",
+      "block": {
+        "button": "Block",
+        "title": "Block the account",
+        "confirm": "Block",
+        "text": "{{ email }} will not sign in on any client, and every session ends now. An access token already handed out lives up to 15 minutes. The reason is not shown to the user."
+      },
+      "unblock": {
+        "button": "Unblock",
+        "title": "Lift the block",
+        "confirm": "Unblock",
+        "text": "{{ email }} can sign in again. Sessions ended by the block do not come back."
+      },
+      "unlock": {
+        "button": "Lift the lockout",
+        "title": "Lift the lockout",
+        "confirm": "Lift",
+        "where": "Lifting clears the wrong passwords and the two-factor code count.",
+        "text": "The lockout after wrong passwords and the two-factor code lockout of {{ email }} end now, and both counts start from zero."
+      },
+      "revokeSessions": {
+        "button": "End",
+        "buttonAll": "End all sessions",
+        "title": "End sessions: {{ client }}",
+        "confirm": "End",
+        "text": "Every open {{ client }} session of {{ email }} ends; signing in again is allowed."
+      },
+      "revokeAllSessions": {
+        "title": "End all sessions",
+        "confirm": "End all",
+        "text": "Every open session of {{ email }} on every client ends; signing in again is allowed."
+      },
+      "resetMfa": {
+        "button": "Reset two-factor sign-in",
+        "title": "Reset two-factor sign-in",
+        "confirm": "Reset",
+        "text": "Two-factor sign-in of {{ email }} is turned off: the authenticator and backup codes stop working and admin-panel sessions end. Do this only once you are sure who is asking."
+      },
+      "cancelDeletion": {
+        "button": "Withdraw the request",
+        "title": "Withdraw the deletion request",
+        "confirm": "Withdraw",
+        "text": "The account of {{ email }} will not be erased; the user keeps it as it is."
+      },
+      "errors": {
+        "lastSuper": "Refused: the last super administrator who can sign in cannot be blocked, and nobody can change their own account.",
+        "lockoutStore": "The lockout store (Redis) does not answer; nothing was changed. Try again later."
       }
     }
   },

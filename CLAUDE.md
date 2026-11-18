@@ -30,7 +30,7 @@ and only offered on a fresh — ≤ 30 min, `DRY_RUN_FRESH_MS` — finished non-
 and **Plans** (`features/plans`, `/plans`, `/plans/:code`, `/plans/:code/new-version`, `/plans/new`; edits `super`): catalog, card with
 versions, subscribers per version and key diffs (`diffFeatures` in `plan-model.ts`), the shared key editor `plan-features-editor`
 (409 → re-read, input kept), and moving subscribers to the current version (`plan-migration`: preview, then batches of the root
-`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Phase 6 (in progress, branch `feature/admin-users`) adds **Users** (`features/users`, `/users`): the list from auth
+`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Phase 6 (in progress, branch `feature/admin-users`; steps 5–8 built) adds **Users** (`features/users`, `/users`): the list from auth
 `admin/users` (search by part of the e-mail, ≥ 2 characters — a shorter one stays in the box and is not sent, auth would
 answer 400; role, status, sort, page in the URL: `q`, `role`, `status`, `sort`, `page`, `size`), status badges from one rule
 (`user-status.ts`: blocked / locked out / deleted in N d / e-mail not confirmed; no badge = active), the admin level, 2FA, and
@@ -43,7 +43,14 @@ each a link to the school), and the school card's own *Plan*, *AI* and *Journal*
 from the abstract `PayerCard` (`schools/card/payer-card.ts`; `SchoolCardData` and `UserCardData` provide it), the few texts that say
 "school" come from `payerText()` (`users.payer.*` for a learner), a learner gets individual plans only, no seats and no school
 settings, and the grant dialog drops `seats.students`. Links to the card: the roster and the owner (members tab, overview), a `user`
-payer in the dashboard queue (its plan tab), a `user` target in recent actions and every journal actor.
+payer in the dashboard queue (its plan tab), a `user` target in recent actions and every journal actor. Actions (step 8) sit on the
+overview beside the state they change — block / unblock, lift the lockout, reset 2FA, end sessions (per client or all), withdraw a
+deletion request — each through `ReasonDialog`. `user-actions.ts` copies auth's matrix (`actionLevel`: block / unblock / reset MFA
+of a platform administrator — role **or** level row — need `super`) and offers only what would change something
+(`applicableActions`); nothing on one's own account. An action answers the card (`UserCardData.setUser`, no second read); 409
+`NOTHING_TO_CHANGE` is not an error: the card is read again, the dialog closes and a note says nothing changed. The dashboard queue
+has a "Deletion requests" row (auth `admin/users?status=deletion_pending&limit=1`, its own read and retry, kept when the
+subscription read fails) linking to the list's preset.
 Sections other than Dashboard, Schools, Users, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 

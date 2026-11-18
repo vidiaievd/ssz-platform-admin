@@ -49,7 +49,10 @@ describe('Shell and panel routes', () => {
       await settle();
       TestBed.tick();
     }
-    for (const req of http.match((r) => r.url.includes('/api/v1/admin/'))) {
+    // auth's users list too: the queue counts pending deletion requests.
+    const widget = (url: string) =>
+      url.includes('/api/v1/admin/') || url.includes('/api/v1/auth/admin/users');
+    for (const req of http.match((r) => widget(r.url))) {
       req.flush(null, { status: 503, statusText: 'Unavailable' });
     }
     await harness.fixture.whenStable();

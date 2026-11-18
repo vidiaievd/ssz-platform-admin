@@ -18,10 +18,10 @@ import { AdminUserDetail } from '../../../core/auth/admin-users.api';
 import { SessionStore } from '../../../core/auth/session.store';
 import { adminToken, sessionBody, settle } from '../../../core/auth/testing';
 import { APP_CONFIG } from '../../../core/config/app-config';
+import { USER_ID as ID, userDetail } from './user-card.testing';
 // Real English texts, so a missing key would show up as the key itself.
 import en from '../../../../../public/i18n/en.json';
 
-const ID = '5e0c1b2a-0000-4000-8000-000000000042';
 const USER = `http://gw/api/v1/auth/admin/users/${ID}`;
 const LOOKUP = 'http://gw/api/v1/admin/subscriptions/accounts/lookup';
 const ACCOUNT = `http://gw/api/v1/admin/subscriptions/accounts/user/${ID}`;
@@ -33,44 +33,6 @@ const POLICY = `http://gw/api/v1/admin/ai/payer-policies/user/${ID}`;
 const AUDIT = 'http://gw/api/v1/admin/audit';
 
 const future = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString();
-
-export function userDetail(overrides: Partial<AdminUserDetail> = {}): AdminUserDetail {
-  return {
-    id: ID,
-    email: 'kari@example.no',
-    roles: ['student'],
-    adminLevel: null,
-    emailVerified: true,
-    twoFactorEnabled: false,
-    blockedAt: null,
-    lockedUntil: null,
-    deletionRequestedAt: null,
-    purgeAt: null,
-    createdAt: '2026-03-05T10:00:00.000Z',
-    lastLoginAt: '2026-11-17T08:30:00.000Z',
-    block: null,
-    failedLogins: { count: 0, lastAt: null, lockedUntil: null },
-    mfaCodes: { available: true, failures: 0, lockedUntil: null },
-    backupCodesLeft: 0,
-    sessions: [
-      {
-        clientType: 'web',
-        active: 1,
-        lastIssuedAt: '2026-11-17T08:30:00.000Z',
-        recent: [
-          {
-            issuedAt: '2026-11-17T08:30:00.000Z',
-            expiresAt: '2026-11-24T08:30:00.000Z',
-            deviceInfo: 'Firefox on Linux',
-          },
-        ],
-      },
-      { clientType: 'mobile', active: 0, lastIssuedAt: null, recent: [] },
-      { clientType: 'admin', active: 0, lastIssuedAt: null, recent: [] },
-    ],
-    ...overrides,
-  };
-}
 
 function account(overrides: Partial<AccountLookupItemDto> = {}): AccountLookupItemDto {
   return {
@@ -430,6 +392,150 @@ describe('UserCardPage', () => {
       await stable();
       expect(text('journal-action')).toBe('Account blocked');
       expect(find('journal-actor')!.getAttribute('href')).toBe('/users/admin-7');
+    });
+  });
+
+  describe('actions', () => {
+    const inPage = (testId: string) =>
+      document.body.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+
+    async function dialogShown(): Promise<void> {
+      await vi.waitFor(async () => {
+        await stable();
+        expect(inPage('reason-input')?.isConnected).toBe(true);
+      });
+    }
+
+    async function confirmWith(reason: string): Promise<void> {
+      const field = inPage('reason-input') as HTMLTextAreaElement;
+      field.value = reason;
+      field.dispatchEvent(new Event('input'));
+      await stable();
+      inPage('reason-confirm')!.click();
+      await stable();
+    }
+
+    async function dialogClosed(): Promise<void> {
+      await vi.waitFor(async () => {
+        await stable();
+        expect(inPage('reason-dialog')).toBeNull();
+      });
+    }
+
+    it('blocks with a reason and shows the card the server answered', async () => {
+      await open(`/users/${ID}`, 'admin');
+      await answer();
+      expect(find('action-unblock')).toBeNull();
+      find('action-block')!.click();
+      await dialogShown();
+      expect(inPage('action-text')!.textContent).toContain('kari@example.no will not sign in');
+
+      await confirmWith('Spam in reviews');
+      const post = await next(`${USER}/block`, 'POST');
+      expect(post.request.body).toEqual({ reason: 'Spam in reviews' });
+      post.flush(
+        userDetail({
+          blockedAt: '2026-11-18T12:00:00.000Z',
+          block: { at: '2026-11-18T12:00:00.000Z', by: 'admin-1', reason: 'Spam in reviews' },
+        }),
+      );
+      await dialogClosed();
+      expect(text('user-badges')).toContain('Blocked');
+      expect(find('action-block')).toBeNull();
+      expect(find('action-unblock')).not.toBeNull();
+    });
+
+    it('hides what the level cannot do to a platform administrator', async () => {
+      const target = userDetail({
+        roles: ['platform_admin'],
+        adminLevel: 'support',
+        twoFactorEnabled: true,
+        failedLogins: { count: 1, lastAt: null, lockedUntil: null },
+      });
+      await open(`/users/${ID}`, 'admin');
+      await answer(target);
+      expect(find('action-block')).toBeNull();
+      expect(find('action-resetMfa')).toBeNull();
+      // Any level may lift a lockout or end sessions.
+      expect(find('action-unlock')).not.toBeNull();
+      expect(find('action-revoke-all')).not.toBeNull();
+    });
+
+    it('lets super block and reset MFA of a platform administrator', async () => {
+      await open(`/users/${ID}`, 'super');
+      await answer(
+        userDetail({ roles: ['platform_admin'], adminLevel: 'admin', twoFactorEnabled: true }),
+      );
+      expect(find('action-block')).not.toBeNull();
+      expect(find('action-resetMfa')).not.toBeNull();
+    });
+
+    it("offers nothing on the administrator's own account", async () => {
+      await open(`/users/${ID}`, 'super');
+      await answer(userDetail({ id: 'admin-1', twoFactorEnabled: true }));
+      expect(find('user-self')).not.toBeNull();
+      expect(el.querySelector('[data-testid^="action-"]')).toBeNull();
+    });
+
+    it("ends one client's sessions", async () => {
+      await open(`/users/${ID}`, 'support');
+      await answer();
+      expect(
+        find('sessions-mobile')!.querySelector('[data-testid="action-revoke-client"]'),
+      ).toBeNull();
+      find('sessions-web')!
+        .querySelector<HTMLElement>('[data-testid="action-revoke-client"]')!
+        .click();
+      await dialogShown();
+      expect(inPage('action-text')!.textContent).toContain(
+        'Every open Web session of kari@example.no ends',
+      );
+      await confirmWith('Lost laptop');
+      const post = await next(`${USER}/sessions/revoke`, 'POST');
+      expect(post.request.body).toEqual({ reason: 'Lost laptop', clientType: 'web' });
+      post.flush(
+        userDetail({
+          sessions: userDetail().sessions.map((c) => ({ ...c, active: 0, recent: [] })),
+        }),
+      );
+      await dialogClosed();
+      expect(find('action-revoke-all')).toBeNull();
+    });
+
+    it('reads the card again when the server had nothing to change', async () => {
+      await open(`/users/${ID}`, 'admin');
+      await answer(
+        userDetail({ deletionRequestedAt: '2026-11-01T00:00:00.000Z', purgeAt: future(13) }),
+      );
+      find('action-cancelDeletion')!.click();
+      await dialogShown();
+      await confirmWith('User wrote to support');
+      (await next(`${USER}/deletion/cancel`, 'POST')).flush(
+        { code: 'NOTHING_TO_CHANGE', message: 'The account has no pending deletion.' },
+        { status: 409, statusText: 'Conflict' },
+      );
+      (await next(USER)).flush(userDetail());
+      await dialogClosed();
+      expect(find('user-nothing-changed')).not.toBeNull();
+      expect(find('overview-deletion')).toBeNull();
+      expect(inPage('reason-error')).toBeNull();
+    });
+
+    it('keeps the dialog with its own words when the lockout store is down', async () => {
+      await open(`/users/${ID}`, 'support');
+      await answer(userDetail({ failedLogins: { count: 3, lastAt: null, lockedUntil: null } }));
+      find('action-unlock')!.click();
+      await dialogShown();
+      await confirmWith('Forgot the password');
+      (await next(`${USER}/unlock`, 'POST')).flush(
+        { code: 'LOCKOUT_STORE_UNAVAILABLE' },
+        { status: 503, statusText: 'Service Unavailable' },
+      );
+      await stable();
+      expect(inPage('reason-error')!.textContent).toContain(
+        'lockout store (Redis) does not answer',
+      );
+      expect(inPage('reason-error-code')!.textContent!.trim()).toBe('LOCKOUT_STORE_UNAVAILABLE');
     });
   });
 });

@@ -89,10 +89,14 @@
         "purging": "I arkivet: slettes snart",
         "breakerOpen": "Sikring åpen: kall går til reserven",
         "providerOff": "Leverandør slått av, men i bruk",
-        "providerNoKey": "Leverandør i bruk mangler nøkkel"
+        "providerNoKey": "Leverandør i bruk mangler nøkkel",
+        "deletionRequests": "Sletteforespørsler"
       },
       "reopensAt": "prøves igjen {{ time }}",
-      "openProviders": "Leverandører"
+      "openProviders": "Leverandører",
+      "deletionCount": "{{ n }} venter",
+      "openUsers": "Brukere",
+      "deletionFailed": "Kunne ikke telle sletteforespørsler"
     },
     "kpi": {
       "failed": "Kunne ikke laste tallene",
@@ -841,6 +845,58 @@
       },
       "journal": {
         "empty": "Ingen adminhandlinger på denne kontoen ennå."
+      }
+    },
+    "actions": {
+      "self": "Dette er din egen konto: ingen handling her gjelder den. Spør en annen administrator.",
+      "nothingChanged": "Ingenting å endre — noen var raskere, eller kortet var utdatert. Kortet er lest på nytt.",
+      "dismiss": "Lukk",
+      "block": {
+        "button": "Blokker",
+        "title": "Blokker kontoen",
+        "confirm": "Blokker",
+        "text": "{{ email }} kan ikke logge inn på noen klient, og alle økter avsluttes nå. Et access-token som alt er utdelt, lever opptil 15 minutter. Brukeren ser ikke grunnen."
+      },
+      "unblock": {
+        "button": "Opphev blokkering",
+        "title": "Opphev blokkeringen",
+        "confirm": "Opphev",
+        "text": "{{ email }} kan logge inn igjen. Økter som blokkeringen avsluttet, kommer ikke tilbake."
+      },
+      "unlock": {
+        "button": "Opphev låsing",
+        "title": "Opphev låsingen",
+        "confirm": "Opphev",
+        "where": "Opphevingen nullstiller feil passord og telleren for tofaktorkoder.",
+        "text": "Låsingen etter feil passord og låsingen av tofaktorkoder for {{ email }} slutter nå, og begge tellerne starter på null."
+      },
+      "revokeSessions": {
+        "button": "Avslutt",
+        "buttonAll": "Avslutt alle økter",
+        "title": "Avslutt økter: {{ client }}",
+        "confirm": "Avslutt",
+        "text": "Alle åpne økter for {{ email }} på «{{ client }}» avsluttes; ny innlogging er tillatt."
+      },
+      "revokeAllSessions": {
+        "title": "Avslutt alle økter",
+        "confirm": "Avslutt alle",
+        "text": "Alle åpne økter for {{ email }} på alle klienter avsluttes; ny innlogging er tillatt."
+      },
+      "resetMfa": {
+        "button": "Tilbakestill tofaktor",
+        "title": "Tilbakestill tofaktorinnlogging",
+        "confirm": "Tilbakestill",
+        "text": "Tofaktorinnlogging for {{ email }} slås av: autentiseringsappen og reservekodene slutter å virke, og økter i adminpanelet avsluttes. Gjør det bare når du er sikker på hvem som spør."
+      },
+      "cancelDeletion": {
+        "button": "Trekk forespørselen",
+        "title": "Trekk sletteforespørselen",
+        "confirm": "Trekk",
+        "text": "Kontoen til {{ email }} blir ikke slettet; brukeren beholder den som den er."
+      },
+      "errors": {
+        "lastSuper": "Avvist: den siste superadministratoren som kan logge inn, kan ikke blokkeres, og ingen kan endre sin egen konto.",
+        "lockoutStore": "Låselageret (Redis) svarer ikke; ingenting er endret. Prøv igjen senere."
       }
     }
   },

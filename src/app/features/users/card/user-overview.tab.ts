@@ -1,13 +1,27 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { ButtonDirective } from 'primeng/button';
 import { Tag } from 'primeng/tag';
-import { AdminUserDetail } from '../../../core/auth/admin-users.api';
+import { AdminLevel } from '../../../core/auth/admin-level';
+import { AdminUserDetail, AdminUsersApi } from '../../../core/auth/admin-users.api';
+import { IfLevelDirective } from '../../../core/auth/if-level.directive';
+import { SessionStore } from '../../../core/auth/session.store';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
+import { ActionErrorKey } from '../../../shared/reason-dialog/action-error';
+import { ReasonDialog } from '../../../shared/reason-dialog/reason-dialog';
 import { formatMoment } from '../../schools/card/journal/journal-format';
 import { daysUntil } from '../../schools/school-lifecycle';
 import { roleKey } from '../user-roles';
+import {
+  UserAction,
+  UserActionKind,
+  UserActionResult,
+  actionLevel,
+  applicableActions,
+  nothingToChangeAsReread,
+} from './user-actions';
 import { UserCardData } from './user-card.data';
 import { userTabLink } from './user-tabs';
 
@@ -16,12 +30,55 @@ import { userTabLink } from './user-tabs';
  * access (an administrator's block, the lockout after failed sign-ins, two-factor sign-in and its
  * code lockout), sessions by client and a pending deletion with its erasure date — all from
  * auth's card, read once by the card page. Never a hash, a secret or a code.
+ *
+ * Actions (step 8) sit beside the state they change: block / unblock, lift the lockout, reset
+ * two-factor sign-in, end sessions (one client or all), withdraw a deletion request. A button is
+ * drawn only when the action would change something (`applicableActions`) and the level allows it
+ * on this account (`actionLevel`: a platform administrator's account asks for `super` to block,
+ * unblock or reset MFA); never on one's own account. Each goes through the reason dialog and the
+ * answer is the card as it is now. A 409 `NOTHING_TO_CHANGE` is no error: the card is read again
+ * and a note says nothing changed.
  */
 @Component({
   selector: 'app-user-overview-tab',
-  imports: [RouterLink, TranslocoPipe, Tag, LocalDatePipe],
+  imports: [
+    RouterLink,
+    TranslocoPipe,
+    ButtonDirective,
+    Tag,
+    IfLevelDirective,
+    LocalDatePipe,
+    ReasonDialog,
+  ],
   template: `
     @if (data.user(); as user) {
+      @if (self()) {
+        <p
+          class="mb-4 flex items-center gap-2 rounded-md border border-sky-300 px-3 py-2 text-sm dark:border-sky-800"
+          data-testid="user-self"
+        >
+          <i class="pi pi-info-circle" aria-hidden="true"></i>
+          {{ 'users.actions.self' | transloco }}
+        </p>
+      }
+      @if (notice()) {
+        <p
+          class="mb-4 flex items-center gap-2 rounded-md border border-sky-300 px-3 py-2 text-sm dark:border-sky-800"
+          role="status"
+          data-testid="user-nothing-changed"
+        >
+          <i class="pi pi-info-circle" aria-hidden="true"></i>
+          {{ 'users.actions.nothingChanged' | transloco }}
+          <button
+            type="button"
+            class="text-primary ml-auto underline"
+            data-testid="user-nothing-changed-close"
+            (click)="notice.set(false)"
+          >
+            {{ 'users.actions.dismiss' | transloco }}
+          </button>
+        </p>
+      }
       <div class="grid gap-4 lg:grid-cols-2" data-testid="user-overview">
         <!-- Account -->
         <section
@@ -98,6 +155,37 @@ import { userTabLink } from './user-tabs';
                 {{ 'users.card.access.notBlocked' | transloco }}
               </p>
             }
+            @if (offer('block')) {
+              <button
+                *appIfLevel="levelOf('block')"
+                pButton
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-block"
+                (click)="start({ kind: 'block' })"
+              >
+                <i class="pi pi-ban" aria-hidden="true"></i>
+                {{ 'users.actions.block.button' | transloco }}
+              </button>
+            }
+            @if (offer('unblock')) {
+              <button
+                *appIfLevel="levelOf('unblock')"
+                pButton
+                type="button"
+                size="small"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-unblock"
+                (click)="start({ kind: 'unblock' })"
+              >
+                <i class="pi pi-lock-open" aria-hidden="true"></i>
+                {{ 'users.actions.unblock.button' | transloco }}
+              </button>
+            }
           </div>
 
           <div class="flex flex-col gap-1 text-sm" data-testid="access-lockout">
@@ -114,6 +202,22 @@ import { userTabLink } from './user-tabs';
               <p class="text-amber-700 dark:text-amber-300" data-testid="access-locked">
                 {{ 'users.card.access.lockedUntil' | transloco: { at: moment(until) } }}
               </p>
+            }
+            <p class="text-muted-color text-xs">{{ 'users.actions.unlock.where' | transloco }}</p>
+            @if (offer('unlock')) {
+              <button
+                *appIfLevel="levelOf('unlock')"
+                pButton
+                type="button"
+                size="small"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-unlock"
+                (click)="start({ kind: 'unlock' })"
+              >
+                <i class="pi pi-unlock" aria-hidden="true"></i>
+                {{ 'users.actions.unlock.button' | transloco }}
+              </button>
             }
           </div>
 
@@ -143,6 +247,22 @@ import { userTabLink } from './user-tabs';
                 {{ 'users.card.access.codesFailures' | transloco: { n: user.mfaCodes.failures } }}
               </p>
             }
+            @if (offer('resetMfa')) {
+              <button
+                *appIfLevel="levelOf('resetMfa')"
+                pButton
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-resetMfa"
+                (click)="start({ kind: 'resetMfa' })"
+              >
+                <i class="pi pi-shield" aria-hidden="true"></i>
+                {{ 'users.actions.resetMfa.button' | transloco }}
+              </button>
+            }
           </div>
         </section>
 
@@ -151,7 +271,26 @@ import { userTabLink } from './user-tabs';
           class="border-border flex flex-col gap-3 rounded-md border p-4 lg:col-span-2"
           data-testid="overview-sessions"
         >
-          <h2 class="text-base font-semibold">{{ 'users.card.sessions.title' | transloco }}</h2>
+          <div class="flex flex-wrap items-center gap-2">
+            <h2 class="text-base font-semibold">{{ 'users.card.sessions.title' | transloco }}</h2>
+            <span class="ml-auto"></span>
+            @if (offer('revokeSessions')) {
+              <button
+                *appIfLevel="levelOf('revokeSessions')"
+                pButton
+                type="button"
+                size="small"
+                severity="danger"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-revoke-all"
+                (click)="start({ kind: 'revokeSessions' })"
+              >
+                <i class="pi pi-sign-out" aria-hidden="true"></i>
+                {{ 'users.actions.revokeSessions.buttonAll' | transloco }}
+              </button>
+            }
+          </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead class="text-muted-color">
@@ -167,6 +306,9 @@ import { userTabLink } from './user-tabs';
                   </th>
                   <th class="py-1 pr-4 font-medium">
                     {{ 'users.card.sessions.recent' | transloco }}
+                  </th>
+                  <th class="py-1 font-medium">
+                    <span class="sr-only">{{ 'schools.plan.actions' | transloco }}</span>
                   </th>
                 </tr>
               </thead>
@@ -195,6 +337,22 @@ import { userTabLink } from './user-tabs';
                         </div>
                       } @empty {
                         <span class="text-muted-color">—</span>
+                      }
+                    </td>
+                    <td class="py-2 text-right">
+                      @if (client.active > 0 && !self()) {
+                        <button
+                          *appIfLevel="levelOf('revokeSessions')"
+                          pButton
+                          type="button"
+                          size="small"
+                          severity="secondary"
+                          [text]="true"
+                          data-testid="action-revoke-client"
+                          (click)="start({ kind: 'revokeSessions', clientType: client.clientType })"
+                        >
+                          {{ 'users.actions.revokeSessions.button' | transloco }}
+                        </button>
                       }
                     </td>
                   </tr>
@@ -227,9 +385,40 @@ import { userTabLink } from './user-tabs';
               </p>
             }
             <p class="text-muted-color text-xs">{{ 'users.card.deletion.hint' | transloco }}</p>
+            @if (offer('cancelDeletion')) {
+              <button
+                *appIfLevel="levelOf('cancelDeletion')"
+                pButton
+                type="button"
+                size="small"
+                [outlined]="true"
+                class="w-fit"
+                data-testid="action-cancelDeletion"
+                (click)="start({ kind: 'cancelDeletion' })"
+              >
+                <i class="pi pi-undo" aria-hidden="true"></i>
+                {{ 'users.actions.cancelDeletion.button' | transloco }}
+              </button>
+            }
           </section>
         }
       </div>
+
+      <app-reason-dialog
+        [visible]="pending() !== null"
+        (visibleChange)="$event || pending.set(null)"
+        [header]="dialogKey('title') | transloco: { client: pendingClient() }"
+        [confirmLabel]="dialogKey('confirm') | transloco"
+        [level]="pendingLevel()"
+        [danger]="pendingDanger()"
+        [action]="run"
+        [errorText]="errorText()"
+        (done)="afterAction($event)"
+      >
+        <p class="text-sm" data-testid="action-text">
+          {{ dialogKey('text') | transloco: { email: user.email, client: pendingClient() } }}
+        </p>
+      </app-reason-dialog>
     }
   `,
 })
@@ -241,6 +430,97 @@ export class UserOverviewTab {
 
   /** The sign-in lockout, only while it runs (a card read a while ago is checked against the clock). */
   protected readonly lockedUntil = computed(() => runningUntil(this.data.user()));
+
+  private readonly api = inject(AdminUsersApi);
+  private readonly session = inject(SessionStore);
+  private readonly transloco = inject(TranslocoService);
+
+  /** The administrator's own account: the server refuses every action (`ADMIN_SELF_CHANGE`). */
+  protected readonly self = computed(() => this.data.user()?.id === this.session.claims()?.userId);
+  private readonly applicable = computed(() => {
+    const user = this.data.user();
+    return user ? applicableActions(user) : new Set<UserActionKind>();
+  });
+  /** The action whose dialog is open. */
+  protected readonly pending = signal<UserAction | null>(null);
+  /** The last action changed nothing: the card was read again. */
+  protected readonly notice = signal(false);
+
+  protected readonly pendingLevel = computed<AdminLevel>(() => {
+    const p = this.pending();
+    const user = this.data.user();
+    return p && user ? actionLevel(p.kind, user) : 'super';
+  });
+  protected readonly pendingDanger = computed(() => {
+    const kind = this.pending()?.kind;
+    return kind === 'block' || kind === 'resetMfa' || kind === 'revokeSessions';
+  });
+  /** The client's name for "end sessions" of one client; empty for all of them. */
+  protected readonly pendingClient = computed(() => {
+    const client = this.pending()?.clientType;
+    return client ? this.transloco.translate(`platform.sessions.clients.${client}`) : '';
+  });
+  /** The refusals an action has its own words for; the code is shown under them anyway. */
+  protected readonly errorText = computed<Partial<Record<ActionErrorKey, string>>>(() => {
+    switch (this.pending()?.kind) {
+      case 'block':
+        return { invalid: this.transloco.translate('users.actions.errors.lastSuper') };
+      case 'unlock':
+        return { unavailable: this.transloco.translate('users.actions.errors.lockoutStore') };
+      default:
+        return {};
+    }
+  });
+
+  protected offer(kind: UserActionKind): boolean {
+    return !this.self() && this.applicable().has(kind);
+  }
+
+  protected levelOf(kind: UserActionKind): AdminLevel {
+    const user = this.data.user();
+    return user ? actionLevel(kind, user) : 'super';
+  }
+
+  protected start(action: UserAction): void {
+    this.notice.set(false);
+    this.pending.set(action);
+  }
+
+  /** `users.actions.<kind>.<part>`; ending one client's sessions has its own words. */
+  protected dialogKey(part: 'title' | 'confirm' | 'text'): string {
+    const p = this.pending();
+    if (!p) return 'users.actions.block.' + part;
+    const kind = p.kind === 'revokeSessions' && !p.clientType ? 'revokeAllSessions' : p.kind;
+    return `users.actions.${kind}.${part}`;
+  }
+
+  protected readonly run = (reason: string) => {
+    const p = this.pending()!;
+    const id = this.data.userId()!;
+    return this.call(p, id, reason).pipe(nothingToChangeAsReread(() => this.api.get(id)));
+  };
+
+  protected afterAction(result: UserActionResult): void {
+    this.data.setUser(result.user);
+    this.notice.set(result.nothingChanged);
+  }
+
+  private call(p: UserAction, id: string, reason: string) {
+    switch (p.kind) {
+      case 'block':
+        return this.api.block(id, reason);
+      case 'unblock':
+        return this.api.unblock(id, reason);
+      case 'unlock':
+        return this.api.unlock(id, reason);
+      case 'revokeSessions':
+        return this.api.revokeSessions(id, reason, p.clientType);
+      case 'resetMfa':
+        return this.api.resetMfa(id, reason);
+      case 'cancelDeletion':
+        return this.api.cancelDeletion(id, reason);
+    }
+  }
 
   protected moment(iso: string): string {
     return formatMoment(iso, this.lang());
