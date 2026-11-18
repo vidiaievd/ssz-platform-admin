@@ -1,10 +1,13 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonDirective } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { formatMoment, formatSnapshot, isKnownAction } from './journal-format';
+import { userTabLink } from '../../../users/card/user-tabs';
+import { payerText } from '../payer-card';
 import { SchoolJournalData } from './school-journal.data';
 
 /**
@@ -15,7 +18,7 @@ import { SchoolJournalData } from './school-journal.data';
 @Component({
   selector: 'app-school-journal-tab',
   providers: [SchoolJournalData],
-  imports: [TranslocoPipe, ButtonDirective, Skeleton, Tag],
+  imports: [RouterLink, TranslocoPipe, ButtonDirective, Skeleton, Tag],
   template: `
     <section class="border-border flex flex-col gap-3 rounded-md border p-4" data-testid="journal">
       <h2 class="text-base font-semibold">{{ 'schools.journal.title' | transloco }}</h2>
@@ -35,7 +38,7 @@ import { SchoolJournalData } from './school-journal.data';
         @default {
           @if (data.items().length === 0) {
             <p class="text-muted-color text-sm" data-testid="journal-empty">
-              {{ 'schools.journal.empty' | transloco }}
+              {{ text('journal.empty') | transloco }}
             </p>
           } @else {
             <ol class="flex flex-col" data-testid="journal-list">
@@ -62,7 +65,12 @@ import { SchoolJournalData } from './school-journal.data';
                   <div class="text-muted-color flex flex-wrap items-center gap-2 text-xs">
                     <span>{{ 'schools.journal.actor' | transloco }}:</span>
                     @if (entry.actorId) {
-                      <span class="font-mono" data-testid="journal-actor">{{ entry.actorId }}</span>
+                      <a
+                        class="text-primary font-mono hover:underline"
+                        [routerLink]="userLink(entry.actorId)"
+                        data-testid="journal-actor"
+                        >{{ entry.actorId }}</a
+                      >
                       @if (entry.actorLevel; as level) {
                         <p-tag severity="info" [value]="level" />
                       }
@@ -92,8 +100,7 @@ import { SchoolJournalData } from './school-journal.data';
                           <pre
                             class="bg-surface-100 dark:bg-surface-800 overflow-x-auto rounded-md p-2 text-xs"
                             data-testid="journal-before"
-                            >{{ snapshot(entry.before) }}</pre
-                          >
+                            >{{ snapshot(entry.before) }}</pre>
                         </div>
                         <div>
                           <h3 class="text-muted-color mb-1 text-xs font-medium">
@@ -102,8 +109,7 @@ import { SchoolJournalData } from './school-journal.data';
                           <pre
                             class="bg-surface-100 dark:bg-surface-800 overflow-x-auto rounded-md p-2 text-xs"
                             data-testid="journal-after"
-                            >{{ snapshot(entry.after) }}</pre
-                          >
+                            >{{ snapshot(entry.after) }}</pre>
                         </div>
                       </div>
                     </details>
@@ -144,8 +150,11 @@ import { SchoolJournalData } from './school-journal.data';
 export class SchoolJournalTab {
   protected readonly data = inject(SchoolJournalData);
   private readonly lang = inject(LanguageService).current;
+  protected readonly text = (key: string) => payerText(this.data.card.payerType, key);
 
   protected readonly isKnown = isKnownAction;
+  /** Who acted: an administrator, so an account the panel has a card for. */
+  protected readonly userLink = (userId: string) => userTabLink(userId);
   protected readonly snapshot = formatSnapshot;
 
   protected moment(iso: string): string {

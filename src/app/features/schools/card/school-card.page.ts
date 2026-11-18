@@ -8,6 +8,7 @@ import { ApiError } from '../../../core/auth/api-error';
 import { LanguageService } from '../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../shared/local-date.pipe';
 import { seatLevel, seatLevelClass, seatsText } from '../seats';
+import { PayerCard } from './payer-card';
 import { SchoolCardData } from './school-card.data';
 import { STATUS_SEVERITY, daysUntil } from '../school-lifecycle';
 import { SCHOOL_TABS, SchoolTab, schoolTabLink } from './school-tabs';
@@ -19,7 +20,7 @@ import { SCHOOL_TABS, SchoolTab, schoolTabLink } from './school-tabs';
  */
 @Component({
   selector: 'app-school-card-page',
-  providers: [SchoolCardData],
+  providers: [SchoolCardData, { provide: PayerCard, useExisting: SchoolCardData }],
   imports: [
     RouterLink,
     RouterLinkActive,

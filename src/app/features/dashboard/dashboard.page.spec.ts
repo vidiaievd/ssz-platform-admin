@@ -26,6 +26,7 @@ const SCHOOLS = 'http://gw/api/v1/admin/schools';
 const PROVIDERS = 'http://gw/api/v1/admin/ai/providers';
 const BREAKERS = 'http://gw/api/v1/admin/ai/breakers';
 const AUDIT = 'http://gw/api/v1/admin/audit';
+const USERS = 'http://gw/api/v1/auth/admin/users';
 const unavailable = { status: 503, statusText: 'Unavailable' };
 
 const SCHOOL_A = '6f1c2a9e-0b7d-4e3a-9c55-1d2e3f4a5b6c';
@@ -242,6 +243,8 @@ describe('DashboardPage', () => {
     answers: {
       stats?: object | 'fail';
       queue?: object | 'fail';
+      /** Pending deletion requests (auth), or a failed count. */
+      deletions?: number | 'fail';
       ai?: AiAnswers;
       platform?: PlatformAnswers;
     } = {},
@@ -253,8 +256,19 @@ describe('DashboardPage', () => {
     el = harness.fixture.nativeElement as HTMLElement;
     await answer(STATS, answers.stats ?? stats);
     await answer(QUEUE, answers.queue ?? queue());
+    await answerDeletions(answers.deletions);
     await answerAi(answers.ai);
     await answerPlatform(answers.platform);
+  }
+
+  /** The count of pending deletion requests: one row of auth's list, filtered. */
+  async function answerDeletions(total: number | 'fail' = 0): Promise<void> {
+    const req = await next(USERS);
+    expect(req.request.params.get('status')).toBe('deletion_pending');
+    expect(req.request.params.get('limit')).toBe('1');
+    if (total === 'fail') req.flush(null, unavailable);
+    else req.flush({ items: [], total, page: 1, limit: 1 });
+    await stable();
   }
 
   /** The providers strip and the recent actions: read on open and on refresh. */
@@ -394,7 +408,7 @@ describe('DashboardPage', () => {
     // afterEach's verify(): the queue was not read again.
   });
 
-  it('lists what ends within a week, soonest first, a school linking to its plan tab', async () => {
+  it('lists what ends within a week, soonest first, each payer linking to its plan tab', async () => {
     await open({
       queue: queue({
         grants: [
@@ -426,7 +440,9 @@ describe('DashboardPage', () => {
     const items = all('queue-item');
     expect(items).toHaveLength(2);
     expect(items[0].textContent).toContain('Trial ends');
-    expect(items[0].querySelector('[data-testid="queue-link"]')).toBeNull();
+    expect(items[0].querySelector('[data-testid="queue-link"]')!.getAttribute('href')).toBe(
+      '/users/user-1/plan',
+    );
     expect(items[1].textContent).toContain('Grant ends');
     expect(items[1].querySelector('[data-testid="queue-link"]')!.getAttribute('href')).toBe(
       '/schools/school-1/plan',
@@ -608,9 +624,32 @@ describe('DashboardPage', () => {
     find('refresh')!.click();
     await answer(STATS, stats);
     await answer(QUEUE, queue());
+    await answerDeletions();
     await answerAi();
     await answerPlatform();
     expect(find('kpi-schools')).not.toBeNull();
+  });
+
+  it('puts pending deletion requests in the queue, linking to the preset', async () => {
+    await open({ deletions: 3 });
+    expect(text('queue-deletions')).toContain('Deletion requests');
+    expect(text('queue-deletions-count')).toBe('3 pending');
+    const link = find('queue-deletions-link')!.getAttribute('href')!;
+    expect(link).toContain('/users?');
+    expect(link).toContain('status=deletion_pending');
+    expect(link).toContain('sort=purgeAt');
+    expect(find('queue-empty')).toBeNull();
+  });
+
+  it('keeps the queue when the deletion count fails, and retries the count alone', async () => {
+    await open({ deletions: 'fail' });
+    expect(text('queue-deletions-failed')).toContain('Could not count deletion requests');
+    // The rest of the queue still answers: nothing ends this week.
+    expect(find('queue-empty')).not.toBeNull();
+    find('queue-deletions-failed')!.querySelector('button')!.click();
+    await answerDeletions(0);
+    expect(find('queue-deletions-failed')).toBeNull();
+    expect(find('queue-deletions')).toBeNull();
   });
 
   it('draws a chip per provider and keeps the queue calm while everything serves', async () => {
@@ -731,6 +770,7 @@ describe('DashboardPage', () => {
     el = harness.fixture.nativeElement as HTMLElement;
     await answer(STATS, stats);
     await answer(QUEUE, queue());
+    await answerDeletions();
     await answerAi();
     await answer(PROVIDERS, registry);
     await answer(BREAKERS, calmBoard);

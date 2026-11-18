@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ButtonDirective } from 'primeng/button';
 import { Paginator, PaginatorState } from 'primeng/paginator';
@@ -22,6 +22,7 @@ import {
   hasMemberFilters,
   toMembersQueryParams,
 } from './members-query';
+import { userTabLink } from '../../users/card/user-tabs';
 import { SchoolCardData } from './school-card.data';
 import { SchoolMembersData } from './school-members.data';
 
@@ -39,6 +40,7 @@ const STATUS_SEVERITY = { active: 'success', archived: 'secondary' } as const;
   providers: [SchoolMembersData],
   imports: [
     FormsModule,
+    RouterLink,
     TranslocoPipe,
     ButtonDirective,
     Paginator,
@@ -148,7 +150,12 @@ const STATUS_SEVERITY = { active: 'success', archived: 'secondary' } as const;
           class="border-border bg-emphasis flex flex-wrap items-center gap-x-3 gap-y-1 rounded-md border px-3 py-2 text-sm"
           data-testid="members-owner"
         >
-          <span class="font-medium">{{ school.owner.name ?? '—' }}</span>
+          <a
+            class="font-medium hover:underline"
+            [routerLink]="userLink(school.owner.userId)"
+            data-testid="members-owner-link"
+            >{{ school.owner.name ?? '—' }}</a
+          >
           <p-tag severity="info" [value]="'schools.members.owner' | transloco" />
           <span class="text-muted-color text-xs">{{
             'schools.members.ownerHint' | transloco
@@ -191,7 +198,12 @@ const STATUS_SEVERITY = { active: 'success', archived: 'secondary' } as const;
                       }
                     }
                   }
-                  <div class="text-muted-color font-mono text-xs">{{ member.userId }}</div>
+                  <a
+                    class="text-muted-color block font-mono text-xs hover:underline"
+                    [routerLink]="userLink(member.userId)"
+                    data-testid="member-user-link"
+                    >{{ member.userId }}</a
+                  >
                 </td>
                 <td data-testid="member-role">
                   {{ 'schools.members.roles.' + member.role | transloco }}
@@ -280,6 +292,7 @@ export class SchoolMembersTab {
   protected readonly card = inject(SchoolCardData);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  protected readonly userLink = (userId: string) => userTabLink(userId);
   protected readonly lang = inject(LanguageService).current;
 
   protected readonly query = this.data.query;

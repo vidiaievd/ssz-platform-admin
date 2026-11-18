@@ -10,46 +10,47 @@ import { OrganizationApi } from '../../../../api/organization/organization-api';
 import { adminAccountsGet } from '../../../../api/subscription/functions';
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ColumnState } from '../../schools-list.data';
-import { PAYER_TYPE, noAccountAsNull, stateOf } from '../plan/school-plan.data';
-import { SchoolCardData } from '../school-card.data';
+import { noAccountAsNull, stateOf } from '../plan/school-plan.data';
+import { PayerCard } from '../payer-card';
 import { AiKeyRow, aiKeyRows } from './ai-key-rows';
 
 /**
  * Data of the "AI & services" tab: the AI keys as the gate reads them and what is spent
  * (ai-service), the live grants that explain where a key's state comes from (subscription), the
- * payer policy (ai-service) and the school's own AI and review settings (organization, read only).
- * Four independent reads: one failing leaves the others on screen (§5, rule 5).
+ * payer policy (ai-service) and the school's own AI and review settings (organization, read only;
+ * not for a learner — the payer comes from `PayerCard`). Four independent reads: one failing leaves the others on screen (§5, rule 5).
  */
 @Injectable()
 export class SchoolAiData {
   private readonly ai = inject(AiApi);
   private readonly subscription = inject(SubscriptionApi);
   private readonly organization = inject(OrganizationApi);
-  readonly card = inject(SchoolCardData);
+  readonly card = inject(PayerCard);
 
   private readonly usageResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => this.card.payerId(),
     stream: ({ params: payerId }) =>
-      this.ai.invoke(adminUsageGet, { payerType: PAYER_TYPE, payerId }),
+      this.ai.invoke(adminUsageGet, { payerType: this.card.payerType, payerId }),
   });
 
   /** Read on its own, not from the usage answer: the policy stays when the tariff is down. */
   private readonly policyResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => this.card.payerId(),
     stream: ({ params: payerId }) =>
-      this.ai.invoke(adminPayerPoliciesGet, { payerType: PAYER_TYPE, payerId }),
+      this.ai.invoke(adminPayerPoliciesGet, { payerType: this.card.payerType, payerId }),
   });
 
   private readonly accountResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => this.card.payerId(),
     stream: ({ params: externalId }) =>
       this.subscription
-        .invoke(adminAccountsGet, { type: PAYER_TYPE, externalId })
+        .invoke(adminAccountsGet, { type: this.card.payerType, externalId })
         .pipe(noAccountAsNull),
   });
 
+  /** Only a school has settings; a learner's card reads none. */
   private readonly settingsResource = rxResource({
-    params: () => this.card.schoolId(),
+    params: () => (this.card.payerType === 'workspace' ? this.card.payerId() : undefined),
     stream: ({ params: schoolId }) => this.organization.invoke(adminSchoolsSettings, { schoolId }),
   });
 

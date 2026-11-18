@@ -9,16 +9,18 @@ import { Router, provideRouter, withComponentInputBinding } from '@angular/route
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { AdminSchoolListItemDto } from '../../api/organization/models/admin-school-list-item-dto';
+import { AdminUserListItem } from '../../core/auth/admin-users.api';
 import { routes } from '../../app.routes';
 import { provideApiClients } from '../../core/api/provide-api-clients';
 import { SessionStore } from '../../core/auth/session.store';
 import { adminToken, sessionBody, settle } from '../../core/auth/testing';
 import { APP_CONFIG } from '../../core/config/app-config';
-import { PALETTE_SEARCH_DELAY_MS } from './school-search';
+import { PALETTE_SEARCH_DELAY_MS } from './page-search';
 // Real English texts, so a missing key would show up as the key itself.
 import en from '../../../../public/i18n/en.json';
 
 const SCHOOLS = 'http://gw/api/v1/admin/schools';
+const USERS = 'http://gw/api/v1/auth/admin/users';
 
 function school(
   id: string,
@@ -40,6 +42,26 @@ function school(
     ...overrides,
   };
 }
+
+function user(id: string, overrides: Partial<AdminUserListItem> = {}): AdminUserListItem {
+  return {
+    id,
+    email: `ola.${id}@example.no`,
+    roles: ['student'],
+    adminLevel: null,
+    emailVerified: true,
+    twoFactorEnabled: false,
+    blockedAt: null,
+    lockedUntil: null,
+    deletionRequestedAt: null,
+    purgeAt: null,
+    createdAt: '2026-03-05T10:00:00.000Z',
+    lastLoginAt: null,
+    ...overrides,
+  };
+}
+
+const NO_USERS = { items: [], total: 0, page: 1, limit: 8 };
 
 describe('CommandPalette', () => {
   let http: HttpTestingController;
@@ -66,7 +88,7 @@ describe('CommandPalette', () => {
     TestBed.inject(SessionStore).start(sessionBody(adminToken({ admin_level: 'support' })));
     const harness = await RouterTestingHarness.create();
     // A section without data of its own, so the only requests are the palette's.
-    await harness.navigateByUrl('/users');
+    await harness.navigateByUrl('/audit');
     await stable();
   });
 
@@ -112,6 +134,13 @@ describe('CommandPalette', () => {
     await stable();
   }
 
+  /** The users search that runs beside every school search; answered empty unless told. */
+  function answerUsers(body: object = NO_USERS): TestRequest {
+    const req = http.expectOne((r) => r.url === USERS);
+    req.flush(body);
+    return req;
+  }
+
   async function press(key: string): Promise<void> {
     input()!.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
     await stable();
@@ -136,7 +165,9 @@ describe('CommandPalette', () => {
     ]);
     expect(active()?.textContent?.trim()).toBe('Overview');
     expect(input()!.getAttribute('aria-activedescendant')).toBe('palette-section-dashboard');
-    expect(text('palette-hint')).toBe("Type a section, or a school's name or slug.");
+    expect(text('palette-hint')).toBe(
+      "Type a section, a school's name or slug, or a user's e-mail.",
+    );
   });
 
   it('opens from the header button too', async () => {
@@ -149,8 +180,9 @@ describe('CommandPalette', () => {
     await hotkey();
     await type('a');
     expect(labels()).toEqual(['AI', 'Audit log', 'Overview', 'Plans', 'Platform', 'Payments']);
-    expect(text('palette-hint')).toBe('Type at least 2 characters to find a school.');
+    expect(text('palette-hint')).toBe('Type at least 2 characters to find a school or a user.');
     http.expectNone((r) => r.url === SCHOOLS);
+    http.expectNone((r) => r.url === USERS);
   });
 
   it('finds schools by the term, eight at most, and offers the rest in the list', async () => {
@@ -167,6 +199,7 @@ describe('CommandPalette', () => {
       page: 1,
       limit: 8,
     });
+    answerUsers();
     await stable();
 
     expect(labels()).toEqual([
@@ -182,6 +215,7 @@ describe('CommandPalette', () => {
     http
       .expectOne((r) => r.url === SCHOOLS)
       .flush({ items: [school('a'), school('b')], total: 2, page: 1, limit: 8 });
+    answerUsers();
     await stable();
     expect(labels()).toEqual(['Nord a · nord-a School', 'Nord b · nord-b School']);
 
@@ -214,8 +248,9 @@ describe('CommandPalette', () => {
     await press('Enter');
     // A lazy section: it opens its first tab a little later, and that tab reads its data.
     await vi.waitFor(() => expect(url()).toBe('/platform/sessions'));
-    // Closing dropped the school search that "plat" had started.
+    // Closing dropped both searches that "plat" had started.
     expect(http.expectOne((r) => r.url === SCHOOLS).cancelled).toBe(true);
+    expect(http.expectOne((r) => r.url === USERS).cancelled).toBe(true);
     await vi.waitFor(async () => {
       await stable();
       expect(http.match((r) => r.url.endsWith('/auth/admin/token-lifetimes'))).toHaveLength(1);
@@ -232,6 +267,7 @@ describe('CommandPalette', () => {
     http
       .expectOne((r) => r.url === SCHOOLS)
       .flush({ items: [school('a')], total: 30, page: 1, limit: 8 });
+    answerUsers();
     await stable();
     options().at(-1)!.click();
     await stable();
@@ -246,10 +282,13 @@ describe('CommandPalette', () => {
     await hotkey();
     await type('no');
     const first = http.expectOne((r) => r.url === SCHOOLS);
+    const firstUsers = http.expectOne((r) => r.url === USERS);
     await type('nor');
     expect(first.cancelled).toBe(true);
+    expect(firstUsers.cancelled).toBe(true);
+    answerUsers();
     http
-      .expectOne((r) => r.params.get('search') === 'nor')
+      .expectOne((r) => r.url === SCHOOLS && r.params.get('search') === 'nor')
       .flush({
         items: [],
         total: 0,
@@ -266,15 +305,83 @@ describe('CommandPalette', () => {
     http
       .expectOne((r) => r.url === SCHOOLS)
       .flush(null, { status: 500, statusText: 'Server Error' });
+    answerUsers({ items: [user('a')], total: 1, page: 1, limit: 8 });
     await stable();
     expect(text('palette-error')).toBe('Could not search schools.');
-    expect(labels()).toEqual(['AI']);
+    // The users search did not fail with it.
+    expect(labels()).toEqual(['AI', 'ola.a@example.no']);
 
     body().querySelector<HTMLButtonElement>('[data-testid="palette-retry"]')!.click();
     await stable();
+    // Only the failed search is asked again.
+    http.expectNone((r) => r.url === USERS);
     http.expectOne((r) => r.url === SCHOOLS).flush({ items: [], total: 0, page: 1, limit: 8 });
     await stable();
     expect(text('palette-no-schools')).toBe('No schools found.');
+  });
+
+  it('finds users by part of the e-mail, after the schools, with their badges', async () => {
+    await hotkey();
+    await type('ola');
+    http.expectOne((r) => r.url === SCHOOLS).flush({ items: [], total: 0, page: 1, limit: 8 });
+    const req = http.expectOne((r) => r.url === USERS);
+    expect(req.request.params.get('search')).toBe('ola');
+    expect(req.request.params.get('limit')).toBe('8');
+    req.flush({
+      items: [
+        user('a', { adminLevel: 'support', roles: ['platform_admin'] }),
+        user('b', { blockedAt: '2026-11-01T10:00:00Z' }),
+      ],
+      total: 12,
+      page: 1,
+      limit: 8,
+    });
+    await stable();
+
+    expect(text('palette-no-schools')).toBe('No schools found.');
+    expect(labels()).toEqual([
+      'ola.a@example.no Support',
+      'ola.b@example.no Blocked',
+      'All 12 results in the users list',
+    ]);
+  });
+
+  it('opens the user on Enter, and the users list from "all results"', async () => {
+    await hotkey();
+    await type('ola');
+    http.expectOne((r) => r.url === SCHOOLS).flush({ items: [], total: 0, page: 1, limit: 8 });
+    answerUsers({ items: [user('a')], total: 3, page: 1, limit: 8 });
+    await stable();
+
+    await press('Enter');
+    await vi.waitFor(() => expect(url()).toBe('/users/a'));
+
+    await hotkey();
+    await type('ola');
+    http.expectOne((r) => r.url === SCHOOLS).flush({ items: [], total: 0, page: 1, limit: 8 });
+    answerUsers({ items: [user('a')], total: 3, page: 1, limit: 8 });
+    await stable();
+    options().at(-1)!.click();
+    await vi.waitFor(() => expect(url()).toBe('/users?q=ola'));
+    await stable();
+    // The list page asks for its own data; that is its spec's business.
+    http.match(() => true);
+  });
+
+  it('retries a failed users search alone', async () => {
+    await hotkey();
+    await type('ola');
+    http.expectOne((r) => r.url === SCHOOLS).flush({ items: [], total: 0, page: 1, limit: 8 });
+    http.expectOne((r) => r.url === USERS).flush(null, { status: 503, statusText: 'Unavailable' });
+    await stable();
+    expect(text('palette-users-error')).toBe('Could not search users.');
+
+    body().querySelector<HTMLButtonElement>('[data-testid="palette-users-retry"]')!.click();
+    await stable();
+    http.expectNone((r) => r.url === SCHOOLS);
+    answerUsers();
+    await stable();
+    expect(text('palette-no-users')).toBe('No users found.');
   });
 
   it('closes on a second Ctrl+K', async () => {

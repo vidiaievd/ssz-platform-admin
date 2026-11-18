@@ -21,7 +21,10 @@ import { InputText } from 'primeng/inputtext';
 import { Tag } from 'primeng/tag';
 import { adminSchoolsList } from '../../api/organization/functions';
 import { OrganizationApi } from '../../api/organization/organization-api';
+import { AdminUsersApi } from '../../core/auth/admin-users.api';
 import { SessionStore } from '../../core/auth/session.store';
+import { UserBadges } from '../../features/users/user-badges';
+import { LevelBadge } from '../level-badge';
 import { NAV_SECTIONS, NavSection } from '../nav-sections';
 import {
   PaletteOption,
@@ -29,6 +32,9 @@ import {
   SCHOOL_SEARCH_MIN,
   SEARCH_TERM_MAX,
   SchoolSearchState,
+  SearchState,
+  USER_SEARCH_LIMIT,
+  UserSearchState,
   isPaletteHotkey,
   keepActive,
   matchSections,
@@ -36,15 +42,56 @@ import {
   normalizeTerm,
   paletteOptions,
 } from './palette-options';
-import { PALETTE_SEARCH_DELAY_MS, searchSchools } from './school-search';
+import { PALETTE_SEARCH_DELAY_MS, searchPage } from './page-search';
 
 const LISTBOX_ID = 'palette-listbox';
 
+/** Test ids of a search's status line; the schools' ones predate the users search. */
+interface GroupIds {
+  readonly searching: string;
+  readonly none: string;
+  readonly error: string;
+  readonly retry: string;
+}
+
+const SCHOOL_IDS: GroupIds = {
+  searching: 'palette-searching',
+  none: 'palette-no-schools',
+  error: 'palette-error',
+  retry: 'palette-retry',
+};
+
+const USER_IDS: GroupIds = {
+  searching: 'palette-users-searching',
+  none: 'palette-no-users',
+  error: 'palette-users-error',
+  retry: 'palette-users-retry',
+};
+
+/** One search of the palette as the template draws it: heading, rows, status line. */
+interface PaletteGroup {
+  readonly which: 'schools' | 'users';
+  readonly state: SearchState<unknown>;
+  readonly options: readonly PaletteOption[];
+  /** Index of the group's first row among all options (the keyboard walks them as one list). */
+  readonly offset: number;
+  readonly ids: GroupIds;
+  readonly errorKey: string;
+}
+
+function errorKey(state: SearchState<unknown>, failedKey: string): string {
+  return state.kind === 'error' && state.error.isNetworkError
+    ? 'schools.errors.network'
+    : failedKey;
+}
+
 /**
- * Ctrl+K (⌘K) — jump to a section of the panel or to a school (plan 90, phase 2, step 7).
- * Sections are matched locally in the panel's language; schools come from
- * `admin/schools?search=&limit=8` after a short pause, and every new key cancels the pause
- * and the request before it. Arrows move, Enter opens, Esc closes. Users join in phase 6.
+ * Ctrl+K (⌘K) — jump to a section of the panel, a school or a user (plan 90, phase 2, step 7;
+ * users — phase 6, step 6). Sections are matched locally in the panel's language; schools come
+ * from `admin/schools?search=&limit=8` and users from auth `admin/users?search=&limit=8` (part
+ * of the e-mail), side by side after a short pause; every new key cancels the pause and the
+ * requests before it, and one search failing leaves the other. Arrows move, Enter opens, Esc
+ * closes.
  */
 @Component({
   selector: 'app-command-palette',
@@ -56,7 +103,9 @@ const LISTBOX_ID = 'palette-listbox';
     IconField,
     InputIcon,
     InputText,
+    LevelBadge,
     Tag,
+    UserBadges,
   ],
   host: { '(document:keydown)': 'onDocumentKeydown($event)' },
   template: `
@@ -153,61 +202,66 @@ const LISTBOX_ID = 'palette-listbox';
             </div>
           }
 
-          @if (canSearchSchools()) {
-            <div role="group" [attr.aria-labelledby]="listboxId + '-schools'">
+          @for (group of groups(); track group.which) {
+            <div role="group" [attr.aria-labelledby]="listboxId + '-' + group.which">
               <div
-                [id]="listboxId + '-schools'"
+                [id]="listboxId + '-' + group.which"
                 class="text-muted-color px-2 pt-3 pb-1 text-xs font-medium uppercase"
               >
-                {{ 'palette.schools' | transloco }}
+                {{ 'palette.' + group.which | transloco }}
               </div>
-              @for (option of schoolOptions(); track option.id; let i = $index) {
+              @for (option of group.options; track option.id; let i = $index) {
                 <ng-container
-                  *ngTemplateOutlet="
-                    row;
-                    context: { $implicit: option, index: sectionOptions().length + i }
-                  "
+                  *ngTemplateOutlet="row; context: { $implicit: option, index: group.offset + i }"
                 ></ng-container>
               }
+              <div
+                class="text-muted-color flex min-h-6 items-center gap-2 px-2 text-sm"
+                aria-live="polite"
+              >
+                @switch (group.state.kind) {
+                  @case ('loading') {
+                    <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+                    <span [attr.data-testid]="group.ids.searching">{{
+                      'palette.searching' | transloco
+                    }}</span>
+                  }
+                  @case ('ready') {
+                    @if (group.options.length === 0) {
+                      <span [attr.data-testid]="group.ids.none">{{
+                        (group.which === 'schools' ? 'palette.noSchools' : 'palette.noUsers')
+                          | transloco
+                      }}</span>
+                    }
+                  }
+                  @case ('error') {
+                    <span [attr.data-testid]="group.ids.error">{{
+                      group.errorKey | transloco
+                    }}</span>
+                    <button
+                      pButton
+                      type="button"
+                      size="small"
+                      severity="secondary"
+                      [text]="true"
+                      [attr.data-testid]="group.ids.retry"
+                      (click)="retry(group.which)"
+                    >
+                      {{ 'palette.retry' | transloco }}
+                    </button>
+                  }
+                }
+              </div>
             </div>
           }
         </div>
 
-        @if (canSearchSchools()) {
+        @if (groups().length === 0 && (canSearchSchools() || canSearchUsers())) {
           <div class="text-muted-color flex min-h-6 items-center gap-2 text-sm" aria-live="polite">
-            @switch (schools().kind) {
-              @case ('idle') {
-                <span data-testid="palette-hint">{{
-                  (term().length === 0 ? 'palette.hint' : 'palette.minChars')
-                    | transloco: { min: minChars }
-                }}</span>
-              }
-              @case ('loading') {
-                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
-                <span data-testid="palette-searching">{{ 'palette.searching' | transloco }}</span>
-              }
-              @case ('ready') {
-                @if (schoolOptions().length === 0) {
-                  <span data-testid="palette-no-schools">{{
-                    'palette.noSchools' | transloco
-                  }}</span>
-                }
-              }
-              @case ('error') {
-                <span data-testid="palette-error">{{ errorKey() | transloco }}</span>
-                <button
-                  pButton
-                  type="button"
-                  size="small"
-                  severity="secondary"
-                  [text]="true"
-                  data-testid="palette-retry"
-                  (click)="retry()"
-                >
-                  {{ 'palette.retry' | transloco }}
-                </button>
-              }
-            }
+            <span data-testid="palette-hint">{{
+              (term().length === 0 ? 'palette.hint' : 'palette.minChars')
+                | transloco: { min: minChars }
+            }}</span>
           </div>
         }
 
@@ -262,6 +316,20 @@ const LISTBOX_ID = 'palette-listbox';
               'palette.allResults' | transloco: { total: option.total }
             }}</span>
           }
+          @case ('user') {
+            <i class="pi pi-user text-muted-color" aria-hidden="true"></i>
+            <span class="min-w-0 flex-1 truncate">{{ option.user.email }}</span>
+            @if (option.user.adminLevel; as level) {
+              <app-level-badge [level]="level" />
+            }
+            <app-user-badges [user]="option.user" [showActive]="false" />
+          }
+          @case ('allUsers') {
+            <i class="pi pi-list text-muted-color" aria-hidden="true"></i>
+            <span class="flex-1">{{
+              'palette.allUsers' | transloco: { total: option.total }
+            }}</span>
+          }
         }
       </div>
     </ng-template>
@@ -271,6 +339,7 @@ export class CommandPalette {
   private readonly router = inject(Router);
   private readonly session = inject(SessionStore);
   private readonly organization = inject(OrganizationApi);
+  private readonly users = inject(AdminUsersApi);
   private readonly navLabels = translateObjectSignal('nav');
   private readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
   private readonly document = inject(DOCUMENT);
@@ -287,7 +356,9 @@ export class CommandPalette {
   protected readonly query = signal('');
   /** Closing the palette empties the term, which also drops a search still in flight. */
   protected readonly term = computed(() => (this.open() ? normalizeTerm(this.query()) : ''));
-  private readonly attempt = signal(0);
+  private readonly schoolAttempt = signal(0);
+  private readonly userAttempt = signal(0);
+  private readonly searchDelay = inject(PALETTE_SEARCH_DELAY_MS);
 
   private readonly sections = computed(() =>
     NAV_SECTIONS.filter((s) => !s.minLevel || this.session.hasLevel(s.minLevel)),
@@ -297,34 +368,76 @@ export class CommandPalette {
   protected readonly canSearchSchools = computed(() =>
     this.sections().some((s) => s.id === 'schools'),
   );
+  /** Users likewise, by someone who may open the users section. */
+  protected readonly canSearchUsers = computed(() => this.sections().some((s) => s.id === 'users'));
 
   protected readonly schools = toSignal(
-    searchSchools(
+    searchPage(
       toObservable(
         computed(() => ({
           term: this.canSearchSchools() ? this.term() : '',
-          attempt: this.attempt(),
+          attempt: this.schoolAttempt(),
         })),
       ),
       (term) =>
         this.organization.invoke(adminSchoolsList, { search: term, limit: SCHOOL_SEARCH_LIMIT }),
-      inject(PALETTE_SEARCH_DELAY_MS),
+      this.searchDelay,
     ),
     { initialValue: { kind: 'idle' } as SchoolSearchState },
+  );
+
+  protected readonly userResults = toSignal(
+    searchPage(
+      toObservable(
+        computed(() => ({
+          term: this.canSearchUsers() ? this.term() : '',
+          attempt: this.userAttempt(),
+        })),
+      ),
+      (term) => this.users.list({ search: term, limit: USER_SEARCH_LIMIT }),
+      this.searchDelay,
+    ),
+    { initialValue: { kind: 'idle' } as UserSearchState },
   );
 
   protected readonly options = computed(() =>
     paletteOptions(
       matchSections(this.sections(), (s) => this.sectionLabel(s), this.term()),
       this.schools(),
+      this.userResults(),
     ),
   );
   protected readonly sectionOptions = computed(() =>
     this.options().filter((o) => o.kind === 'section'),
   );
-  protected readonly schoolOptions = computed(() =>
-    this.options().filter((o) => o.kind !== 'section'),
-  );
+  /** The searches that have a term long enough, each with its options and its own status. */
+  protected readonly groups = computed(() => {
+    const options = this.options();
+    let offset = this.sectionOptions().length;
+    const groups: PaletteGroup[] = [];
+    const add = (
+      which: PaletteGroup['which'],
+      state: SearchState<unknown>,
+      kinds: readonly PaletteOption['kind'][],
+      ids: PaletteGroup['ids'],
+      failedKey: string,
+    ) => {
+      if (state.kind === 'idle') return;
+      const own = options.filter((o) => kinds.includes(o.kind));
+      groups.push({
+        which,
+        state,
+        options: own,
+        offset,
+        ids,
+        errorKey: errorKey(state, failedKey),
+      });
+      offset += own.length;
+    };
+    add('schools', this.schools(), ['school', 'allSchools'], SCHOOL_IDS, 'palette.failed');
+    add('users', this.userResults(), ['user', 'allUsers'], USER_IDS, 'palette.failedUsers');
+    return groups;
+  });
 
   /** The active option by id, so it survives the list changing around it. */
   protected readonly activeId = linkedSignal<PaletteOption[], string | null>({
@@ -337,13 +450,6 @@ export class CommandPalette {
   protected readonly activeIndex = computed(() =>
     this.options().findIndex((o) => o.id === this.activeId()),
   );
-
-  protected readonly errorKey = computed(() => {
-    const state = this.schools();
-    return state.kind === 'error' && state.error.isNetworkError
-      ? 'schools.errors.network'
-      : 'palette.failed';
-  });
 
   constructor() {
     // Keep the active option in view while the arrows walk a long list.
@@ -411,11 +517,17 @@ export class CommandPalette {
       case 'allSchools':
         void this.router.navigate(['/schools'], { queryParams: { q: option.term } });
         break;
+      case 'user':
+        void this.router.navigate(['/users', option.user.id]);
+        break;
+      case 'allUsers':
+        void this.router.navigate(['/users'], { queryParams: { q: option.term } });
+        break;
     }
   }
 
-  protected retry(): void {
-    this.attempt.update((n) => n + 1);
+  protected retry(which: PaletteGroup['which']): void {
+    (which === 'schools' ? this.schoolAttempt : this.userAttempt).update((n) => n + 1);
     this.focusInput();
   }
 

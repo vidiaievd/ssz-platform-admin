@@ -2,12 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subject, throwError } from 'rxjs';
 import { AdminSchoolPageDto } from '../../api/organization/models/admin-school-page-dto';
 import { SchoolSearchState } from './palette-options';
-import { SchoolSearchRequest, searchSchools } from './school-search';
+import { SearchRequest, searchPage } from './page-search';
 
 const PAGE: AdminSchoolPageDto = { items: [], total: 0, page: 1, limit: 8 };
 
-describe('searchSchools', () => {
-  let requests: Subject<SchoolSearchRequest>;
+describe('searchPage', () => {
+  let requests: Subject<SearchRequest>;
   let calls: { term: string; subject: Subject<AdminSchoolPageDto>; cancelled: boolean }[];
   let states: SchoolSearchState[];
 
@@ -25,7 +25,7 @@ describe('searchSchools', () => {
           sub.unsubscribe();
         };
       });
-    searchSchools(requests, fetch ?? defaultFetch, 250).subscribe((s) => states.push(s));
+    searchPage(requests, fetch ?? defaultFetch, 250).subscribe((s) => states.push(s));
   }
 
   beforeEach(() => vi.useFakeTimers());

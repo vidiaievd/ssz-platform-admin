@@ -8,6 +8,7 @@ import { AccountLookupItemDto } from '../../../api/subscription/models/account-l
 import { SubscriptionApi } from '../../../api/subscription/subscription-api';
 import { ApiError } from '../../../core/auth/api-error';
 import { ColumnState } from '../schools-list.data';
+import { PayerCard, PayerSeats } from './payer-card';
 
 /**
  * Data of the school card, shared by its header and its tabs: the school from organization and
@@ -16,12 +17,15 @@ import { ColumnState } from '../schools-list.data';
  * it fails, the header shows "—" with a retry and the card stays (§5, rule 5).
  */
 @Injectable()
-export class SchoolCardData {
+export class SchoolCardData extends PayerCard {
   private readonly organization = inject(OrganizationApi);
   private readonly subscription = inject(SubscriptionApi);
 
+  readonly payerType = 'workspace' as const;
+
   /** Set by the page from the route; `undefined` until then. */
   readonly schoolId = signal<string | undefined>(undefined);
+  readonly payerId = this.schoolId.asReadonly();
 
   private readonly schoolResource = rxResource({
     params: () => this.schoolId(),
@@ -54,6 +58,8 @@ export class SchoolCardData {
     return { kind: 'ready', value: this.planResource.value() ?? null };
   });
 
+  readonly seats = computed<PayerSeats | null>(() => this.school()?.seats ?? null);
+
   reload(): void {
     this.schoolResource.reload();
   }
@@ -61,5 +67,10 @@ export class SchoolCardData {
   /** After a change of plan or grants (the "Plan" tab) and as the header's retry. */
   reloadPlan(): void {
     this.planResource.reload();
+  }
+
+  /** A seat grant moves the limit; organization's projection follows the snapshot event. */
+  afterPlanChange(): void {
+    this.schoolResource.reload();
   }
 }

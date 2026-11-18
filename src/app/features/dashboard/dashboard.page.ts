@@ -11,6 +11,8 @@ import { LanguageService } from '../../core/i18n/language.service';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
 import { formatMoment, isKnownAction } from '../schools/card/journal/journal-format';
 import { schoolTabLink } from '../schools/card/school-tabs';
+import { userTabLink } from '../users/card/user-tabs';
+import { DELETION_QUEUE_QUERY, toUsersQueryParams } from '../users/users-query';
 import { ProviderHealth } from './dashboard-providers-model';
 import { PURGE_URGENT_DAYS, daysUntil } from '../schools/school-lifecycle';
 import { seatLevel } from '../schools/seats';
@@ -169,6 +171,41 @@ import { Sparkline } from './sparkline';
       <!-- Attention queue -->
       <section class="border-border flex flex-col gap-2 rounded-md border p-4" data-testid="queue">
         <h2 class="text-base font-semibold">{{ 'dashboard.queue.title' | transloco }}</h2>
+        <!-- Deletion requests come from auth: they stay when the subscription read fails -->
+        @switch (data.deletions().kind) {
+          @case ('error') {
+            <p class="text-sm" role="alert" data-testid="queue-deletions-failed">
+              {{ 'dashboard.queue.deletionFailed' | transloco }} ·
+              <button type="button" class="text-primary underline" (click)="data.reloadDeletions()">
+                {{ 'schools.retry' | transloco }}
+              </button>
+            </p>
+          }
+          @case ('ready') {
+            @if (deletionCount() > 0) {
+              <div
+                class="border-border flex flex-wrap items-center gap-x-3 gap-y-1 border-b pb-2 text-sm"
+                data-testid="queue-deletions"
+              >
+                <p-tag
+                  severity="info"
+                  [value]="'dashboard.queue.kinds.deletionRequests' | transloco"
+                />
+                <span class="tabular-nums" data-testid="queue-deletions-count">
+                  {{ 'dashboard.queue.deletionCount' | transloco: { n: deletionCount() } }}
+                </span>
+                <a
+                  routerLink="/users"
+                  [queryParams]="deletionQuery"
+                  class="text-primary ml-auto underline"
+                  data-testid="queue-deletions-link"
+                >
+                  {{ 'dashboard.queue.openUsers' | transloco }}
+                </a>
+              </div>
+            }
+          }
+        }
         <!-- Provider rows come from ai-service: they stay when the subscription read fails -->
         @if (data.providerAttention().length > 0) {
           <ul class="flex flex-col" data-testid="queue-providers">
@@ -230,7 +267,8 @@ import { Sparkline } from './sparkline';
               items().length === 0 &&
               seatItems().length === 0 &&
               lifecycleItems().length === 0 &&
-              data.providerAttention().length === 0
+              data.providerAttention().length === 0 &&
+              deletionCount() === 0
             ) {
               <p class="text-sm" data-testid="queue-empty">
                 <i class="pi pi-check-circle text-green-600" aria-hidden="true"></i>
@@ -1064,13 +1102,21 @@ export class DashboardPage {
     return b.kind === 'ready' && !b.value.storeAvailable;
   });
 
-  /** The journal's last entries; a school target links to the school's journal tab. */
+  /** The users list's "Deletion requests" preset. */
+  protected readonly deletionQuery = toUsersQueryParams(DELETION_QUEUE_QUERY);
+  /** Pending deletion requests; 0 while unknown (the row is not drawn). */
+  protected readonly deletionCount = computed(() => {
+    const d = this.data.deletions();
+    return d.kind === 'ready' ? d.value : 0;
+  });
+
+  /** The journal's last entries; a school or account target links to its card's journal tab. */
   protected readonly recent = computed(() => {
     const a = this.data.audit();
     if (a.kind !== 'ready') return [];
     return a.value.items.map((e) => ({
       ...e,
-      link: e.targetType === 'workspace' ? schoolTabLink(e.targetId, 'journal') : null,
+      link: journalLink(e.targetType, e.targetId),
     }));
   });
 
@@ -1100,4 +1146,11 @@ export class DashboardPage {
       queryParamsHandling: 'merge',
     });
   }
+}
+
+/** The journal tab of the card the target has: a school (`workspace`) or an account (`user`). */
+function journalLink(targetType: string, targetId: string): string[] | null {
+  if (targetType === 'workspace') return schoolTabLink(targetId, 'journal');
+  if (targetType === 'user') return userTabLink(targetId, 'journal');
+  return null;
 }

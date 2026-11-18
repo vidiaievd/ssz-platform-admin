@@ -18,7 +18,8 @@ import { seatCeiling, seatLevel, seatLevelClass, seatsText } from '../../seats';
 import { AssignPlanDialog } from './assign-plan-dialog';
 import { SEATS_KEY } from './feature-keys';
 import { GrantDialog } from './grant-dialog';
-import { PAYER_TYPE, SchoolPlanData } from './school-plan.data';
+import { payerText } from '../payer-card';
+import { SchoolPlanData } from './school-plan.data';
 
 const SUBSCRIPTION_SEVERITY = {
   trial: 'info',
@@ -34,7 +35,8 @@ const GRANT_SEVERITY = {
 } as const;
 
 /**
- * "Plan" tab of the school card (plan 90, phase 3, step 9): the plan that applies and its
+ * "Plan" tab of the school card (plan 90, phase 3, step 9) and of the user card (phase 6, step 7 —
+ * a self-study learner is a `user` payer; no seats there): the plan that applies and its
  * version (an outdated version says so), live grants that switch keys on or off, the history of
  * subscriptions and grants. Changes (`admin`+) — change plan, cancel the subscription, issue and
  * revoke a grant — all go through the reason dialog; a 409 says "changed meanwhile".
@@ -144,11 +146,11 @@ const GRANT_SEVERITY = {
                 </p>
               } @else if (!applied.hasAccount) {
                 <p class="text-muted-color text-sm" data-testid="plan-no-account">
-                  {{ 'schools.plan.noAccount' | transloco }}
+                  {{ text('plan.noAccount') | transloco }}
                 </p>
               } @else {
                 <p class="text-muted-color text-sm" data-testid="plan-free">
-                  {{ 'schools.plan.freeHint' | transloco }}
+                  {{ text('plan.freeHint') | transloco }}
                 </p>
               }
 
@@ -160,7 +162,7 @@ const GRANT_SEVERITY = {
                   <i class="pi pi-info-circle text-amber-500" aria-hidden="true"></i>
                   <span>
                     {{
-                      'schools.plan.outdated'
+                      text('plan.outdated')
                         | transloco: { version: applied.plan?.version, latest: newer }
                     }}
                   </span>
@@ -345,7 +347,7 @@ const GRANT_SEVERITY = {
             <h3 class="text-sm font-medium">{{ 'schools.plan.subscriptions' | transloco }}</h3>
             @if (pastSubscriptions().length === 0) {
               <p class="text-muted-color text-sm" data-testid="plan-subscriptions-empty">
-                {{ 'schools.plan.noSubscriptions' | transloco }}
+                {{ text('plan.noSubscriptions') | transloco }}
               </p>
             } @else {
               <div class="overflow-x-auto">
@@ -476,16 +478,22 @@ const GRANT_SEVERITY = {
       </div>
     </ng-template>
 
-    @if (schoolId(); as schoolId) {
+    @if (payerId(); as payerId) {
       <app-assign-plan-dialog
         [(visible)]="assignOpen"
-        [payerId]="schoolId"
+        [payerType]="payerType"
+        [payerId]="payerId"
         [plans]="assignable()"
         [currentCode]="subscription()?.planCode ?? null"
         (retryPlans)="data.reloadPlans()"
         (done)="data.afterChange()"
       />
-      <app-grant-dialog [(visible)]="grantOpen" [payerId]="schoolId" (done)="data.afterChange()" />
+      <app-grant-dialog
+        [(visible)]="grantOpen"
+        [payerType]="payerType"
+        [payerId]="payerId"
+        (done)="data.afterChange()"
+      />
     }
 
     <app-reason-dialog
@@ -498,7 +506,7 @@ const GRANT_SEVERITY = {
       (done)="data.afterChange()"
     >
       <p class="text-sm" data-testid="cancel-text">
-        {{ 'schools.plan.cancelDialog.text' | transloco: { plan: subscription()?.planName } }}
+        {{ text('plan.cancelDialog.text') | transloco: { plan: subscription()?.planName } }}
       </p>
     </app-reason-dialog>
 
@@ -536,7 +544,9 @@ export class SchoolPlanTab {
   /** The grant whose revoke dialog is open. */
   protected readonly revoking = signal<GrantResponseDto | null>(null);
 
-  protected readonly schoolId = this.data.card.schoolId;
+  protected readonly payerId = this.data.card.payerId;
+  protected readonly payerType = this.data.card.payerType;
+  protected readonly text = (key: string) => payerText(this.payerType, key);
 
   /** The running subscription, from the account (`null` = free plan or no account). */
   protected readonly subscription = computed(() => {
@@ -563,8 +573,8 @@ export class SchoolPlanTab {
       (g) => g.state === 'ended' || g.state === 'revoked',
     );
   });
-  /** The school's seats as organization counts them (the card's read), or nothing before it. */
-  protected readonly seats = computed(() => this.data.card.school()?.seats ?? null);
+  /** A school's seats as organization counts them (the card's read); none before it or for a user. */
+  protected readonly seats = this.data.card.seats;
   protected readonly seatLevelOf = computed(() => {
     const seats = this.seats();
     return seats ? seatLevel(seats.used, seats.limit) : 'none';
@@ -602,15 +612,15 @@ export class SchoolPlanTab {
 
   protected readonly cancel = (reason: string) =>
     this.api.invoke(adminAccountsCancel, {
-      type: PAYER_TYPE,
-      externalId: this.schoolId()!,
+      type: this.payerType,
+      externalId: this.payerId()!,
       reason,
     });
 
   protected readonly revoke = (reason: string) =>
     this.api.invoke(adminAccountsRevokeGrant, {
-      type: PAYER_TYPE,
-      externalId: this.schoolId()!,
+      type: this.payerType,
+      externalId: this.payerId()!,
       grantId: this.revoking()!.id,
       body: { reason },
     });

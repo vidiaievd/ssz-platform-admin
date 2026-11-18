@@ -18,6 +18,7 @@ import { adminPayerPoliciesPut } from '../../../../api/ai/functions';
 import { PayerPolicyResponseDto } from '../../../../api/ai/models/payer-policy-response-dto';
 import { PutPayerPolicyDto } from '../../../../api/ai/models/put-payer-policy-dto';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
+import { payerText } from '../payer-card';
 
 export type AiRegion = NonNullable<PutPayerPolicyDto['allowedRegions']>[number];
 
@@ -49,7 +50,7 @@ const SWITCH = [
     >
       <div class="flex flex-col gap-1">
         <span class="text-sm font-medium" id="policy-ai-label">
-          {{ 'schools.ai.policyDialog.aiEnabled' | transloco }}
+          {{ text('ai.policyDialog.aiEnabled') | transloco }}
         </span>
         <p-selectbutton
           [options]="switchOptions"
@@ -70,7 +71,7 @@ const SWITCH = [
           @if (aiEnabled()) {
             {{ 'schools.ai.policyDialog.onHint' | transloco }}
           } @else {
-            {{ 'schools.ai.policyDialog.offHint' | transloco }}
+            {{ text('ai.policyDialog.offHint') | transloco }}
           }
         </span>
       </div>
@@ -125,6 +126,7 @@ const SWITCH = [
 export class PolicyDialog {
   readonly visible = model(false);
   readonly payerType = input<'workspace' | 'user'>('workspace');
+  protected readonly text = (key: string) => payerText(this.payerType(), key);
   readonly payerId = input.required<string>();
   /** The policy in force; the dialog opens with it. */
   readonly policy = input<PayerPolicyResponseDto | null>(null);

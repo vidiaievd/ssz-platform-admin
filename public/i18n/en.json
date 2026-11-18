@@ -28,11 +28,11 @@
     "open": "Search",
     "title": "Go to",
     "close": "Close search",
-    "placeholder": "Section, or a school's name or slug",
+    "placeholder": "Section, a school's name or slug, or an e-mail",
     "sections": "Sections",
     "schools": "Schools",
-    "hint": "Type a section, or a school's name or slug.",
-    "minChars": "Type at least {{ min }} characters to find a school.",
+    "hint": "Type a section, a school's name or slug, or a user's e-mail.",
+    "minChars": "Type at least {{ min }} characters to find a school or a user.",
     "searching": "Searching…",
     "noSchools": "No schools found.",
     "failed": "Could not search schools.",
@@ -42,7 +42,11 @@
       "move": "move",
       "open": "open",
       "close": "close"
-    }
+    },
+    "users": "Users",
+    "noUsers": "No users found.",
+    "failedUsers": "Could not search users.",
+    "allUsers": "All {{ total }} results in the users list"
   },
   "sections": {
     "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
@@ -85,10 +89,14 @@
         "purging": "In the archive: deletion soon",
         "breakerOpen": "Breaker open: calls go to the fallback",
         "providerOff": "Provider switched off but in use",
-        "providerNoKey": "Provider in use has no key"
+        "providerNoKey": "Provider in use has no key",
+        "deletionRequests": "Deletion requests"
       },
       "reopensAt": "retried at {{ time }}",
-      "openProviders": "Providers"
+      "openProviders": "Providers",
+      "deletionCount": "{{ n }} pending",
+      "openUsers": "Users",
+      "deletionFailed": "Could not count deletion requests"
     },
     "kpi": {
       "failed": "Could not load the numbers",
@@ -636,7 +644,13 @@
         "model.status_changed": "Model status changed",
         "model.tested": "Model tested",
         "breaker.reset": "Breaker reset",
-        "media.sweep.deleted": "Media cleanup deleted files"
+        "media.sweep.deleted": "Media cleanup deleted files",
+        "user.blocked": "Account blocked",
+        "user.unblocked": "Account unblocked",
+        "user.unlocked": "Lockout lifted",
+        "user.sessions_revoked": "Sessions ended",
+        "user.mfa_reset": "Two-factor sign-in reset",
+        "user.deletion_cancelled": "Deletion request withdrawn"
       }
     },
     "allSeats": "All seat levels",
@@ -687,6 +701,256 @@
           "button": "Purge now",
           "text": "Deletes the school’s materials, roster and settings at the next timer run; only the tombstone stays. Students keep their history. Cannot be undone once it has run."
         }
+      }
+    }
+  },
+  "users": {
+    "total": "Found: {{ count }}",
+    "search": "E-mail or part of it",
+    "searchTooShort": "Type at least {{ min }} characters to search by e-mail.",
+    "allRoles": "All roles",
+    "allStatuses": "All statuses",
+    "deletionQueue": "Deletion requests",
+    "reset": "Reset filters",
+    "retry": "Retry",
+    "mfaOn": "Two-factor sign-in on",
+    "neverSignedIn": "never",
+    "empty": "No accounts yet.",
+    "emptyFiltered": "No accounts match these filters.",
+    "emptyPage": "There are no accounts on this page.",
+    "emptyDeletion": "No pending deletion requests.",
+    "firstPage": "Go to the first page",
+    "columns": {
+      "email": "E-mail",
+      "roles": "Roles",
+      "status": "Status",
+      "mfa": "2FA",
+      "purgeAt": "Erased on",
+      "lastLoginAt": "Last sign-in",
+      "createdAt": "Registered"
+    },
+    "role": {
+      "student": "Student",
+      "tutor": "Tutor",
+      "teacher": "Teacher",
+      "school_admin": "School admin",
+      "platform_admin": "Platform admin",
+      "manager_platform": "Platform manager",
+      "premium": "Premium"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked",
+      "locked": "Locked out (sign-ins)",
+      "deletion_pending": "Deletion requested",
+      "unverified": "E-mail not confirmed"
+    },
+    "badge": {
+      "active": "Active",
+      "blocked": "Blocked",
+      "locked": "Locked out",
+      "deletion": "Deleted in {{ n }} d",
+      "deletionDue": "Deletion due",
+      "unverified": "E-mail not confirmed"
+    },
+    "errors": {
+      "network": "The gateway is unreachable. Check the connection.",
+      "forbidden": "No access to the users list.",
+      "generic": "Could not load users."
+    },
+    "card": {
+      "backToList": "All users",
+      "notFound": "User not found",
+      "notFoundText": "Auth does not know this id. The account may have been erased, or the link is mistyped.",
+      "tabsLabel": "Account sections",
+      "tabs": {
+        "overview": "Overview",
+        "schools": "Schools",
+        "plan": "Own plan",
+        "ai": "AI",
+        "journal": "Journal"
+      },
+      "noRoles": "no roles",
+      "plan": "Own plan",
+      "errors": {
+        "forbidden": "No access to this account.",
+        "generic": "Could not load the account."
+      },
+      "account": {
+        "title": "Account",
+        "level": "Admin level"
+      },
+      "access": {
+        "title": "Access",
+        "block": "Administrator's block",
+        "blockedAt": "Blocked {{ at }}: no sign-in, no session.",
+        "blockedBy": "Blocked by",
+        "blockReason": "Reason: {{ reason }}",
+        "notBlocked": "Not blocked.",
+        "signIns": "Sign-ins",
+        "failedLogins": "Wrong passwords since the last sign-in: {{ n }}",
+        "lastFailed": "last {{ at }}",
+        "lockedUntil": "Locked out until {{ at }}",
+        "mfa": "Two-factor sign-in",
+        "mfaOn": "On",
+        "mfaOff": "Off",
+        "backupCodes": "backup codes left: {{ n }}",
+        "codesUnknown": "Wrong two-factor codes could not be read (Redis did not answer).",
+        "codesLocked": "Two-factor codes locked until {{ at }}",
+        "codesFailures": "Wrong two-factor codes in a row: {{ n }}"
+      },
+      "sessions": {
+        "title": "Sessions",
+        "client": "Client",
+        "active": "Open",
+        "lastIssued": "Last token issued",
+        "recent": "Newest open sessions",
+        "noDevice": "device unknown",
+        "hint": "A session is a refresh token. An access token already handed out lives up to 15 minutes after its session ends."
+      },
+      "deletion": {
+        "title": "Deletion request",
+        "requestedAt": "The user asked to delete the account on {{ date }}.",
+        "purgeAt": "Erased on {{ date }} · {{ n }} d left",
+        "hint": "Signing in withdraws the request; a blocked account cannot sign in, so its request runs its course."
+      },
+      "schools": {
+        "owned": "Owns",
+        "ownedEmpty": "Owns no school or tutor workspace.",
+        "teaches": "teaches: {{ groups }}",
+        "memberships": "On the roster of",
+        "membershipsEmpty": "Not on the roster of any school.",
+        "failed": "Could not load the schools"
+      }
+    },
+    "payer": {
+      "plan": {
+        "noAccount": "Subscription service has not seen this learner yet: they are on the free plan. Assigning a plan or issuing a grant opens the account.",
+        "freeHint": "No subscription runs: the learner is on the individual audience's free plan.",
+        "outdated": "The learner is on v{{ version }}; the plan's latest version is v{{ latest }}. Plan edits do not move subscribers.",
+        "noSubscriptions": "The learner has never had a subscription.",
+        "cancelDialog": {
+          "text": "The learner leaves “{{ plan }}” now and falls back to the free plan. Grants stay."
+        },
+        "assignDialog": {
+          "samePlan": "The learner is on this plan already: assigning it moves them to v{{ version }}."
+        }
+      },
+      "ai": {
+        "policyOffBanner": "The payer policy switches all AI on this learner's own account off: every agent refuses, whatever the keys below say. A school that pays for them is not affected.",
+        "policyDialog": {
+          "aiEnabled": "All AI on the learner's own account",
+          "offHint": "Every agent refuses what the learner pays for, whatever the keys."
+        }
+      },
+      "journal": {
+        "empty": "No admin actions on this account yet."
+      }
+    },
+    "actions": {
+      "self": "This is your own account: no action here applies to it. Ask another administrator.",
+      "nothingChanged": "Nothing to change — someone was faster, or the card was out of date. The card has been read again.",
+      "dismiss": "Close",
+      "block": {
+        "button": "Block",
+        "title": "Block the account",
+        "confirm": "Block",
+        "text": "{{ email }} will not sign in on any client, and every session ends now. An access token already handed out lives up to 15 minutes. The reason is not shown to the user."
+      },
+      "unblock": {
+        "button": "Unblock",
+        "title": "Lift the block",
+        "confirm": "Unblock",
+        "text": "{{ email }} can sign in again. Sessions ended by the block do not come back."
+      },
+      "unlock": {
+        "button": "Lift the lockout",
+        "title": "Lift the lockout",
+        "confirm": "Lift",
+        "where": "Lifting clears the wrong passwords and the two-factor code count.",
+        "text": "The lockout after wrong passwords and the two-factor code lockout of {{ email }} end now, and both counts start from zero."
+      },
+      "revokeSessions": {
+        "button": "End",
+        "buttonAll": "End all sessions",
+        "title": "End sessions: {{ client }}",
+        "confirm": "End",
+        "text": "Every open {{ client }} session of {{ email }} ends; signing in again is allowed."
+      },
+      "revokeAllSessions": {
+        "title": "End all sessions",
+        "confirm": "End all",
+        "text": "Every open session of {{ email }} on every client ends; signing in again is allowed."
+      },
+      "resetMfa": {
+        "button": "Reset two-factor sign-in",
+        "title": "Reset two-factor sign-in",
+        "confirm": "Reset",
+        "text": "Two-factor sign-in of {{ email }} is turned off: the authenticator and backup codes stop working and admin-panel sessions end. Do this only once you are sure who is asking."
+      },
+      "cancelDeletion": {
+        "button": "Withdraw the request",
+        "title": "Withdraw the deletion request",
+        "confirm": "Withdraw",
+        "text": "The account of {{ email }} will not be erased; the user keeps it as it is."
+      },
+      "errors": {
+        "lastSuper": "Refused: the last super administrator who can sign in cannot be blocked, and nobody can change their own account.",
+        "lockoutStore": "The lockout store (Redis) does not answer; nothing was changed. Try again later."
+      }
+    },
+    "admins": {
+      "title": "Administrators",
+      "total": "{{ count }} in total",
+      "hint": "Who may use this panel and at which level. Only a super administrator sees this screen. To make someone an administrator, open their card:",
+      "findUser": "find a user",
+      "allAdmins": "All administrators",
+      "you": "you",
+      "bootstrap": "bootstrap",
+      "mfaPending": "Not set up — asked at the first sign-in",
+      "columns": {
+        "mfa": "Two-factor sign-in",
+        "grantedAt": "Level since",
+        "grantedBy": "Granted by"
+      },
+      "scope": {
+        "support": "Sees everything; lifts lockouts, ends sessions, resets two-factor sign-in of non-administrators.",
+        "admin": "Support, plus assigning plans, grants, blocks, suspending schools and AI switches.",
+        "super": "Everything, including the plan catalogue, AI models, sweeps and administrators."
+      },
+      "grant": {
+        "button": "Make administrator",
+        "title": "Make an administrator",
+        "confirm": "Grant the level",
+        "text": "{{ email }} gets the platform administrator role and may sign in to this panel at the level picked below."
+      },
+      "change": {
+        "button": "Change level",
+        "title": "Change the admin level",
+        "confirm": "Change",
+        "text": "{{ email }} is {{ level }} now. The new level applies from the next panel sign-in or refresh."
+      },
+      "revoke": {
+        "button": "Remove",
+        "title": "Remove the administrator",
+        "confirm": "Remove",
+        "text": "{{ email }} ({{ level }}) loses the administrator role and level; their panel sessions end now. Web and app sessions stay."
+      },
+      "dialog": {
+        "level": "Level",
+        "pickLevel": "Pick a level",
+        "noMfa": "Two-factor sign-in is not set up on this account: the panel will ask for it at the first sign-in."
+      },
+      "notice": {
+        "set": "{{ email }} is now {{ level }}.",
+        "revoked": "{{ email }} is no longer an administrator."
+      },
+      "errors": {
+        "ADMIN_SELF_CHANGE": "Your own level is changed by another super administrator.",
+        "ADMIN_LAST_SUPER": "This is the last super administrator who can sign in: make another one first.",
+        "ADMIN_NOT_FOUND": "This account is no longer an administrator. Close the dialog and refresh the screen.",
+        "forbidden": "Only a super administrator manages administrators.",
+        "generic": "The list of administrators could not be read."
       }
     }
   },

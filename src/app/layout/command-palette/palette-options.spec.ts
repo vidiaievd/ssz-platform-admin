@@ -1,3 +1,4 @@
+import { AdminUserListItem } from '../../core/auth/admin-users.api';
 import { AdminSchoolListItemDto } from '../../api/organization/models/admin-school-list-item-dto';
 import { NAV_SECTIONS, NavSection } from '../nav-sections';
 import {
@@ -82,6 +83,25 @@ describe('palette options', () => {
       'palette-all-schools',
     ]);
     expect(options[3]).toMatchObject({ kind: 'allSchools', term: 'no', total: 12 });
+  });
+
+  it('puts users after schools, each search with its own "all results"', () => {
+    const options = paletteOptions(
+      [],
+      { kind: 'ready', term: 'ola', items: [school('a')], total: 1 },
+      {
+        kind: 'ready',
+        term: 'ola',
+        items: [{ id: 'u1' } as AdminUserListItem],
+        total: 5,
+      },
+    );
+    expect(options.map((o) => o.id)).toEqual([
+      'palette-school-a',
+      'palette-user-u1',
+      'palette-all-users',
+    ]);
+    expect(options[2]).toMatchObject({ kind: 'allUsers', term: 'ola', total: 5 });
   });
 
   it('shows no schools while a search is loading or failed', () => {

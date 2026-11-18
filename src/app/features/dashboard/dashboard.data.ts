@@ -29,6 +29,7 @@ import { OrganizationApi } from '../../api/organization/organization-api';
 import { adminSubscriptionStats } from '../../api/subscription/functions';
 import { AdminStatsResponseDto } from '../../api/subscription/models/admin-stats-response-dto';
 import { SubscriptionApi } from '../../api/subscription/subscription-api';
+import { AdminUsersApi } from '../../core/auth/admin-users.api';
 import { ColumnState } from '../schools/schools-list.data';
 import { stateOf } from '../schools/card/plan/school-plan.data';
 import { schoolTabLink } from '../schools/card/school-tabs';
@@ -54,7 +55,9 @@ export const RECENT_ACTIONS = 10;
  * `admin/ai/spend`) and the top schools (`groupBy=payer`, names from organization). The
  * providers strip (ai-service providers + breaker board) is the only polled read: once a
  * minute, and only while the tab is visible — a hidden tab reads on its return. The recent
- * admin actions (analytics `admin/audit`) do not follow the period. "Refresh" reads everything.
+ * admin actions (analytics `admin/audit`) do not follow the period. The count of pending deletion
+ * requests (auth `admin/users?status=deletion_pending&limit=1`) is a row of the queue read on its
+ * own (phase 6, step 8). "Refresh" reads everything.
  */
 @Injectable()
 export class DashboardData {
@@ -62,6 +65,7 @@ export class DashboardData {
   private readonly subscription = inject(SubscriptionApi);
   private readonly analytics = inject(AnalyticsApi);
   private readonly ai = inject(AiApi);
+  private readonly users = inject(AdminUsersApi);
 
   readonly period = toSignal(
     inject(ActivatedRoute).queryParamMap.pipe(map((p) => parsePeriod(p.get('period')))),
@@ -86,6 +90,13 @@ export class DashboardData {
   private readonly queueResource = rxResource({
     params: () => this.generation(),
     stream: () => this.subscription.invoke(adminSubscriptionStats, { withinDays: ATTENTION_DAYS }),
+  });
+
+  /** Pending deletion requests: only the total is used, so one row is asked. */
+  private readonly deletionsResource = rxResource({
+    params: () => this.generation(),
+    stream: () =>
+      this.users.list({ status: 'deletion_pending', limit: 1 }).pipe(map((page) => page.total)),
   });
 
   private readonly aiWeeksResource = rxResource({
@@ -183,6 +194,8 @@ export class DashboardData {
     }));
   });
   readonly queue = computed<ColumnState<AdminStatsResponseDto>>(() => stateOf(this.queueResource));
+  /** Accounts waiting to be erased (auth); a row of the queue that fails on its own. */
+  readonly deletions = computed<ColumnState<number>>(() => stateOf(this.deletionsResource));
 
   private readonly providersResource = rxResource({
     params: () => this.generation(),
@@ -253,6 +266,10 @@ export class DashboardData {
 
   reloadQueue(): void {
     this.queueResource.reload();
+  }
+
+  reloadDeletions(): void {
+    this.deletionsResource.reload();
   }
 
   /** Credits by week and the previous period: the KPI and the per-agent chart. */

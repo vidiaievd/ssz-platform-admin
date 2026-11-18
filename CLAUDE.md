@@ -12,7 +12,7 @@ Backend: monorepo `ssz-platform`, reached through the nginx gateway (`/api/v1/..
 - `ng-openapi-gen` for API clients, Playwright for e2e, Vitest for unit tests, angular-eslint for lint
 - Keep PrimeNG on the same major as Angular. The global Angular CLI decides the version `ng new` scaffolds; Node must satisfy the CLI's minimum (≥ 24.15)
 
-## Status (plan 90, phase 8 — dashboard, Platform and Plans, branch `feature/admin-phase-8`)
+## Status (plan 90, phases 1–8; phase 6 — users — on branch `feature/admin-users`)
 
 Built: runtime config, theme and language, sign-in with MFA, session and refresh, layout with guards, generated
 API clients (organization, subscription, ai, analytics, content, user-profile), Ctrl+K palette, schools list, the school
@@ -30,15 +30,42 @@ and only offered on a fresh — ≤ 30 min, `DRY_RUN_FRESH_MS` — finished non-
 and **Plans** (`features/plans`, `/plans`, `/plans/:code`, `/plans/:code/new-version`, `/plans/new`; edits `super`): catalog, card with
 versions, subscribers per version and key diffs (`diffFeatures` in `plan-model.ts`), the shared key editor `plan-features-editor`
 (409 → re-read, input kept), and moving subscribers to the current version (`plan-migration`: preview, then batches of the root
-`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Sections other than Dashboard,
-Schools, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
+`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Phase 6 (built in code, branch `feature/admin-users`, steps 5–9) adds **Users** (`features/users`, `/users`): the list from auth
+`admin/users` (search by part of the e-mail, ≥ 2 characters — a shorter one stays in the box and is not sent, auth would
+answer 400; role, status, sort, page in the URL: `q`, `role`, `status`, `sort`, `page`, `size`), status badges from one rule
+(`user-status.ts`: blocked / locked out / deleted in N d / e-mail not confirmed; no badge = active), the admin level, 2FA, and
+the preset «Deletion requests» = `status=deletion_pending&sort=purgeAt` (soonest erasure first, with an "Erased on" column;
+`purgeAt` outside pending requests falls back to the default order). Ctrl+K searches users beside schools (`page-search.ts`
+`searchPage`, one generic search per group; each fails and retries alone). The card `/users/:id` (step 7, `features/users/card`,
+tabs in `user-tabs.ts`, unknown tab → overview): *Overview* (account, access — block, lockout, 2FA and its code lockout — sessions
+by client, a pending deletion with its erasure date), *Schools* (organization `admin/users/:userId/schools`: owned + roster rows,
+each a link to the school), and the school card's own *Plan*, *AI* and *Journal* tabs on a `user` payer: those tabs read their payer
+from the abstract `PayerCard` (`schools/card/payer-card.ts`; `SchoolCardData` and `UserCardData` provide it), the few texts that say
+"school" come from `payerText()` (`users.payer.*` for a learner), a learner gets individual plans only, no seats and no school
+settings, and the grant dialog drops `seats.students`. Links to the card: the roster and the owner (members tab, overview), a `user`
+payer in the dashboard queue (its plan tab), a `user` target in recent actions and every journal actor. Actions (step 8) sit on the
+overview beside the state they change — block / unblock, lift the lockout, reset 2FA, end sessions (per client or all), withdraw a
+deletion request — each through `ReasonDialog`. `user-actions.ts` copies auth's matrix (`actionLevel`: block / unblock / reset MFA
+of a platform administrator — role **or** level row — need `super`) and offers only what would change something
+(`applicableActions`); nothing on one's own account. An action answers the card (`UserCardData.setUser`, no second read); 409
+`NOTHING_TO_CHANGE` is not an error: the card is read again, the dialog closes and a note says nothing changed. The dashboard queue
+has a "Deletion requests" row (auth `admin/users?status=deletion_pending&limit=1`, its own read and retry, kept when the
+subscription read fails) linking to the list's preset. Administrators (step 9): `/users/admins` (`features/users/admins`,
+declared before `:userId` with `canMatch` level `super` — below it `admins` is read as an id and the card says "not found"):
+level, 2FA, since when, who granted it (e-mail when still an admin, else id; bootstrap = none), change or remove; nothing on
+one's own row. "Make administrator" / "Change level" / "Remove" on the user card overview (`super`, not one's own). Both use
+one `AdminLevelDialog` (the current level is not offered; a warning when the account has no 2FA yet — the panel asks for it at
+the first sign-in); the PUT answers an `AdminEntry`, so the card is read again and the list is reloaded.
+Sections other than Dashboard, Schools, Users, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`
 
 - `core/config` — runtime `/config.json` (`apiBaseUrl`, `primeUiLicense`), read before Angular starts. No `environment.ts`
 - `core/auth` — `AdminSessionApi` (hand-written, 7 routes of `api/v1/auth/admin/session/*`), `TokenLifetimesApi`
-  (hand-written, `api/v1/auth/admin/token-lifetimes`: GET any level, PUT `super` with a reason), `SessionStore` (signals,
+  (hand-written, `api/v1/auth/admin/token-lifetimes`: GET any level, PUT `super` with a reason), `AdminUsersApi`
+  (hand-written, `api/v1/auth/admin/users`: list, card, six actions with a reason), `AdminsApi` (hand-written,
+  `api/v1/auth/admin/admins`, `super` only), `SessionStore` (signals,
   access token in memory only), `authInterceptor`, `authGuard`, `levelGuard`, `*appIfLevel`, `admin-level.ts`
 - `core/api` — `provideApiClients()` sets `apiBaseUrl` on every generated client
 - `core/i18n`, `core/theme`, `core/storage.ts` — language / theme choice kept in `localStorage`
@@ -65,7 +92,9 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
   Auth is hand-written because its login answers are anonymous objects Swagger does not type.
 - **Every change has a reason.** Open `app-reason-dialog` from a button under `*appIfLevel` and pass the change as
   `[action]="(reason) => Observable"`; the action's own fields are projected and gated by `[ready]`. The server's
-  refusal stays inside the dialog (409 = "changed meanwhile"); `done` fires only after success. Never name a template
+  refusal stays inside the dialog (409 = "changed meanwhile"); `done` fires only after success. The action's own words
+  for a refusal go in `[errorText]` (by status kind) or `[codeText]` (by the server's code — wins; for several 400s that
+  mean different things, e.g. `ADMIN_SELF_CHANGE` / `ADMIN_LAST_SUPER`). Never name a template
   ref inside `p-dialog` `#content` / `#header` / `#footer` — PrimeNG takes it for its own template.
 - **School card tabs** are child routes of `/schools/:id` (`card/school-tabs.ts`); the overview has no path and an
   unknown tab redirects to it. `SchoolCardData` is provided by the card page, so the tabs share one read of the school.

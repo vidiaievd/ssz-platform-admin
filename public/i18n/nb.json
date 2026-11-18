@@ -28,11 +28,11 @@
     "open": "Søk",
     "title": "Gå til",
     "close": "Lukk søk",
-    "placeholder": "Seksjon, eller skolens navn eller slug",
+    "placeholder": "Seksjon, skolens navn eller slug, eller e-post",
     "sections": "Seksjoner",
     "schools": "Skoler",
-    "hint": "Skriv en seksjon, eller skolens navn eller slug.",
-    "minChars": "Skriv minst {{ min }} tegn for å finne en skole.",
+    "hint": "Skriv en seksjon, skolens navn eller slug, eller en brukers e-post.",
+    "minChars": "Skriv minst {{ min }} tegn for å finne en skole eller en bruker.",
     "searching": "Søker …",
     "noSchools": "Fant ingen skoler.",
     "failed": "Kunne ikke søke etter skoler.",
@@ -42,7 +42,11 @@
       "move": "flytt",
       "open": "åpne",
       "close": "lukk"
-    }
+    },
+    "users": "Brukere",
+    "noUsers": "Ingen brukere funnet.",
+    "failedUsers": "Kunne ikke søke etter brukere.",
+    "allUsers": "Alle {{ total }} treff i brukerlisten"
   },
   "sections": {
     "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
@@ -85,10 +89,14 @@
         "purging": "I arkivet: slettes snart",
         "breakerOpen": "Sikring åpen: kall går til reserven",
         "providerOff": "Leverandør slått av, men i bruk",
-        "providerNoKey": "Leverandør i bruk mangler nøkkel"
+        "providerNoKey": "Leverandør i bruk mangler nøkkel",
+        "deletionRequests": "Sletteforespørsler"
       },
       "reopensAt": "prøves igjen {{ time }}",
-      "openProviders": "Leverandører"
+      "openProviders": "Leverandører",
+      "deletionCount": "{{ n }} venter",
+      "openUsers": "Brukere",
+      "deletionFailed": "Kunne ikke telle sletteforespørsler"
     },
     "kpi": {
       "failed": "Kunne ikke laste tallene",
@@ -636,7 +644,13 @@
         "model.status_changed": "Modellstatus endret",
         "model.tested": "Modell testet",
         "breaker.reset": "Sikring tilbakestilt",
-        "media.sweep.deleted": "Medieopprydding slettet filer"
+        "media.sweep.deleted": "Medieopprydding slettet filer",
+        "user.blocked": "Konto blokkert",
+        "user.unblocked": "Blokkering opphevet",
+        "user.unlocked": "Låsing opphevet",
+        "user.sessions_revoked": "Økter avsluttet",
+        "user.mfa_reset": "Tofaktorinnlogging tilbakestilt",
+        "user.deletion_cancelled": "Sletteforespørsel trukket"
       }
     },
     "allSeats": "Alle plassnivåer",
@@ -687,6 +701,256 @@
           "button": "Slett nå",
           "text": "Sletter skolens materiell, medlemmer og innstillinger ved neste kjøring av timeren; bare gravstenen blir igjen. Elevene beholder historikken. Kan ikke angres etter kjøring."
         }
+      }
+    }
+  },
+  "users": {
+    "total": "Funnet: {{ count }}",
+    "search": "E-post eller en del av den",
+    "searchTooShort": "Skriv minst {{ min }} tegn for å søke på e-post.",
+    "allRoles": "Alle roller",
+    "allStatuses": "Alle statuser",
+    "deletionQueue": "Sletteforespørsler",
+    "reset": "Nullstill filtre",
+    "retry": "Prøv igjen",
+    "mfaOn": "Tofaktorinnlogging på",
+    "neverSignedIn": "aldri",
+    "empty": "Ingen kontoer ennå.",
+    "emptyFiltered": "Ingen kontoer passer til disse filtrene.",
+    "emptyPage": "Det er ingen kontoer på denne siden.",
+    "emptyDeletion": "Ingen ventende sletteforespørsler.",
+    "firstPage": "Gå til første side",
+    "columns": {
+      "email": "E-post",
+      "roles": "Roller",
+      "status": "Status",
+      "mfa": "2FA",
+      "purgeAt": "Slettes",
+      "lastLoginAt": "Siste innlogging",
+      "createdAt": "Registrert"
+    },
+    "role": {
+      "student": "Elev",
+      "tutor": "Privatlærer",
+      "teacher": "Lærer",
+      "school_admin": "Skoleadmin",
+      "platform_admin": "Plattformadmin",
+      "manager_platform": "Plattformansvarlig",
+      "premium": "Premium"
+    },
+    "status": {
+      "active": "Aktiv",
+      "blocked": "Blokkert",
+      "locked": "Låst (innlogginger)",
+      "deletion_pending": "Sletting forespurt",
+      "unverified": "E-post ikke bekreftet"
+    },
+    "badge": {
+      "active": "Aktiv",
+      "blocked": "Blokkert",
+      "locked": "Låst",
+      "deletion": "Slettes om {{ n }} d",
+      "deletionDue": "Skal slettes nå",
+      "unverified": "E-post ikke bekreftet"
+    },
+    "errors": {
+      "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
+      "forbidden": "Ingen tilgang til brukerlisten.",
+      "generic": "Kunne ikke laste brukere."
+    },
+    "card": {
+      "backToList": "Alle brukere",
+      "notFound": "Fant ikke brukeren",
+      "notFoundText": "Auth kjenner ikke denne id-en. Kontoen kan være slettet, eller lenken er feilskrevet.",
+      "tabsLabel": "Kontoens deler",
+      "tabs": {
+        "overview": "Oversikt",
+        "schools": "Skoler",
+        "plan": "Egen plan",
+        "ai": "KI",
+        "journal": "Logg"
+      },
+      "noRoles": "ingen roller",
+      "plan": "Egen plan",
+      "errors": {
+        "forbidden": "Ingen tilgang til denne kontoen.",
+        "generic": "Kunne ikke laste kontoen."
+      },
+      "account": {
+        "title": "Konto",
+        "level": "Adminnivå"
+      },
+      "access": {
+        "title": "Tilgang",
+        "block": "Blokkering av admin",
+        "blockedAt": "Blokkert {{ at }}: ingen innlogging, ingen økter.",
+        "blockedBy": "Blokkert av",
+        "blockReason": "Grunn: {{ reason }}",
+        "notBlocked": "Ikke blokkert.",
+        "signIns": "Innlogginger",
+        "failedLogins": "Feil passord siden siste innlogging: {{ n }}",
+        "lastFailed": "sist {{ at }}",
+        "lockedUntil": "Låst til {{ at }}",
+        "mfa": "Tofaktorinnlogging",
+        "mfaOn": "På",
+        "mfaOff": "Av",
+        "backupCodes": "reservekoder igjen: {{ n }}",
+        "codesUnknown": "Feil tofaktorkoder kunne ikke leses (Redis svarte ikke).",
+        "codesLocked": "Tofaktorkoder låst til {{ at }}",
+        "codesFailures": "Feil tofaktorkoder på rad: {{ n }}"
+      },
+      "sessions": {
+        "title": "Økter",
+        "client": "Klient",
+        "active": "Åpne",
+        "lastIssued": "Siste token utstedt",
+        "recent": "Nyeste åpne økter",
+        "noDevice": "ukjent enhet",
+        "hint": "En økt er et refresh-token. Et access-token som alt er utdelt, lever opptil 15 minutter etter at økten er slutt."
+      },
+      "deletion": {
+        "title": "Sletteforespørsel",
+        "requestedAt": "Brukeren ba om å slette kontoen {{ date }}.",
+        "purgeAt": "Slettes {{ date }} · {{ n }} d igjen",
+        "hint": "Innlogging trekker forespørselen; en blokkert konto kan ikke logge inn, så forespørselen går sin gang."
+      },
+      "schools": {
+        "owned": "Eier",
+        "ownedEmpty": "Eier ingen skole eller lærerområde.",
+        "teaches": "underviser: {{ groups }}",
+        "memberships": "Medlem av",
+        "membershipsEmpty": "Ikke medlem av noen skole.",
+        "failed": "Kunne ikke laste skolene"
+      }
+    },
+    "payer": {
+      "plan": {
+        "noAccount": "Abonnementstjenesten har ikke sett denne eleven ennå: eleven er på gratisplanen. En plan eller et tillegg åpner kontoen.",
+        "freeHint": "Ingen abonnement løper: eleven er på gratisplanen for individuelle brukere.",
+        "outdated": "Eleven er på v{{ version }}; planens nyeste versjon er v{{ latest }}. Endringer i planen flytter ikke abonnenter.",
+        "noSubscriptions": "Eleven har aldri hatt et abonnement.",
+        "cancelDialog": {
+          "text": "Eleven forlater «{{ plan }}» nå og går tilbake til gratisplanen. Tillegg blir stående."
+        },
+        "assignDialog": {
+          "samePlan": "Eleven er allerede på denne planen: tildeling flytter eleven til v{{ version }}."
+        }
+      },
+      "ai": {
+        "policyOffBanner": "Betalerpolicyen slår av all KI på elevens egen konto: alle agenter avviser, uansett hva nøklene under sier. En skole som betaler for eleven, berøres ikke.",
+        "policyDialog": {
+          "aiEnabled": "All KI på elevens egen konto",
+          "offHint": "Alle agenter avviser det eleven betaler selv for, uansett nøkler."
+        }
+      },
+      "journal": {
+        "empty": "Ingen adminhandlinger på denne kontoen ennå."
+      }
+    },
+    "actions": {
+      "self": "Dette er din egen konto: ingen handling her gjelder den. Spør en annen administrator.",
+      "nothingChanged": "Ingenting å endre — noen var raskere, eller kortet var utdatert. Kortet er lest på nytt.",
+      "dismiss": "Lukk",
+      "block": {
+        "button": "Blokker",
+        "title": "Blokker kontoen",
+        "confirm": "Blokker",
+        "text": "{{ email }} kan ikke logge inn på noen klient, og alle økter avsluttes nå. Et access-token som alt er utdelt, lever opptil 15 minutter. Brukeren ser ikke grunnen."
+      },
+      "unblock": {
+        "button": "Opphev blokkering",
+        "title": "Opphev blokkeringen",
+        "confirm": "Opphev",
+        "text": "{{ email }} kan logge inn igjen. Økter som blokkeringen avsluttet, kommer ikke tilbake."
+      },
+      "unlock": {
+        "button": "Opphev låsing",
+        "title": "Opphev låsingen",
+        "confirm": "Opphev",
+        "where": "Opphevingen nullstiller feil passord og telleren for tofaktorkoder.",
+        "text": "Låsingen etter feil passord og låsingen av tofaktorkoder for {{ email }} slutter nå, og begge tellerne starter på null."
+      },
+      "revokeSessions": {
+        "button": "Avslutt",
+        "buttonAll": "Avslutt alle økter",
+        "title": "Avslutt økter: {{ client }}",
+        "confirm": "Avslutt",
+        "text": "Alle åpne økter for {{ email }} på «{{ client }}» avsluttes; ny innlogging er tillatt."
+      },
+      "revokeAllSessions": {
+        "title": "Avslutt alle økter",
+        "confirm": "Avslutt alle",
+        "text": "Alle åpne økter for {{ email }} på alle klienter avsluttes; ny innlogging er tillatt."
+      },
+      "resetMfa": {
+        "button": "Tilbakestill tofaktor",
+        "title": "Tilbakestill tofaktorinnlogging",
+        "confirm": "Tilbakestill",
+        "text": "Tofaktorinnlogging for {{ email }} slås av: autentiseringsappen og reservekodene slutter å virke, og økter i adminpanelet avsluttes. Gjør det bare når du er sikker på hvem som spør."
+      },
+      "cancelDeletion": {
+        "button": "Trekk forespørselen",
+        "title": "Trekk sletteforespørselen",
+        "confirm": "Trekk",
+        "text": "Kontoen til {{ email }} blir ikke slettet; brukeren beholder den som den er."
+      },
+      "errors": {
+        "lastSuper": "Avvist: den siste superadministratoren som kan logge inn, kan ikke blokkeres, og ingen kan endre sin egen konto.",
+        "lockoutStore": "Låselageret (Redis) svarer ikke; ingenting er endret. Prøv igjen senere."
+      }
+    },
+    "admins": {
+      "title": "Administratorer",
+      "total": "{{ count }} totalt",
+      "hint": "Hvem som kan bruke panelet, og på hvilket nivå. Bare en superadmin ser denne siden. For å gjøre noen til administrator, åpne kortet deres:",
+      "findUser": "finn en bruker",
+      "allAdmins": "Alle administratorer",
+      "you": "deg",
+      "bootstrap": "oppstart",
+      "mfaPending": "Ikke satt opp — spørres ved første innlogging",
+      "columns": {
+        "mfa": "Totrinnsinnlogging",
+        "grantedAt": "Nivå siden",
+        "grantedBy": "Gitt av"
+      },
+      "scope": {
+        "support": "Ser alt; opphever sperrer, avslutter økter, nullstiller totrinnsinnlogging for ikke-administratorer.",
+        "admin": "Brukerstøtte, pluss tildeling av abonnementer, tildelinger, blokkering, suspensjon av skoler og KI-brytere.",
+        "super": "Alt, også abonnementskatalogen, KI-modeller, opprydding og administratorer."
+      },
+      "grant": {
+        "button": "Gjør til administrator",
+        "title": "Gjør til administrator",
+        "confirm": "Gi nivået",
+        "text": "{{ email }} får rollen plattformadministrator og kan logge inn i panelet på nivået som velges nedenfor."
+      },
+      "change": {
+        "button": "Endre nivå",
+        "title": "Endre adminnivå",
+        "confirm": "Endre",
+        "text": "{{ email }} er {{ level }} nå. Det nye nivået gjelder fra neste innlogging eller fornyelse i panelet."
+      },
+      "revoke": {
+        "button": "Fjern",
+        "title": "Fjern administratoren",
+        "confirm": "Fjern",
+        "text": "{{ email }} ({{ level }}) mister administratorrollen og nivået; paneløktene avsluttes nå. Økter på web og i appen blir."
+      },
+      "dialog": {
+        "level": "Nivå",
+        "pickLevel": "Velg et nivå",
+        "noMfa": "Totrinnsinnlogging er ikke satt opp på kontoen: panelet ber om det ved første innlogging."
+      },
+      "notice": {
+        "set": "{{ email }} er nå {{ level }}.",
+        "revoked": "{{ email }} er ikke lenger administrator."
+      },
+      "errors": {
+        "ADMIN_SELF_CHANGE": "Ditt eget nivå endres av en annen superadmin.",
+        "ADMIN_LAST_SUPER": "Dette er den siste superadminen som kan logge inn: lag en til først.",
+        "ADMIN_NOT_FOUND": "Kontoen er ikke lenger administrator. Lukk dialogen og oppdater siden.",
+        "forbidden": "Bare en superadmin styrer administratorer.",
+        "generic": "Listen over administratorer kunne ikke leses."
       }
     }
   },
