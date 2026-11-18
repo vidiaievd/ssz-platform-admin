@@ -21,3 +21,5 @@ export type { AdminSchoolLifecycleRestore$Params as AdminSchoolLifecycleRestore$
 export { adminSchoolLifecycleRestore as adminSchoolLifecycleRestore } from './fn/admin-schools/admin-school-lifecycle-restore';
 export type { AdminSchoolLifecyclePurge$Params as AdminSchoolLifecyclePurge$Params } from './fn/admin-schools/admin-school-lifecycle-purge';
 export { adminSchoolLifecyclePurge as adminSchoolLifecyclePurge } from './fn/admin-schools/admin-school-lifecycle-purge';
+export type { AdminUsersSchools$Params as AdminUsersSchools$Params } from './fn/admin-users/admin-users-schools';
+export { adminUsersSchools as adminUsersSchools } from './fn/admin-users/admin-users-schools';

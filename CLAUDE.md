@@ -38,7 +38,9 @@ live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) 
 
 - `core/config` — runtime `/config.json` (`apiBaseUrl`, `primeUiLicense`), read before Angular starts. No `environment.ts`
 - `core/auth` — `AdminSessionApi` (hand-written, 7 routes of `api/v1/auth/admin/session/*`), `TokenLifetimesApi`
-  (hand-written, `api/v1/auth/admin/token-lifetimes`: GET any level, PUT `super` with a reason), `SessionStore` (signals,
+  (hand-written, `api/v1/auth/admin/token-lifetimes`: GET any level, PUT `super` with a reason), `AdminUsersApi`
+  (hand-written, `api/v1/auth/admin/users`: list, card, six actions with a reason), `AdminsApi` (hand-written,
+  `api/v1/auth/admin/admins`, `super` only), `SessionStore` (signals,
   access token in memory only), `authInterceptor`, `authGuard`, `levelGuard`, `*appIfLevel`, `admin-level.ts`
 - `core/api` — `provideApiClients()` sets `apiBaseUrl` on every generated client
 - `core/i18n`, `core/theme`, `core/storage.ts` — language / theme choice kept in `localStorage`
