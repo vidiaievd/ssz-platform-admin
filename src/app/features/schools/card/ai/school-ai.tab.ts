@@ -86,7 +86,7 @@ const SOURCE_SEVERITY = {
                 </button>
               </p>
             }
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[46rem] text-sm" data-testid="ai-keys-table">
                 <thead class="text-muted-color text-left">
                   <tr>

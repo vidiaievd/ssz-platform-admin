@@ -203,7 +203,7 @@ const GRANT_SEVERITY = {
                       {{ 'schools.plan.noFeatures' | transloco }}
                     </p>
                   } @else {
-                    <div class="overflow-x-auto">
+                    <div class="relative overflow-x-auto">
                       <table class="w-full text-sm" data-testid="plan-features">
                         <thead class="text-muted-color text-left">
                           <tr>
@@ -350,7 +350,7 @@ const GRANT_SEVERITY = {
                 {{ text('plan.noSubscriptions') | transloco }}
               </p>
             } @else {
-              <div class="overflow-x-auto">
+              <div class="relative overflow-x-auto">
                 <table class="w-full min-w-[36rem] text-sm" data-testid="plan-subscriptions">
                   <thead class="text-muted-color text-left">
                     <tr>
@@ -406,7 +406,7 @@ const GRANT_SEVERITY = {
     </div>
 
     <ng-template #grantTable let-grants let-live="live">
-      <div class="overflow-x-auto">
+      <div class="relative overflow-x-auto">
         <table
           class="w-full min-w-[44rem] text-sm"
           [attr.data-testid]="live ? 'plan-grants-table' : 'plan-past-grants'"
