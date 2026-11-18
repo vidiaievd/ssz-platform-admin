@@ -201,7 +201,7 @@ import {
           <summary class="cursor-pointer font-medium">
             {{ 'ai.evals.card.cases' | transloco: { count: cases.length } }}
           </summary>
-          <div class="mt-2 overflow-x-auto">
+          <div class="relative mt-2 overflow-x-auto">
             @switch (set()) {
               @case ('review_draft') {
                 <table class="w-full min-w-[48rem] text-xs" data-testid="eval-cases-review">

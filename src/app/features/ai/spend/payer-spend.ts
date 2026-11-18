@@ -88,7 +88,7 @@ import { PayerSpendData } from './payer-spend.data';
               {{ 'ai.payerSpend.empty' | transloco }}
             </p>
           } @else {
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[44rem] text-sm" data-testid="payers-table">
                 <thead class="text-muted-color text-left">
                   <tr>
@@ -220,7 +220,7 @@ import { PayerSpendData } from './payer-spend.data';
               @if (data.capabilityRows().length === 0) {
                 <p class="text-muted-color text-sm">{{ 'ai.payerSpend.empty' | transloco }}</p>
               } @else {
-                <div class="overflow-x-auto">
+                <div class="relative overflow-x-auto">
                   <table class="w-full text-sm">
                     <thead class="text-muted-color text-left">
                       <tr>
@@ -284,7 +284,7 @@ import { PayerSpendData } from './payer-spend.data';
               </p>
             }
             @default {
-              <div class="overflow-x-auto">
+              <div class="relative overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead class="text-muted-color text-left">
                     <tr>

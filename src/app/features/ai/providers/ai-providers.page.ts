@@ -254,7 +254,7 @@ interface StrandedNotice {
                   {{ 'ai.providers.noModels' | transloco }}
                 </p>
               } @else {
-                <div class="overflow-x-auto">
+                <div class="relative overflow-x-auto">
                   <!-- Fixed columns: every card's table lines up with the others. -->
                   <table
                     class="w-full min-w-[56rem] table-fixed text-sm"

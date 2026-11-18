@@ -212,7 +212,7 @@ const VERDICT_SEVERITY: Record<GateVerdict, 'success' | 'danger' | 'secondary' |
               {{ (data.rows().length === 0 ? 'ai.gate.empty' : 'ai.gate.emptyBound') | transloco }}
             </p>
           } @else {
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[60rem] text-sm" data-testid="gate-table">
                 <thead class="text-muted-color text-left">
                   <tr>
