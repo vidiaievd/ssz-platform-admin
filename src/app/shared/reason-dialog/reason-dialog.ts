@@ -141,6 +141,21 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
                   }
                 </ul>
               }
+              @if (error.key === 'conflict' && rereadable()) {
+                <div>
+                  <button
+                    pButton
+                    type="button"
+                    size="small"
+                    severity="secondary"
+                    data-testid="reason-reread"
+                    (click)="rereadNow()"
+                  >
+                    <i class="pi pi-refresh" aria-hidden="true"></i>
+                    {{ 'reasonDialog.reread' | transloco }}
+                  </button>
+                </div>
+              }
             </div>
           }
 
@@ -160,7 +175,7 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
               pButton
               type="submit"
               [severity]="danger() ? 'danger' : 'primary'"
-              [disabled]="busy()"
+              [disabled]="busy() || rereading()"
               data-testid="reason-confirm"
             >
               @if (busy()) {
@@ -195,6 +210,15 @@ export class ReasonDialog<T = unknown> {
    * status may carry refusals that need different words.
    */
   readonly codeText = input<Readonly<Record<string, string>>>({});
+  /**
+   * A 409 can be cured by reading the object again (an optimistic lock: the action sends the
+   * version it read). The refusal then offers "reread": `reread` fires, the refusal goes, and
+   * what was typed — reason and fields — stays for the next try.
+   */
+  readonly rereadable = input(false);
+  /** The reread is in flight: confirming now would send the stale version again. */
+  readonly rereading = input(false);
+  readonly reread = output<void>();
   /** The server agreed; the dialog is already closing. */
   readonly done = output<T>();
 
@@ -260,7 +284,7 @@ export class ReasonDialog<T = unknown> {
   }
 
   protected submit(): void {
-    if (this.busy() || !this.allowed()) return;
+    if (this.busy() || this.rereading() || !this.allowed()) return;
     this.attempted.set(true);
     if (this.form.invalid || !this.ready()) {
       // The errors render on the next change detection; then the first one takes focus.
@@ -283,6 +307,11 @@ export class ReasonDialog<T = unknown> {
         this.error.set(describeActionError(error));
       },
     });
+  }
+
+  protected rereadNow(): void {
+    this.error.set(null);
+    this.reread.emit();
   }
 
   private focusFirstInvalid(): void {

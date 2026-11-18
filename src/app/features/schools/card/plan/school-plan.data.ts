@@ -90,6 +90,18 @@ export class SchoolPlanData {
   readonly history = computed<ColumnState<AccountHistoryResponseDto | null>>(() =>
     stateOf(this.historyResource),
   );
+
+  /**
+   * The account revision last read — what a change sends as `expectedRevision`, so a change made
+   * meanwhile (another tab, another admin) is a 409, not overwritten. No account = revision 0;
+   * `undefined` (not read, or the read failed) sends none and the server does not check.
+   */
+  readonly revision = computed<number | undefined>(() => {
+    if (!this.accountResource.hasValue()) return undefined;
+    return this.accountResource.value()?.account.revision ?? 0;
+  });
+  /** The account is being read again; a change confirmed now would carry the old revision. */
+  readonly accountLoading = computed(() => this.accountResource.isLoading());
   readonly plans = computed<ColumnState<PlanResponseDto[]>>(() => stateOf(this.plansResource));
 
   /** Plans the payer may be put on: its audience (a learner's is `individual`), not archived. */

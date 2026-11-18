@@ -21,6 +21,7 @@ import { PlanResponseDto } from '../../../../api/subscription/models/plan-respon
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
 import { ColumnState } from '../../schools-list.data';
+import { accountRefusalText } from './account-refusals';
 import { payerText } from '../payer-card';
 import { dayStartUtc, isFutureDay, todayUtc } from './plan-dates';
 
@@ -44,6 +45,10 @@ const STATUSES = ['active', 'trial'] as const;
       [ready]="ready()"
       [action]="assign"
       [(attempted)]="attempted"
+      [codeText]="codeText()"
+      [rereadable]="true"
+      [rereading]="rereading()"
+      (reread)="reread.emit()"
       (done)="done.emit($event)"
     >
       <div class="flex flex-col gap-1">
@@ -174,6 +179,13 @@ export class AssignPlanDialog {
   readonly currentCode = input<string | null>(null);
   readonly done = output<AccountOverviewResponseDto>();
   readonly retryPlans = output<void>();
+  /** The account revision the tab read; sent as `expectedRevision` (stale → 409 `account_changed`). */
+  readonly expectedRevision = input<number | undefined>(undefined);
+  /** The tab is reading the account again after a 409. */
+  readonly rereading = input(false);
+  /** "Reread" after a 409: the tab reads the account again; what was typed stays. */
+  readonly reread = output<void>();
+  protected readonly codeText = accountRefusalText();
 
   private readonly subscription = inject(SubscriptionApi);
 
@@ -234,6 +246,7 @@ export class AssignPlanDialog {
       status: this.status(),
       periodEnd: this.periodEnd() ? dayStartUtc(this.periodEnd()) : null,
       reason,
+      expectedRevision: this.expectedRevision(),
     };
     return this.subscription.invoke(adminAccountsAssign, {
       type: this.payerType(),

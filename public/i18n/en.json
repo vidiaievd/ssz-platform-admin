@@ -510,6 +510,27 @@
         "ceiling": "Ceiling (limit + 10 %)",
         "hint": "A seat is an active student on the roster; pending invitations take none. Past the limit the school runs on a 10 % grace with a warning; at the ceiling new students are refused. A grant only raises the plan's limit.",
         "max": "up to {{ n }}"
+      },
+      "errors": {
+        "account_changed": "The plan or grants were changed in another tab or by another administrator. Press “Reread” — what you typed stays — and try again.",
+        "grant_already_revoked": "This grant has already been revoked — perhaps in another tab.",
+        "grant_ended": "This grant has already ended; there is nothing to revoke.",
+        "no_current_subscription": "There is no current subscription any more — perhaps it was cancelled in another tab.",
+        "audience_mismatch": "This plan is for another kind of payer.",
+        "plan_archived": "The plan is archived and cannot be assigned.",
+        "trial_needs_period_end": "A trial needs an end date.",
+        "period_end_in_past": "The end date must be in the future.",
+        "invalid_grant_period": "The grant must end in the future and after its start.",
+        "grant_reason_required": "A grant needs a reason.",
+        "grant_disable_with_allowance": "A grant that switches a key off carries no credits or limits.",
+        "grant_disable_not_applicable": "This key cannot be switched off by a grant — issue a grant with a higher limit instead.",
+        "feature_not_for_audience": "This key is not for this kind of payer.",
+        "unknown_feature_key": "Unknown key.",
+        "invalid_credits": "Credits must be a non-negative number.",
+        "credits_not_applicable": "This key has no credits.",
+        "limit_required": "This key needs a limit.",
+        "invalid_limit": "The limit value is not allowed.",
+        "unknown_limit": "This key has no such limit."
       }
     },
     "ai": {
@@ -1109,6 +1130,7 @@
     "required": "Name the reason for this change.",
     "fieldRequired": "This field is required.",
     "cancel": "Cancel",
+    "reread": "Reread",
     "errors": {
       "network": "The gateway is unreachable. Nothing was changed.",
       "forbidden": "Your level may not do this.",

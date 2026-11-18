@@ -64,6 +64,18 @@ export class SchoolAiData {
   /** The grants could not be read (the rows then show no source). */
   readonly grantsFailed = computed(() => !!this.accountResource.error());
 
+  /**
+   * The account revision last read — what a change sends as `expectedRevision`, so a change made
+   * meanwhile (another tab, another admin) is a 409, not overwritten. No account = revision 0;
+   * `undefined` (not read, or the read failed) sends none and the server does not check.
+   */
+  readonly revision = computed<number | undefined>(() => {
+    if (!this.accountResource.hasValue()) return undefined;
+    return this.accountResource.value()?.account.revision ?? 0;
+  });
+  /** The account is being read again; a change confirmed now would carry the old revision. */
+  readonly accountLoading = computed(() => this.accountResource.isLoading());
+
   /** The keys with their source; empty until the usage is read. */
   readonly rows = computed<AiKeyRow[]>(() => {
     const usage = this.usage();

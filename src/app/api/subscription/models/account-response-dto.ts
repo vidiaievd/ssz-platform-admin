@@ -5,5 +5,10 @@ export interface AccountResponseDto {
   createdAt: string;
   externalId: string;
   id: string;
+
+  /**
+   * Grows with every change of the subscription or grants (refresh job included); send it back as expectedRevision
+   */
+  revision: number;
   type: 'workspace' | 'user';
 }
