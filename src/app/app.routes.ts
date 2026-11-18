@@ -8,6 +8,7 @@ import { NAV_SECTIONS, NavSection, NavSectionId } from './layout/nav-sections';
 const SECTION_ROUTES: Partial<Record<NavSectionId, LoadChildren>> = {
   dashboard: () => import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
   schools: () => import('./features/schools/schools.routes').then((m) => m.SCHOOLS_ROUTES),
+  users: () => import('./features/users/users.routes').then((m) => m.USERS_ROUTES),
   plans: () => import('./features/plans/plans.routes').then((m) => m.PLANS_ROUTES),
   ai: () => import('./features/ai/ai.routes').then((m) => m.AI_ROUTES),
   platform: () => import('./features/platform/platform.routes').then((m) => m.PLATFORM_ROUTES),

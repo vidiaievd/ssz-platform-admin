@@ -35,8 +35,18 @@ export const USER_STATUSES = [
 ] as const;
 export type UserStatus = (typeof USER_STATUSES)[number];
 
-/** `-lastLoginAt` puts accounts that never signed in last; ties go by id. */
-export const USER_SORTS = ['-createdAt', 'createdAt', 'email', '-email', '-lastLoginAt'] as const;
+/**
+ * `-lastLoginAt` puts accounts that never signed in last; `purgeAt` — soonest erasure first,
+ * accounts without a deletion request last. Ties go by id.
+ */
+export const USER_SORTS = [
+  '-createdAt',
+  'createdAt',
+  'email',
+  '-email',
+  '-lastLoginAt',
+  'purgeAt',
+] as const;
 export type UserSort = (typeof USER_SORTS)[number];
 
 export interface AdminUserListParams {

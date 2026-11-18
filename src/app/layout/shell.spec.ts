@@ -74,9 +74,9 @@ describe('Shell and panel routes', () => {
   });
 
   it('opens a section that is not built yet as "coming soon"', async () => {
-    const { el, text } = await open('/users');
-    expect(text('[data-testid="page-title"]')).toBe('Users');
-    expect(el.querySelector('aside [data-testid="nav-users"]')?.getAttribute('aria-current')).toBe(
+    const { el, text } = await open('/audit');
+    expect(text('[data-testid="page-title"]')).toBe('Audit log');
+    expect(el.querySelector('aside [data-testid="nav-audit"]')?.getAttribute('aria-current')).toBe(
       'page',
     );
     expect(
@@ -91,7 +91,7 @@ describe('Shell and panel routes', () => {
   });
 
   it('signs out on the server and goes to sign-in', async () => {
-    const { el, harness } = await open('/users');
+    const { el, harness } = await open('/audit');
     el.querySelector<HTMLButtonElement>('[data-testid="sign-out"]')!.click();
     http.expectOne('http://gw/api/v1/auth/admin/session/logout').flush(null, {
       status: 204,

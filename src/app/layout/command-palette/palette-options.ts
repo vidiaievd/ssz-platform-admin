@@ -1,16 +1,22 @@
 import { AdminSchoolListItemDto } from '../../api/organization/models/admin-school-list-item-dto';
+import { AdminUserListItem } from '../../core/auth/admin-users.api';
 import { ApiError } from '../../core/auth/api-error';
 import { NavSection } from '../nav-sections';
 
-/** Shortest search that goes to the server: one letter would match half the platform. */
+/**
+ * Shortest search that goes to the server: one letter would match half the platform (and auth
+ * refuses a one-letter e-mail search outright).
+ */
 export const SCHOOL_SEARCH_MIN = 2;
 /** Schools shown in the palette; the rest are one step away in the list. */
 export const SCHOOL_SEARCH_LIMIT = 8;
+/** Users shown in the palette; the rest are one step away in the list. */
+export const USER_SEARCH_LIMIT = 8;
 /** Same cap as the list's search box and the server's `MaxLength(100)`. */
 export const SEARCH_TERM_MAX = 100;
 
-/** What the palette knows about the school search for the current term. */
-export type SchoolSearchState =
+/** What the palette knows about one search (schools, users) for the current term. */
+export type SearchState<T> =
   /** The term is too short, nothing is asked. */
   | { readonly kind: 'idle' }
   /** Waiting for the typing to stop, or for the answer. */
@@ -18,10 +24,14 @@ export type SchoolSearchState =
   | {
       readonly kind: 'ready';
       readonly term: string;
-      readonly items: readonly AdminSchoolListItemDto[];
+      readonly items: readonly T[];
       readonly total: number;
     }
   | { readonly kind: 'error'; readonly term: string; readonly error: ApiError };
+
+export type SchoolSearchState = SearchState<AdminSchoolListItemDto>;
+/** Accounts from auth `admin/users?search=` (part of the e-mail). */
+export type UserSearchState = SearchState<AdminUserListItem>;
 
 export type PaletteOption =
   | { readonly kind: 'section'; readonly id: string; readonly section: NavSection }
@@ -29,6 +39,14 @@ export type PaletteOption =
   /** "All N results in the list" — the schools list opened with the same search. */
   | {
       readonly kind: 'allSchools';
+      readonly id: string;
+      readonly term: string;
+      readonly total: number;
+    }
+  | { readonly kind: 'user'; readonly id: string; readonly user: AdminUserListItem }
+  /** "All N results in the list" — the users list opened with the same search. */
+  | {
+      readonly kind: 'allUsers';
       readonly id: string;
       readonly term: string;
       readonly total: number;
@@ -67,10 +85,14 @@ export function matchSections(
   return scored.map((s) => s.section);
 }
 
-/** Options in display order: sections, then schools, then "all results" when there are more. */
+/**
+ * Options in display order: sections, then schools, then users — each search followed by its
+ * "all results" when there are more.
+ */
 export function paletteOptions(
   sections: readonly NavSection[],
   schools: SchoolSearchState,
+  users: UserSearchState = { kind: 'idle' },
 ): PaletteOption[] {
   const options: PaletteOption[] = sections.map((section) => ({
     kind: 'section',
@@ -87,6 +109,19 @@ export function paletteOptions(
         id: 'palette-all-schools',
         term: schools.term,
         total: schools.total,
+      });
+    }
+  }
+  if (users.kind === 'ready') {
+    for (const user of users.items) {
+      options.push({ kind: 'user', id: `palette-user-${user.id}`, user });
+    }
+    if (users.total > users.items.length) {
+      options.push({
+        kind: 'allUsers',
+        id: 'palette-all-users',
+        term: users.term,
+        total: users.total,
       });
     }
   }

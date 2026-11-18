@@ -28,11 +28,11 @@
     "open": "Søk",
     "title": "Gå til",
     "close": "Lukk søk",
-    "placeholder": "Seksjon, eller skolens navn eller slug",
+    "placeholder": "Seksjon, skolens navn eller slug, eller e-post",
     "sections": "Seksjoner",
     "schools": "Skoler",
-    "hint": "Skriv en seksjon, eller skolens navn eller slug.",
-    "minChars": "Skriv minst {{ min }} tegn for å finne en skole.",
+    "hint": "Skriv en seksjon, skolens navn eller slug, eller en brukers e-post.",
+    "minChars": "Skriv minst {{ min }} tegn for å finne en skole eller en bruker.",
     "searching": "Søker …",
     "noSchools": "Fant ingen skoler.",
     "failed": "Kunne ikke søke etter skoler.",
@@ -42,7 +42,11 @@
       "move": "flytt",
       "open": "åpne",
       "close": "lukk"
-    }
+    },
+    "users": "Brukere",
+    "noUsers": "Ingen brukere funnet.",
+    "failedUsers": "Kunne ikke søke etter brukere.",
+    "allUsers": "Alle {{ total }} treff i brukerlisten"
   },
   "sections": {
     "dashboard": "Hva som trenger oppmerksomhet, plattformens nøkkeltall, trender og siste admin-handlinger.",
@@ -688,6 +692,61 @@
           "text": "Sletter skolens materiell, medlemmer og innstillinger ved neste kjøring av timeren; bare gravstenen blir igjen. Elevene beholder historikken. Kan ikke angres etter kjøring."
         }
       }
+    }
+  },
+  "users": {
+    "total": "Funnet: {{ count }}",
+    "search": "E-post eller en del av den",
+    "searchTooShort": "Skriv minst {{ min }} tegn for å søke på e-post.",
+    "allRoles": "Alle roller",
+    "allStatuses": "Alle statuser",
+    "deletionQueue": "Sletteforespørsler",
+    "reset": "Nullstill filtre",
+    "retry": "Prøv igjen",
+    "mfaOn": "Tofaktorinnlogging på",
+    "neverSignedIn": "aldri",
+    "empty": "Ingen kontoer ennå.",
+    "emptyFiltered": "Ingen kontoer passer til disse filtrene.",
+    "emptyPage": "Det er ingen kontoer på denne siden.",
+    "emptyDeletion": "Ingen ventende sletteforespørsler.",
+    "firstPage": "Gå til første side",
+    "columns": {
+      "email": "E-post",
+      "roles": "Roller",
+      "status": "Status",
+      "mfa": "2FA",
+      "purgeAt": "Slettes",
+      "lastLoginAt": "Siste innlogging",
+      "createdAt": "Registrert"
+    },
+    "role": {
+      "student": "Elev",
+      "tutor": "Privatlærer",
+      "teacher": "Lærer",
+      "school_admin": "Skoleadmin",
+      "platform_admin": "Plattformadmin",
+      "manager_platform": "Plattformansvarlig",
+      "premium": "Premium"
+    },
+    "status": {
+      "active": "Aktiv",
+      "blocked": "Blokkert",
+      "locked": "Låst (innlogginger)",
+      "deletion_pending": "Sletting forespurt",
+      "unverified": "E-post ikke bekreftet"
+    },
+    "badge": {
+      "active": "Aktiv",
+      "blocked": "Blokkert",
+      "locked": "Låst",
+      "deletion": "Slettes om {{ n }} d",
+      "deletionDue": "Skal slettes nå",
+      "unverified": "E-post ikke bekreftet"
+    },
+    "errors": {
+      "network": "Gatewayen svarer ikke. Sjekk tilkoblingen.",
+      "forbidden": "Ingen tilgang til brukerlisten.",
+      "generic": "Kunne ikke laste brukere."
     }
   },
   "plans": {

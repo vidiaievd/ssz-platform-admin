@@ -9,9 +9,8 @@ import {
   switchMap,
   timer,
 } from 'rxjs';
-import { AdminSchoolPageDto } from '../../api/organization/models/admin-school-page-dto';
 import { ApiError } from '../../core/auth/api-error';
-import { SCHOOL_SEARCH_MIN, SchoolSearchState } from './palette-options';
+import { SCHOOL_SEARCH_MIN, SearchState } from './palette-options';
 
 /** Pause after the last key before the palette asks the server; specs set it to 0. */
 export const PALETTE_SEARCH_DELAY_MS = new InjectionToken<number>('PALETTE_SEARCH_DELAY_MS', {
@@ -20,37 +19,37 @@ export const PALETTE_SEARCH_DELAY_MS = new InjectionToken<number>('PALETTE_SEARC
 });
 
 /** One search request: the term and a retry counter (a retry repeats the same term). */
-export interface SchoolSearchRequest {
+export interface SearchRequest {
   readonly term: string;
   readonly attempt: number;
 }
 
 /**
- * Terms → states of the school search. Every new term drops the previous one at once —
+ * Terms → states of one search of the palette (schools, users). Every new term drops the previous one at once —
  * the pending pause and the request in flight (switchMap cancels the HTTP call) — and is
- * "loading" straight away, so Enter can never open a school found for an older term.
+ * "loading" straight away, so Enter can never open a result found for an older term.
  */
-export function searchSchools(
-  requests: Observable<SchoolSearchRequest>,
-  fetch: (term: string) => Observable<AdminSchoolPageDto>,
+export function searchPage<T>(
+  requests: Observable<SearchRequest>,
+  fetch: (term: string) => Observable<{ readonly items: readonly T[]; readonly total: number }>,
   delayMs: number,
-): Observable<SchoolSearchState> {
+): Observable<SearchState<T>> {
   return requests.pipe(
     distinctUntilChanged((a, b) => a.term === b.term && a.attempt === b.attempt),
     switchMap(({ term }) => {
-      if (term.length < SCHOOL_SEARCH_MIN) return of<SchoolSearchState>({ kind: 'idle' });
+      if (term.length < SCHOOL_SEARCH_MIN) return of<SearchState<T>>({ kind: 'idle' });
       return concat(
-        of<SchoolSearchState>({ kind: 'loading', term }),
+        of<SearchState<T>>({ kind: 'loading', term }),
         timer(delayMs).pipe(
           switchMap(() => fetch(term)),
-          map((page): SchoolSearchState => ({
+          map((page): SearchState<T> => ({
             kind: 'ready',
             term,
             items: page.items,
             total: page.total,
           })),
           catchError((error: unknown) =>
-            of<SchoolSearchState>({ kind: 'error', term, error: ApiError.from(error) }),
+            of<SearchState<T>>({ kind: 'error', term, error: ApiError.from(error) }),
           ),
         ),
       );

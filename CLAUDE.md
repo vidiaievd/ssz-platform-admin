@@ -30,8 +30,14 @@ and only offered on a fresh — ≤ 30 min, `DRY_RUN_FRESH_MS` — finished non-
 and **Plans** (`features/plans`, `/plans`, `/plans/:code`, `/plans/:code/new-version`, `/plans/new`; edits `super`): catalog, card with
 versions, subscribers per version and key diffs (`diffFeatures` in `plan-model.ts`), the shared key editor `plan-features-editor`
 (409 → re-read, input kept), and moving subscribers to the current version (`plan-migration`: preview, then batches of the root
-`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Sections other than Dashboard,
-Schools, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
+`PlanMigrations` with one `batchId`; reload forgets the run, the rest shows as «N on older versions»). Phase 6 (in progress, branch `feature/admin-users`) adds **Users** (`features/users`, `/users`): the list from auth
+`admin/users` (search by part of the e-mail, ≥ 2 characters — a shorter one stays in the box and is not sent, auth would
+answer 400; role, status, sort, page in the URL: `q`, `role`, `status`, `sort`, `page`, `size`), status badges from one rule
+(`user-status.ts`: blocked / locked out / deleted in N d / e-mail not confirmed; no badge = active), the admin level, 2FA, and
+the preset «Deletion requests» = `status=deletion_pending&sort=purgeAt` (soonest erasure first, with an "Erased on" column;
+`purgeAt` outside pending requests falls back to the default order). Ctrl+K searches users beside schools (`page-search.ts`
+`searchPage`, one generic search per group; each fails and retries alone). The card `/users/:id` is "coming soon" until step 7.
+Sections other than Dashboard, Schools, Users, AI, Platform and Plans are a lazy "coming soon" page. Not run against a
 live panel token yet (no `platform_admin` on dev; gateway answers were stubbed) — see the live checks in plan 90 §8.
 
 ## Layout of `src/app`

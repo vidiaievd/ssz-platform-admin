@@ -28,11 +28,11 @@
     "open": "Search",
     "title": "Go to",
     "close": "Close search",
-    "placeholder": "Section, or a school's name or slug",
+    "placeholder": "Section, a school's name or slug, or an e-mail",
     "sections": "Sections",
     "schools": "Schools",
-    "hint": "Type a section, or a school's name or slug.",
-    "minChars": "Type at least {{ min }} characters to find a school.",
+    "hint": "Type a section, a school's name or slug, or a user's e-mail.",
+    "minChars": "Type at least {{ min }} characters to find a school or a user.",
     "searching": "Searching…",
     "noSchools": "No schools found.",
     "failed": "Could not search schools.",
@@ -42,7 +42,11 @@
       "move": "move",
       "open": "open",
       "close": "close"
-    }
+    },
+    "users": "Users",
+    "noUsers": "No users found.",
+    "failedUsers": "Could not search users.",
+    "allUsers": "All {{ total }} results in the users list"
   },
   "sections": {
     "dashboard": "What needs attention, the platform's key numbers, trends and recent admin actions.",
@@ -688,6 +692,61 @@
           "text": "Deletes the school’s materials, roster and settings at the next timer run; only the tombstone stays. Students keep their history. Cannot be undone once it has run."
         }
       }
+    }
+  },
+  "users": {
+    "total": "Found: {{ count }}",
+    "search": "E-mail or part of it",
+    "searchTooShort": "Type at least {{ min }} characters to search by e-mail.",
+    "allRoles": "All roles",
+    "allStatuses": "All statuses",
+    "deletionQueue": "Deletion requests",
+    "reset": "Reset filters",
+    "retry": "Retry",
+    "mfaOn": "Two-factor sign-in on",
+    "neverSignedIn": "never",
+    "empty": "No accounts yet.",
+    "emptyFiltered": "No accounts match these filters.",
+    "emptyPage": "There are no accounts on this page.",
+    "emptyDeletion": "No pending deletion requests.",
+    "firstPage": "Go to the first page",
+    "columns": {
+      "email": "E-mail",
+      "roles": "Roles",
+      "status": "Status",
+      "mfa": "2FA",
+      "purgeAt": "Erased on",
+      "lastLoginAt": "Last sign-in",
+      "createdAt": "Registered"
+    },
+    "role": {
+      "student": "Student",
+      "tutor": "Tutor",
+      "teacher": "Teacher",
+      "school_admin": "School admin",
+      "platform_admin": "Platform admin",
+      "manager_platform": "Platform manager",
+      "premium": "Premium"
+    },
+    "status": {
+      "active": "Active",
+      "blocked": "Blocked",
+      "locked": "Locked out (sign-ins)",
+      "deletion_pending": "Deletion requested",
+      "unverified": "E-mail not confirmed"
+    },
+    "badge": {
+      "active": "Active",
+      "blocked": "Blocked",
+      "locked": "Locked out",
+      "deletion": "Deleted in {{ n }} d",
+      "deletionDue": "Deletion due",
+      "unverified": "E-mail not confirmed"
+    },
+    "errors": {
+      "network": "The gateway is unreachable. Check the connection.",
+      "forbidden": "No access to the users list.",
+      "generic": "Could not load users."
     }
   },
   "plans": {
