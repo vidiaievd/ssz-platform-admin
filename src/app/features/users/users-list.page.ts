@@ -39,6 +39,7 @@ import {
   hasUserFilters,
   isDeletionQueue,
   nextUserSort,
+  cleanedUsersParams,
   parseUsersQuery,
   searchTooShort,
   toUserListParams,
@@ -411,6 +412,19 @@ export class UsersListPage {
   private readonly searchInput = new Subject<string>();
 
   constructor() {
+    // A hand-edited or stale link (unknown status, page -5): show the cleaned screen and say so in
+    // the address bar too, quietly, without a history entry.
+    this.route.queryParamMap.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe((params) => {
+      const cleaned = cleanedUsersParams(params);
+      if (cleaned) {
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: cleaned,
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      }
+    });
     this.searchInput
       .pipe(
         map((text) => text.trim()),

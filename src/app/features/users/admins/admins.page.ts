@@ -86,7 +86,7 @@ const SKELETON_ROWS = [0, 1, 2];
           </button>
         </div>
       } @else {
-        <div class="overflow-x-auto">
+        <div class="relative overflow-x-auto">
           <table class="w-full min-w-[48rem] text-left text-sm" data-testid="admins-table">
             <thead class="text-muted-color">
               <tr>

@@ -73,6 +73,19 @@ export function parseUsersQuery(params: ParamMap): UsersQuery {
   };
 }
 
+/**
+ * The URL's own keys when they say something else than the parsed screen (an unknown status, a page
+ * of -5, a default written out): the cleaned values, a null removing the key. Null when the URL is
+ * already clean. The screen shows the cleaned query, so the address bar is brought in line.
+ */
+export function cleanedUsersParams(params: ParamMap): Params | null {
+  const canonical = toUsersQueryParams(parseUsersQuery(params));
+  const dirty = Object.keys(canonical).some(
+    (key) => (params.get(key) ?? null) !== (canonical[key] == null ? null : String(canonical[key])),
+  );
+  return dirty ? canonical : null;
+}
+
 /** Query → URL. Defaults are left out (null removes the key), so the bare `/users` is the default. */
 export function toUsersQueryParams(query: UsersQuery): Params {
   const d = DEFAULT_USERS_QUERY;

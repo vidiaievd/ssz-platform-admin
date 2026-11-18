@@ -1,5 +1,6 @@
 import { convertToParamMap } from '@angular/router';
 import {
+  cleanedUsersParams,
   DEFAULT_USERS_QUERY,
   DELETION_QUEUE_QUERY,
   isDeletionQueue,
@@ -100,5 +101,19 @@ describe('users query', () => {
     expect(userAriaSort('-lastLoginAt', 'lastLoginAt')).toBe('descending');
     expect(userAriaSort('purgeAt', 'purgeAt')).toBe('ascending');
     expect(userAriaSort('email', 'createdAt')).toBe('none');
+  });
+
+  describe('cleanedUsersParams', () => {
+    it('leaves a clean URL alone', () => {
+      expect(cleanedUsersParams(convertToParamMap({ status: 'blocked', page: '2' }))).toBeNull();
+      expect(cleanedUsersParams(convertToParamMap({}))).toBeNull();
+    });
+
+    it('drops unknown values and defaults written out', () => {
+      const cleaned = cleanedUsersParams(
+        convertToParamMap({ status: 'bogus', sort: 'zzz', page: '-5', role: 'student' }),
+      );
+      expect(cleaned).toMatchObject({ status: null, sort: null, page: null, role: 'student' });
+    });
   });
 });
