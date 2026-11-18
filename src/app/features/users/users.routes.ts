@@ -1,4 +1,5 @@
 import { Route, Routes } from '@angular/router';
+import { MIN_LEVEL, levelGuard } from '../../core/auth/level.guard';
 import { USER_TABS, UserTab, userTabPath } from './card/user-tabs';
 
 /** The component of every tab of the card; plan, AI and journal are the school card's own. */
@@ -25,6 +26,15 @@ export const USERS_ROUTES: Routes = [
     path: '',
     pathMatch: 'full',
     loadComponent: () => import('./users-list.page').then((m) => m.UsersListPage),
+  },
+  {
+    // Before `:userId`. Below super the route does not match and `admins` is read as an id —
+    // the card answers "not found", as for any id auth does not know (§2: nothing is hinted).
+    path: 'admins',
+    pathMatch: 'full',
+    canMatch: [levelGuard],
+    data: { [MIN_LEVEL]: 'super' },
+    loadComponent: () => import('./admins/admins.page').then((m) => m.AdminsPage),
   },
   {
     // The card stays mounted while its tabs change: the account is read once per card.

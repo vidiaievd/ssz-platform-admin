@@ -898,6 +898,60 @@
         "lastSuper": "Avvist: den siste superadministratoren som kan logge inn, kan ikke blokkeres, og ingen kan endre sin egen konto.",
         "lockoutStore": "Låselageret (Redis) svarer ikke; ingenting er endret. Prøv igjen senere."
       }
+    },
+    "admins": {
+      "title": "Administratorer",
+      "total": "{{ count }} totalt",
+      "hint": "Hvem som kan bruke panelet, og på hvilket nivå. Bare en superadmin ser denne siden. For å gjøre noen til administrator, åpne kortet deres:",
+      "findUser": "finn en bruker",
+      "allAdmins": "Alle administratorer",
+      "you": "deg",
+      "bootstrap": "oppstart",
+      "mfaPending": "Ikke satt opp — spørres ved første innlogging",
+      "columns": {
+        "mfa": "Totrinnsinnlogging",
+        "grantedAt": "Nivå siden",
+        "grantedBy": "Gitt av"
+      },
+      "scope": {
+        "support": "Ser alt; opphever sperrer, avslutter økter, nullstiller totrinnsinnlogging for ikke-administratorer.",
+        "admin": "Brukerstøtte, pluss tildeling av abonnementer, tildelinger, blokkering, suspensjon av skoler og KI-brytere.",
+        "super": "Alt, også abonnementskatalogen, KI-modeller, opprydding og administratorer."
+      },
+      "grant": {
+        "button": "Gjør til administrator",
+        "title": "Gjør til administrator",
+        "confirm": "Gi nivået",
+        "text": "{{ email }} får rollen plattformadministrator og kan logge inn i panelet på nivået som velges nedenfor."
+      },
+      "change": {
+        "button": "Endre nivå",
+        "title": "Endre adminnivå",
+        "confirm": "Endre",
+        "text": "{{ email }} er {{ level }} nå. Det nye nivået gjelder fra neste innlogging eller fornyelse i panelet."
+      },
+      "revoke": {
+        "button": "Fjern",
+        "title": "Fjern administratoren",
+        "confirm": "Fjern",
+        "text": "{{ email }} ({{ level }}) mister administratorrollen og nivået; paneløktene avsluttes nå. Økter på web og i appen blir."
+      },
+      "dialog": {
+        "level": "Nivå",
+        "pickLevel": "Velg et nivå",
+        "noMfa": "Totrinnsinnlogging er ikke satt opp på kontoen: panelet ber om det ved første innlogging."
+      },
+      "notice": {
+        "set": "{{ email }} er nå {{ level }}.",
+        "revoked": "{{ email }} er ikke lenger administrator."
+      },
+      "errors": {
+        "ADMIN_SELF_CHANGE": "Ditt eget nivå endres av en annen superadmin.",
+        "ADMIN_LAST_SUPER": "Dette er den siste superadminen som kan logge inn: lag en til først.",
+        "ADMIN_NOT_FOUND": "Kontoen er ikke lenger administrator. Lukk dialogen og oppdater siden.",
+        "forbidden": "Bare en superadmin styrer administratorer.",
+        "generic": "Listen over administratorer kunne ikke leses."
+      }
     }
   },
   "plans": {

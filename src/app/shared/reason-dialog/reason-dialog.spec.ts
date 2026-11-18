@@ -22,6 +22,8 @@ import en from '../../../../public/i18n/en.json';
       [level]="level()"
       [ready]="ready()"
       [action]="action"
+      [errorText]="{ invalid: 'Refused by the rule.' }"
+      [codeText]="{ ADMIN_LAST_SUPER: 'The last super stays.' }"
       (done)="done.push($event)"
     >
       <input data-testid="extra-field" />
@@ -147,11 +149,22 @@ describe('ReasonDialog', () => {
     await show();
     await type('Switch the key off');
     await confirm();
-    expect(text('reason-error')).toContain('The server refused the change.');
+    expect(text('reason-error')).toContain('Refused by the rule.');
     expect(text('reason-error-code')).toBe('grant_disable_with_allowance');
     expect(host.open()).toBe(true);
     expect(find<HTMLTextAreaElement>('reason-input')!.value).toBe('Switch the key off');
     expect(host.done).toEqual([]);
+  });
+
+  it("prefers the action's words for the server code over those for the status", async () => {
+    await mount();
+    host.answer = () =>
+      throwError(() => httpError(400, { status: 400, code: 'ADMIN_LAST_SUPER', title: 'x' }));
+    await show();
+    await type('reason');
+    await confirm();
+    expect(text('reason-error')).toContain('The last super stays.');
+    expect(text('reason-error')).not.toContain('Refused by the rule.');
   });
 
   it('reads a 409 as "changed meanwhile"', async () => {

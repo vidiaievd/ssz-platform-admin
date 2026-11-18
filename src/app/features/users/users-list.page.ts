@@ -22,6 +22,7 @@ import {
   UserStatus,
 } from '../../core/auth/admin-users.api';
 import { ApiError } from '../../core/auth/api-error';
+import { IfLevelDirective } from '../../core/auth/if-level.directive';
 import { LanguageService } from '../../core/i18n/language.service';
 import { LevelBadge } from '../../layout/level-badge';
 import { LocalDatePipe } from '../../shared/local-date.pipe';
@@ -62,6 +63,7 @@ const SKELETON_ROWS = Array.from({ length: 8 }, (_, i) => i);
     RouterLink,
     TranslocoPipe,
     ButtonDirective,
+    IfLevelDirective,
     IconField,
     InputIcon,
     InputText,
@@ -79,11 +81,22 @@ const SKELETON_ROWS = Array.from({ length: 8 }, (_, i) => i);
         <h1 class="text-2xl font-semibold" data-testid="page-title">
           {{ (deletionQueue() ? 'users.deletionQueue' : 'nav.users') | transloco }}
         </h1>
-        @if (page(); as page) {
-          <span class="text-muted-color text-sm" data-testid="users-total">
-            {{ 'users.total' | transloco: { count: page.total } }}
-          </span>
-        }
+        <span class="flex items-baseline gap-4">
+          @if (page(); as page) {
+            <span class="text-muted-color text-sm" data-testid="users-total">
+              {{ 'users.total' | transloco: { count: page.total } }}
+            </span>
+          }
+          <a
+            *appIfLevel="'super'"
+            class="text-primary flex items-center gap-1 text-sm hover:underline"
+            routerLink="/users/admins"
+            data-testid="users-admins-link"
+          >
+            <i class="pi pi-shield" aria-hidden="true"></i>
+            {{ 'users.admins.title' | transloco }}
+          </a>
+        </span>
       </div>
 
       <div class="flex flex-wrap items-center gap-2" role="search">

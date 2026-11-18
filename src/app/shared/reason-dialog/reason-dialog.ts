@@ -127,7 +127,7 @@ function notBlank(control: AbstractControl<string>): ValidationErrors | null {
             >
               <span class="flex items-center gap-2">
                 <i class="pi pi-exclamation-triangle text-red-500" aria-hidden="true"></i>
-                {{ errorText()[error.key] ?? ('reasonDialog.errors.' + error.key | transloco) }}
+                {{ errorMessage() ?? ('reasonDialog.errors.' + error.key | transloco) }}
               </span>
               @if (error.code) {
                 <span class="text-muted-color font-mono text-xs" data-testid="reason-error-code">
@@ -190,6 +190,11 @@ export class ReasonDialog<T = unknown> {
    * "this code is taken" rather than "changed meanwhile".
    */
   readonly errorText = input<Partial<Record<ActionErrorKey, string>>>({});
+  /**
+   * The action's own words for a server code (`ADMIN_LAST_SUPER`, …), ahead of `errorText`: one
+   * status may carry refusals that need different words.
+   */
+  readonly codeText = input<Readonly<Record<string, string>>>({});
   /** The server agreed; the dialog is already closing. */
   readonly done = output<T>();
 
@@ -218,6 +223,14 @@ export class ReasonDialog<T = unknown> {
 
   protected readonly busy = signal(false);
   protected readonly error = signal<ActionError | null>(null);
+  /** The action's own words for the refusal shown, if it has any. */
+  protected readonly errorMessage = computed(() => {
+    const error = this.error();
+    if (!error) return null;
+    return (
+      (error.code ? this.codeText()[error.code] : undefined) ?? this.errorText()[error.key] ?? null
+    );
+  });
   /**
    * A submit was tried (or the reason was left): errors of empty required fields are shown from
    * now on. The projected fields read it through `[(attempted)]`; each opening clears it.

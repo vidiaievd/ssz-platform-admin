@@ -13,6 +13,7 @@ import { ActionErrorKey } from '../../../shared/reason-dialog/action-error';
 import { ReasonDialog } from '../../../shared/reason-dialog/reason-dialog';
 import { formatMoment } from '../../schools/card/journal/journal-format';
 import { daysUntil } from '../../schools/school-lifecycle';
+import { AdminLevelDialog, AdminLevelTarget } from '../admins/admin-level-dialog';
 import { roleKey } from '../user-roles';
 import {
   UserAction,
@@ -49,6 +50,7 @@ import { userTabLink } from './user-tabs';
     IfLevelDirective,
     LocalDatePipe,
     ReasonDialog,
+    AdminLevelDialog,
   ],
   template: `
     @if (data.user(); as user) {
@@ -117,6 +119,52 @@ import { userTabLink } from './user-tabs';
             <dt class="text-muted-color">ID</dt>
             <dd class="font-mono text-xs break-all">{{ user.id }}</dd>
           </dl>
+          @if (!self()) {
+            <div *appIfLevel="'super'" class="flex flex-wrap gap-2" data-testid="account-admin">
+              @if (user.adminLevel) {
+                <button
+                  pButton
+                  type="button"
+                  size="small"
+                  [outlined]="true"
+                  data-testid="action-admin-change"
+                  (click)="openAdmin('set')"
+                >
+                  <i class="pi pi-shield" aria-hidden="true"></i>
+                  {{ 'users.admins.change.button' | transloco }}
+                </button>
+                <button
+                  pButton
+                  type="button"
+                  size="small"
+                  severity="danger"
+                  [outlined]="true"
+                  data-testid="action-admin-revoke"
+                  (click)="openAdmin('revoke')"
+                >
+                  {{ 'users.admins.revoke.button' | transloco }}
+                </button>
+              } @else {
+                <button
+                  pButton
+                  type="button"
+                  size="small"
+                  [outlined]="true"
+                  data-testid="action-admin-grant"
+                  (click)="openAdmin('set')"
+                >
+                  <i class="pi pi-shield" aria-hidden="true"></i>
+                  {{ 'users.admins.grant.button' | transloco }}
+                </button>
+              }
+              <a
+                class="text-primary self-center text-xs hover:underline"
+                routerLink="/users/admins"
+              >
+                {{ 'users.admins.allAdmins' | transloco }}
+              </a>
+            </div>
+          }
         </section>
 
         <!-- Access -->
@@ -419,6 +467,8 @@ import { userTabLink } from './user-tabs';
           {{ dialogKey('text') | transloco: { email: user.email, client: pendingClient() } }}
         </p>
       </app-reason-dialog>
+
+      <app-admin-level-dialog [(target)]="adminTarget" (done)="data.reload()" />
     }
   `,
 })
@@ -445,6 +495,11 @@ export class UserOverviewTab {
   protected readonly pending = signal<UserAction | null>(null);
   /** The last action changed nothing: the card was read again. */
   protected readonly notice = signal(false);
+  /**
+   * The open level dialog (step 9, `super`): make an administrator, change or remove the level.
+   * Its answer is not the card, so the card is read again afterwards (roles and level).
+   */
+  protected readonly adminTarget = signal<AdminLevelTarget | null>(null);
 
   protected readonly pendingLevel = computed<AdminLevel>(() => {
     const p = this.pending();
@@ -479,6 +534,19 @@ export class UserOverviewTab {
   protected levelOf(kind: UserActionKind): AdminLevel {
     const user = this.data.user();
     return user ? actionLevel(kind, user) : 'super';
+  }
+
+  protected openAdmin(mode: AdminLevelTarget['mode']): void {
+    const user = this.data.user();
+    if (!user) return;
+    this.notice.set(false);
+    this.adminTarget.set({
+      mode,
+      userId: user.id,
+      email: user.email,
+      current: user.adminLevel,
+      twoFactorEnabled: user.twoFactorEnabled,
+    });
   }
 
   protected start(action: UserAction): void {

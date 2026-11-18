@@ -64,6 +64,19 @@ describe('UserCardPage', () => {
   let el: HTMLElement;
 
   beforeEach(() => {
+    // jsdom has no matchMedia; PrimeNG's select overlay asks it whether to open as a modal.
+    window.matchMedia ??= ((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    })) as typeof window.matchMedia;
+    // jsdom has no scrollIntoView; PrimeNG's select scrolls to the chosen option.
+    Element.prototype.scrollIntoView ??= () => undefined;
     TestBed.configureTestingModule({
       imports: [
         TranslocoTestingModule.forRoot({
@@ -519,6 +532,49 @@ describe('UserCardPage', () => {
       expect(find('user-nothing-changed')).not.toBeNull();
       expect(find('overview-deletion')).toBeNull();
       expect(inPage('reason-error')).toBeNull();
+    });
+
+    it('lets super make an administrator, then reads the card again', async () => {
+      await open(`/users/${ID}`, 'super');
+      await answer();
+      expect(find('action-admin-change')).toBeNull();
+      find('action-admin-grant')!.click();
+      await dialogShown();
+      expect(inPage('admin-level-no-mfa')).not.toBeNull();
+      inPage('admin-level-select')!.querySelector<HTMLElement>('[role="combobox"]')!.click();
+      await stable();
+      const support = Array.from(document.body.querySelectorAll<HTMLElement>('[role="option"]'));
+      expect(support.map((o) => o.textContent?.trim())).toEqual([
+        'Super admin',
+        'Admin',
+        'Support',
+      ]);
+      support[2].click();
+      await stable();
+      await confirmWith('Joins the support desk');
+      const put = await next(`http://gw/api/v1/auth/admin/admins/${ID}`, 'PUT');
+      expect(put.request.body).toEqual({ level: 'support', reason: 'Joins the support desk' });
+      put.flush({
+        userId: ID,
+        email: 'kari@example.no',
+        level: 'support',
+        grantedAt: '2026-11-18T12:00:00Z',
+        grantedBy: 'admin-1',
+        twoFactorEnabled: false,
+      });
+      (await next(USER)).flush(
+        userDetail({ roles: ['student', 'platform_admin'], adminLevel: 'support' }),
+      );
+      await dialogClosed();
+      expect(text('account-level')).toBe('Support');
+      expect(find('action-admin-change')).not.toBeNull();
+      expect(find('action-admin-revoke')).not.toBeNull();
+    });
+
+    it('shows no level buttons below super, nor on the own account', async () => {
+      await open(`/users/${ID}`, 'admin');
+      await answer(userDetail({ roles: ['platform_admin'], adminLevel: 'support' }));
+      expect(find('account-admin')).toBeNull();
     });
 
     it('keeps the dialog with its own words when the lockout store is down', async () => {

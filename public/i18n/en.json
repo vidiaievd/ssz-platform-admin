@@ -898,6 +898,60 @@
         "lastSuper": "Refused: the last super administrator who can sign in cannot be blocked, and nobody can change their own account.",
         "lockoutStore": "The lockout store (Redis) does not answer; nothing was changed. Try again later."
       }
+    },
+    "admins": {
+      "title": "Administrators",
+      "total": "{{ count }} in total",
+      "hint": "Who may use this panel and at which level. Only a super administrator sees this screen. To make someone an administrator, open their card:",
+      "findUser": "find a user",
+      "allAdmins": "All administrators",
+      "you": "you",
+      "bootstrap": "bootstrap",
+      "mfaPending": "Not set up — asked at the first sign-in",
+      "columns": {
+        "mfa": "Two-factor sign-in",
+        "grantedAt": "Level since",
+        "grantedBy": "Granted by"
+      },
+      "scope": {
+        "support": "Sees everything; lifts lockouts, ends sessions, resets two-factor sign-in of non-administrators.",
+        "admin": "Support, plus assigning plans, grants, blocks, suspending schools and AI switches.",
+        "super": "Everything, including the plan catalogue, AI models, sweeps and administrators."
+      },
+      "grant": {
+        "button": "Make administrator",
+        "title": "Make an administrator",
+        "confirm": "Grant the level",
+        "text": "{{ email }} gets the platform administrator role and may sign in to this panel at the level picked below."
+      },
+      "change": {
+        "button": "Change level",
+        "title": "Change the admin level",
+        "confirm": "Change",
+        "text": "{{ email }} is {{ level }} now. The new level applies from the next panel sign-in or refresh."
+      },
+      "revoke": {
+        "button": "Remove",
+        "title": "Remove the administrator",
+        "confirm": "Remove",
+        "text": "{{ email }} ({{ level }}) loses the administrator role and level; their panel sessions end now. Web and app sessions stay."
+      },
+      "dialog": {
+        "level": "Level",
+        "pickLevel": "Pick a level",
+        "noMfa": "Two-factor sign-in is not set up on this account: the panel will ask for it at the first sign-in."
+      },
+      "notice": {
+        "set": "{{ email }} is now {{ level }}.",
+        "revoked": "{{ email }} is no longer an administrator."
+      },
+      "errors": {
+        "ADMIN_SELF_CHANGE": "Your own level is changed by another super administrator.",
+        "ADMIN_LAST_SUPER": "This is the last super administrator who can sign in: make another one first.",
+        "ADMIN_NOT_FOUND": "This account is no longer an administrator. Close the dialog and refresh the screen.",
+        "forbidden": "Only a super administrator manages administrators.",
+        "generic": "The list of administrators could not be read."
+      }
     }
   },
   "plans": {
