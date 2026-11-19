@@ -88,10 +88,12 @@
         "closing": "Suspended: closing soon",
         "purging": "In the archive: deletion soon",
         "breakerOpen": "Breaker open: calls go to the fallback",
+        "breakerOpenFailing": "Breaker open: agents left without a model",
         "providerOff": "Provider switched off but in use",
         "providerNoKey": "Provider in use has no key",
         "deletionRequests": "Deletion requests"
       },
+      "failing": "no model left, calls fail: {{ agents }}",
       "reopensAt": "retried at {{ time }}",
       "openProviders": "Providers",
       "deletionCount": "{{ n }} pending",

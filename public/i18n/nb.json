@@ -88,10 +88,12 @@
         "closing": "Sperret: stenger snart",
         "purging": "I arkivet: slettes snart",
         "breakerOpen": "Sikring åpen: kall går til reserven",
+        "breakerOpenFailing": "Sikring åpen: agenter uten modell",
         "providerOff": "Leverandør slått av, men i bruk",
         "providerNoKey": "Leverandør i bruk mangler nøkkel",
         "deletionRequests": "Sletteforespørsler"
       },
+      "failing": "ingen modell igjen, kall feiler: {{ agents }}",
       "reopensAt": "prøves igjen {{ time }}",
       "openProviders": "Leverandører",
       "deletionCount": "{{ n }} venter",
