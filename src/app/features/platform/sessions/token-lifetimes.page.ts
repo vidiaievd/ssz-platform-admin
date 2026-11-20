@@ -88,7 +88,7 @@ import { TokenLifetimesData } from './token-lifetimes.data';
             </p>
           }
 
-          <div class="border-border overflow-x-auto rounded-md border">
+          <div class="border-border relative overflow-x-auto rounded-md border">
             <table class="w-full min-w-[36rem] text-sm" data-testid="sessions-table">
               <caption class="sr-only">
                 {{
