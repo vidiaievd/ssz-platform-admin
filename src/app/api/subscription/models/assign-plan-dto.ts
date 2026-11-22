@@ -4,6 +4,11 @@
 export interface AssignPlanDto {
 
   /**
+   * account.revision as last read; a mismatch is 409 account_changed. Omitted = no check. 0 for a payer the GET answered 404 for
+   */
+  expectedRevision?: number;
+
+  /**
    * Null or omitted = open-ended. Required for a trial; must be in the future
    */
   periodEnd?: string | null;

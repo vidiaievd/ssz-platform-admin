@@ -224,7 +224,7 @@ import { SPEND_PRESETS, SpendPreset, isValidRange, presetParams } from './spend-
           @if (data.rows().length === 0) {
             <p class="text-sm" data-testid="spend-empty">{{ 'ai.spend.empty' | transloco }}</p>
           } @else {
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[60rem] text-sm" data-testid="spend-table">
                 <thead class="text-muted-color text-left">
                   <tr>

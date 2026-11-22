@@ -10,6 +10,7 @@ import { IfLevelDirective } from '../../../../core/auth/if-level.directive';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../../shared/local-date.pipe';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
+import { accountRefusalText } from '../plan/account-refusals';
 import { GrantDialog } from '../plan/grant-dialog';
 import { AiKeyRow, formatCredits, usedPercent } from './ai-key-rows';
 import { PolicyDialog } from './policy-dialog';
@@ -86,7 +87,7 @@ const SOURCE_SEVERITY = {
                 </button>
               </p>
             }
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[46rem] text-sm" data-testid="ai-keys-table">
                 <thead class="text-muted-color text-left">
                   <tr>
@@ -442,6 +443,9 @@ const SOURCE_SEVERITY = {
         [payerId]="payerId"
         [presetKey]="grantKey()"
         [presetEnabled]="grantEnabled()"
+        [expectedRevision]="data.revision()"
+        [rereading]="data.accountLoading()"
+        (reread)="data.afterGrantChange()"
         (done)="data.afterGrantChange()"
       />
       <app-policy-dialog
@@ -460,6 +464,10 @@ const SOURCE_SEVERITY = {
       [confirmLabel]="'schools.plan.revokeDialog.confirm' | transloco"
       level="admin"
       [action]="revoke"
+      [codeText]="codeText()"
+      [rereadable]="true"
+      [rereading]="data.accountLoading()"
+      (reread)="data.afterGrantChange()"
       (done)="data.afterGrantChange()"
     >
       @if (revoking(); as g) {
@@ -492,6 +500,7 @@ export class SchoolAiTab {
   protected readonly policyOpen = signal(false);
   /** The disabling grant whose revoke dialog is open. */
   protected readonly revoking = signal<GrantResponseDto | null>(null);
+  protected readonly codeText = accountRefusalText();
 
   protected readonly policy = computed(() => {
     const policy = this.data.policy();
@@ -514,7 +523,7 @@ export class SchoolAiTab {
       type: this.payerType,
       externalId: this.payerId()!,
       grantId: this.revoking()!.id,
-      body: { reason },
+      body: { reason, expectedRevision: this.data.revision() },
     });
 
   protected credits(value: string | null): string {

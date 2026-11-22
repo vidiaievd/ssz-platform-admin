@@ -31,6 +31,11 @@ export type ProviderAttention =
       readonly provider: string;
       /** The agents that call the model (enabled bindings only), sorted. */
       readonly capabilities: readonly string[];
+      /**
+       * Those of them left with no model to call: every model they are bound to has its breaker
+       * open (no fallback, or the fallback's is open too) — their calls fail, not fall back.
+       */
+      readonly failing: readonly string[];
       readonly reopensAt: string | null;
     }
   | {
@@ -53,6 +58,20 @@ function agentsByProvider(board: readonly BreakerRowDto[]): Map<string, Set<stri
 
 const enabledAgents = (row: BreakerRowDto) =>
   [...new Set(row.bindings.filter((b) => b.enabled).map((b) => b.capability))].sort();
+
+/** Agents of the board whose every enabled binding points at a model with an open breaker. */
+function agentsWithoutModel(board: readonly BreakerRowDto[]): Set<string> {
+  const served = new Set<string>();
+  const bound = new Set<string>();
+  for (const row of board) {
+    for (const b of row.bindings) {
+      if (!b.enabled) continue;
+      bound.add(b.capability);
+      if (row.state !== 'open') served.add(b.capability);
+    }
+  }
+  return new Set([...bound].filter((c) => !served.has(c)));
+}
 
 /**
  * One chip per provider in the server's order. An open breaker outranks a missing key, which
@@ -82,7 +101,8 @@ export function providerChips(
 }
 
 /**
- * Rows for the attention queue: every open breaker (red), then every used provider that is
+ * Rows for the attention queue: every open breaker (red; it names the agents it leaves with no
+ * model at all — `state: unknown` counts as serving, the board cannot tell), then every used provider that is
  * switched off or has no key (yellow; "off" wins when both). Needs both reads: without the
  * board nothing is known to be used, without the providers the key is unknown.
  */
@@ -91,6 +111,7 @@ export function providerAttention(
   board: readonly BreakerRowDto[],
 ): ProviderAttention[] {
   const agents = agentsByProvider(board);
+  const stranded = agentsWithoutModel(board);
   const breakers: ProviderAttention[] = board
     .filter((r) => r.state === 'open')
     .map((r) => ({
@@ -99,6 +120,7 @@ export function providerAttention(
       model: r.displayName,
       provider: r.provider.displayName,
       capabilities: enabledAgents(r),
+      failing: enabledAgents(r).filter((c) => stranded.has(c)),
       reopensAt: r.reopensAt,
     }));
   const flagged: ProviderAttention[] = providers.flatMap((p) => {

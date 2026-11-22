@@ -19,6 +19,7 @@ import { AccountOverviewResponseDto } from '../../../../api/subscription/models/
 import { IssueGrantDto } from '../../../../api/subscription/models/issue-grant-dto';
 import { SubscriptionApi } from '../../../../api/subscription/subscription-api';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
+import { accountRefusalText } from './account-refusals';
 import { CREDITS, FEATURE_KEYS, featureKind } from './feature-keys';
 import { dayStartUtc, isFutureDay, todayUtc } from './plan-dates';
 
@@ -47,6 +48,10 @@ const EFFECTS = [
       [ready]="ready()"
       [action]="issue"
       [(attempted)]="attempted"
+      [codeText]="codeText()"
+      [rereadable]="true"
+      [rereading]="rereading()"
+      (reread)="reread.emit()"
       (done)="done.emit($event)"
     >
       <div class="flex flex-col gap-1">
@@ -227,6 +232,13 @@ export class GrantDialog {
   readonly presetKey = input<string | null>(null);
   readonly presetEnabled = input(true);
   readonly done = output<AccountOverviewResponseDto>();
+  /** The account revision the tab read; sent as `expectedRevision` (stale → 409 `account_changed`). */
+  readonly expectedRevision = input<number | undefined>(undefined);
+  /** The tab is reading the account again after a 409. */
+  readonly rereading = input(false);
+  /** "Reread" after a 409: the tab reads the account again; what was typed stays. */
+  readonly reread = output<void>();
+  protected readonly codeText = accountRefusalText();
 
   private readonly subscription = inject(SubscriptionApi);
 
@@ -317,6 +329,7 @@ export class GrantDialog {
       enabled: this.isSeats() ? true : this.enabled(),
       endsAt: dayStartUtc(this.endsAt())!,
       reason,
+      expectedRevision: this.expectedRevision(),
     };
     // A start today or earlier is "now"; the server takes an omitted start as now.
     const starts = this.startsAt();

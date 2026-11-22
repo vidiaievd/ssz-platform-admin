@@ -217,7 +217,12 @@ import { Sparkline } from './sparkline';
               >
                 <p-tag
                   [severity]="row.kind === 'breakerOpen' ? 'danger' : 'warn'"
-                  [value]="'dashboard.queue.kinds.' + row.kind | transloco"
+                  [value]="
+                    'dashboard.queue.kinds.' +
+                      (row.kind === 'breakerOpen' && row.failing.length > 0
+                        ? 'breakerOpenFailing'
+                        : row.kind) | transloco
+                  "
                 />
                 @if (row.kind === 'breakerOpen') {
                   <span>{{ row.model }}</span>
@@ -231,6 +236,14 @@ import { Sparkline } from './sparkline';
                     data-testid="queue-provider-agents"
                   >
                     {{ row.capabilities.join(', ') }}
+                  </span>
+                }
+                @if (row.kind === 'breakerOpen' && row.failing.length > 0) {
+                  <span
+                    class="text-xs text-red-700 dark:text-red-300"
+                    data-testid="queue-provider-failing"
+                  >
+                    {{ 'dashboard.queue.failing' | transloco: { agents: row.failing.join(', ') } }}
                   </span>
                 }
                 @if (row.kind === 'breakerOpen' && row.reopensAt) {

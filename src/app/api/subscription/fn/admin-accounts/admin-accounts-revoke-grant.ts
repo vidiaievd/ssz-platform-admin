@@ -8,7 +8,7 @@ import { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import { AccountOverviewResponseDto } from '../../models/account-overview-response-dto';
-import { AdminReasonDto } from '../../models/admin-reason-dto';
+import { RevokeGrantDto } from '../../models/revoke-grant-dto';
 
 export interface AdminAccountsRevokeGrant$Params {
 
@@ -22,7 +22,7 @@ export interface AdminAccountsRevokeGrant$Params {
  */
   externalId: string;
   grantId: string;
-      body: AdminReasonDto
+      body: RevokeGrantDto
 }
 
 export function adminAccountsRevokeGrant(http: HttpClient, rootUrl: string, params: AdminAccountsRevokeGrant$Params, context?: HttpContext): Observable<StrictHttpResponse<AccountOverviewResponseDto>> {

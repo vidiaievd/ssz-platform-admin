@@ -10,6 +10,11 @@ export interface IssueGrantDto {
   endsAt: string;
 
   /**
+   * account.revision as last read; a mismatch is 409 account_changed. Omitted = no check. 0 for a payer the GET answered 404 for
+   */
+  expectedRevision?: number;
+
+  /**
    * One of: ai.review_draft, ai.review_direct, ai.student_assist, ai.practice, ai.authoring, ai.voice_review, ai.voice_review_pronunciation, school.review_ai_policy, seats.students
    */
   featureKey: string;

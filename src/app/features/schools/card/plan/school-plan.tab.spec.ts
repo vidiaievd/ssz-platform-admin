@@ -28,6 +28,8 @@ const LOOKUP = 'http://gw/api/v1/admin/subscriptions/accounts/lookup';
 const ACCOUNT = `http://gw/api/v1/admin/subscriptions/accounts/workspace/${ID}`;
 const HISTORY = `${ACCOUNT}/history`;
 const PLANS = 'http://gw/api/v1/admin/subscriptions/plans';
+/** The account revision the reads answer; every change sends it back as `expectedRevision`. */
+const REVISION = 5;
 
 /** A UTC day `days` from today, as a date input gives it. */
 const day = (days: number) => new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
@@ -240,7 +242,13 @@ describe('SchoolPlanTab', () => {
     else
       account.flush(
         answers.account ?? {
-          account: { id: 'a-1', type: 'workspace', externalId: ID, createdAt: '2026-01-01' },
+          account: {
+            id: 'a-1',
+            type: 'workspace',
+            externalId: ID,
+            createdAt: '2026-01-01',
+            revision: REVISION,
+          },
           subscription: subscription(),
           grants: [
             grant(),
@@ -259,7 +267,13 @@ describe('SchoolPlanTab', () => {
     else
       history.flush(
         answers.history ?? {
-          account: { id: 'a-1', type: 'workspace', externalId: ID, createdAt: '2026-01-01' },
+          account: {
+            id: 'a-1',
+            type: 'workspace',
+            externalId: ID,
+            createdAt: '2026-01-01',
+            revision: REVISION,
+          },
           subscriptions: [
             subscription(),
             subscription({
@@ -466,6 +480,7 @@ describe('SchoolPlanTab', () => {
       enabled: false,
       endsAt: `${day(30)}T00:00:00.000Z`,
       reason: 'School asked to pause voice checks',
+      expectedRevision: REVISION,
     });
     post.flush(
       { account: {}, subscription: subscription(), grants: [] },
@@ -533,7 +548,13 @@ describe('SchoolPlanTab', () => {
         ],
       },
       account: {
-        account: { id: 'a-1', type: 'workspace', externalId: ID, createdAt: '2026-01-01' },
+        account: {
+          id: 'a-1',
+          type: 'workspace',
+          externalId: ID,
+          createdAt: '2026-01-01',
+          revision: REVISION,
+        },
         subscription: subscription(),
         grants: [seatsGrant],
       },
@@ -570,6 +591,7 @@ describe('SchoolPlanTab', () => {
       limits: { max: 150 },
       endsAt: `${day(30)}T00:00:00.000Z`,
       reason: 'School grew mid-term',
+      expectedRevision: REVISION,
     });
     post.flush({ statusCode: 500 }, { status: 500, statusText: 'Error' });
     await stable();
@@ -596,6 +618,7 @@ describe('SchoolPlanTab', () => {
       startsAt: `${day(3)}T00:00:00.000Z`,
       endsAt: `${day(40)}T00:00:00.000Z`,
       reason: 'Exam month',
+      expectedRevision: REVISION,
     });
     post.flush(
       { statusCode: 422, code: 'invalid_credits' },
@@ -603,9 +626,11 @@ describe('SchoolPlanTab', () => {
     );
     await stable();
     expect(text('reason-error-code', document.body)).toBe('invalid_credits');
+    // The panel's own words for the code, not the shared "the server refused".
+    expect(text('reason-error', document.body)).toContain('Credits must be a non-negative number.');
   });
 
-  it('revokes a grant; a 409 reads as "changed meanwhile"', async () => {
+  it('revokes a grant from a stale tab: 409 account_changed, reread keeps the reason, then it goes', async () => {
     await open();
     find('plan-grants')!.querySelector<HTMLButtonElement>('[data-testid="grant-revoke"]')!.click();
     await dialogShown();
@@ -616,10 +641,86 @@ describe('SchoolPlanTab', () => {
     await confirm();
 
     const post = await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST');
-    expect(post.request.body).toEqual({ reason: 'Pilot over' });
-    post.flush({ statusCode: 409 }, { status: 409, statusText: 'Conflict' });
+    expect(post.request.body).toEqual({ reason: 'Pilot over', expectedRevision: REVISION });
+    post.flush(
+      { statusCode: 409, code: 'account_changed', details: { expectedRevision: 5, revision: 7 } },
+      { status: 409, statusText: 'Conflict' },
+    );
+    await stable();
+    expect(text('reason-error', document.body)).toContain(
+      'The plan or grants were changed in another tab or by another administrator.',
+    );
+
+    // Reread: the account and its history again, the refusal goes, the reason stays.
+    inPage('reason-reread')!.click();
+    await stable();
+    expect(inPage('reason-error')).toBeNull();
+    expect(inPage<HTMLTextAreaElement>('reason-input')!.value).toBe('Pilot over');
+    const account = {
+      id: 'a-1',
+      type: 'workspace',
+      externalId: ID,
+      createdAt: '2026-01-01',
+      revision: 7,
+    };
+    (await next(ACCOUNT)).flush({ account, subscription: subscription(), grants: [grant()] });
+    (await next(HISTORY)).flush({ account, subscriptions: [], grants: [] });
+    (await next(LOOKUP, 'POST')).flush({ items: [lookup()] });
+    (await next(SCHOOL)).flush(school);
+    await stable();
+
+    await confirm();
+    const again = await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST');
+    expect(again.request.body).toEqual({ reason: 'Pilot over', expectedRevision: 7 });
+    again.flush(
+      { statusCode: 422, code: 'grant_already_revoked', details: { grantId: 'g-1' } },
+      { status: 422, statusText: 'Unprocessable' },
+    );
+    await stable();
+    // Its own words, not "the server refused the change".
+    expect(text('reason-error', document.body)).toContain(
+      'This grant has already been revoked — perhaps in another tab.',
+    );
+    expect(inPage('reason-reread')).toBeNull();
+  });
+
+  it('a 409 without a code still reads as "changed meanwhile"', async () => {
+    await open();
+    find('plan-grants')!.querySelector<HTMLButtonElement>('[data-testid="grant-revoke"]')!.click();
+    await dialogShown();
+    await type('reason-input', 'Pilot over');
+    await confirm();
+    (await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST')).flush(
+      { statusCode: 409 },
+      { status: 409, statusText: 'Conflict' },
+    );
     await stable();
     expect(text('reason-error', document.body)).toContain('It has changed meanwhile.');
+  });
+
+  it('a payer without an account sends revision 0', async () => {
+    await open('admin', {
+      lookup: lookup({
+        hasAccount: false,
+        source: 'free_plan',
+        plan: { code: 'free_workspace', name: 'Free', version: 1 },
+        subscription: null,
+        activeGrants: 0,
+      }),
+      account: null,
+      history: null,
+      details: { ...PLAN_LIST[1], versions: [version(1)] },
+    });
+    await click('plan-grant');
+    await dialogShown();
+    await pick('grant-key', 'ai.practice');
+    await type('grant-ends', day(30));
+    await type('reason-input', 'First grant');
+    await confirm();
+    const post = await next(`${ACCOUNT}/grants`, 'POST');
+    expect(post.request.body).toMatchObject({ expectedRevision: 0 });
+    post.flush({ statusCode: 500 }, { status: 500, statusText: 'Error' });
+    await stable();
   });
 
   it('cancels the subscription with the reason in the query', async () => {
@@ -632,6 +733,7 @@ describe('SchoolPlanTab', () => {
 
     const req = await next(`${ACCOUNT}/subscription`, 'DELETE');
     expect(req.request.params.get('reason')).toBe('School closed its contract');
+    expect(req.request.params.get('expectedRevision')).toBe(String(REVISION));
     req.flush({ account: {}, subscription: null, grants: [] });
     (await next(LOOKUP, 'POST')).flush({ items: [lookup()] });
     (await next(SCHOOL)).flush(school);
@@ -674,6 +776,7 @@ describe('SchoolPlanTab', () => {
       status: 'trial',
       periodEnd: `${day(14)}T00:00:00.000Z`,
       reason: 'Move to the new terms',
+      expectedRevision: REVISION,
     });
     put.flush({ account: {}, subscription: subscription({ planVersion: 3 }), grants: [] });
     (await next(LOOKUP, 'POST')).flush({

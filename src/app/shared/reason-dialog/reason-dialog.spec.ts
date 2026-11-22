@@ -24,6 +24,9 @@ import en from '../../../../public/i18n/en.json';
       [action]="action"
       [errorText]="{ invalid: 'Refused by the rule.' }"
       [codeText]="{ ADMIN_LAST_SUPER: 'The last super stays.' }"
+      [rereadable]="rereadable()"
+      [rereading]="rereading()"
+      (reread)="rereads = rereads + 1"
       (done)="done.push($event)"
     >
       <input data-testid="extra-field" />
@@ -34,6 +37,9 @@ class Host {
   readonly open = signal(false);
   readonly level = signal<AdminLevel>('admin');
   readonly ready = signal(true);
+  readonly rereadable = signal(false);
+  readonly rereading = signal(false);
+  rereads = 0;
   readonly done: unknown[] = [];
   readonly reasons: string[] = [];
   answer: () => Observable<unknown> = () => of('ok');
@@ -165,6 +171,49 @@ describe('ReasonDialog', () => {
     await confirm();
     expect(text('reason-error')).toContain('The last super stays.');
     expect(text('reason-error')).not.toContain('Refused by the rule.');
+  });
+
+  it('offers "reread" on a 409 when the action can: the refusal goes, the reason stays', async () => {
+    await mount();
+    host.rereadable.set(true);
+    host.answer = () =>
+      throwError(() => httpError(409, { statusCode: 409, code: 'account_changed', message: 'x' }));
+    await show();
+    await type('Stale tab');
+    await confirm();
+    expect(find('reason-reread')).not.toBeNull();
+
+    find<HTMLButtonElement>('reason-reread')!.click();
+    await stable();
+    expect(host.rereads).toBe(1);
+    expect(find('reason-error')).toBeNull();
+    expect(find<HTMLTextAreaElement>('reason-input')!.value).toBe('Stale tab');
+    expect(host.open()).toBe(true);
+
+    // Confirming while the reread runs would send the stale version again.
+    host.rereading.set(true);
+    await stable();
+    expect(find<HTMLButtonElement>('reason-confirm')!.disabled).toBe(true);
+    host.rereading.set(false);
+    host.answer = () => of('ok');
+    await stable();
+    await confirm();
+    expect(host.done).toEqual(['ok']);
+  });
+
+  it('offers no "reread" when the action cannot, nor on other refusals', async () => {
+    await mount();
+    host.answer = () => throwError(() => httpError(409, { statusCode: 409, message: 'stale' }));
+    await show();
+    await type('reason');
+    await confirm();
+    expect(find('reason-error')).not.toBeNull();
+    expect(find('reason-reread')).toBeNull();
+
+    host.rereadable.set(true);
+    host.answer = () => throwError(() => httpError(422, { statusCode: 422, code: 'x_y' }));
+    await confirm();
+    expect(find('reason-reread')).toBeNull();
   });
 
   it('reads a 409 as "changed meanwhile"', async () => {

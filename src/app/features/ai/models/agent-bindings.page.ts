@@ -84,7 +84,7 @@ import { BindingHistory } from './binding-history';
             </div>
           }
 
-          <div class="overflow-x-auto">
+          <div class="relative overflow-x-auto">
             <table class="w-full min-w-[64rem] text-sm" data-testid="bindings-table">
               <thead class="text-muted-color text-left">
                 <tr>

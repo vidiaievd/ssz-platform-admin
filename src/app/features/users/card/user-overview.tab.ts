@@ -81,14 +81,14 @@ import { userTabLink } from './user-tabs';
           </button>
         </p>
       }
-      <div class="grid gap-4 lg:grid-cols-2" data-testid="user-overview">
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2" data-testid="user-overview">
         <!-- Account -->
         <section
           class="border-border flex flex-col gap-3 rounded-md border p-4"
           data-testid="overview-account"
         >
           <h2 class="text-base font-semibold">{{ 'users.card.account.title' | transloco }}</h2>
-          <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+          <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-sm">
             <dt class="text-muted-color">{{ 'users.columns.email' | transloco }}</dt>
             <dd class="flex flex-wrap items-center gap-2 break-all">
               {{ user.email }}
@@ -339,7 +339,7 @@ import { userTabLink } from './user-tabs';
               </button>
             }
           </div>
-          <div class="overflow-x-auto">
+          <div class="relative overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead class="text-muted-color">
                 <tr>

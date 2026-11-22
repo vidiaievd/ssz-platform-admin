@@ -63,10 +63,10 @@ import { ThemeSwitcher } from './theme-switcher';
           >
             <i class="pi pi-bars" aria-hidden="true"></i>
           </button>
-          <span class="truncate font-semibold lg:hidden">{{ 'app.title' | transloco }}</span>
+          <span class="min-w-0 truncate font-semibold lg:hidden">{{ 'app.title' | transloco }}</span>
           <app-command-palette class="ml-auto lg:ml-0" />
 
-          <div class="flex min-w-0 items-center gap-2 lg:ml-auto">
+          <div class="flex shrink-0 items-center gap-2 lg:ml-auto">
             @if (session.claims(); as claims) {
               <span
                 class="text-muted-color hidden truncate text-sm sm:inline"

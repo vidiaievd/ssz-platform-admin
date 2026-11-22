@@ -15,6 +15,7 @@ import { LanguageService } from '../../../../core/i18n/language.service';
 import { LocalDatePipe } from '../../../../shared/local-date.pipe';
 import { ReasonDialog } from '../../../../shared/reason-dialog/reason-dialog';
 import { seatCeiling, seatLevel, seatLevelClass, seatsText } from '../../seats';
+import { accountRefusalText } from './account-refusals';
 import { AssignPlanDialog } from './assign-plan-dialog';
 import { SEATS_KEY } from './feature-keys';
 import { GrantDialog } from './grant-dialog';
@@ -203,7 +204,7 @@ const GRANT_SEVERITY = {
                       {{ 'schools.plan.noFeatures' | transloco }}
                     </p>
                   } @else {
-                    <div class="overflow-x-auto">
+                    <div class="relative overflow-x-auto">
                       <table class="w-full text-sm" data-testid="plan-features">
                         <thead class="text-muted-color text-left">
                           <tr>
@@ -350,7 +351,7 @@ const GRANT_SEVERITY = {
                 {{ text('plan.noSubscriptions') | transloco }}
               </p>
             } @else {
-              <div class="overflow-x-auto">
+              <div class="relative overflow-x-auto">
                 <table class="w-full min-w-[36rem] text-sm" data-testid="plan-subscriptions">
                   <thead class="text-muted-color text-left">
                     <tr>
@@ -406,7 +407,7 @@ const GRANT_SEVERITY = {
     </div>
 
     <ng-template #grantTable let-grants let-live="live">
-      <div class="overflow-x-auto">
+      <div class="relative overflow-x-auto">
         <table
           class="w-full min-w-[44rem] text-sm"
           [attr.data-testid]="live ? 'plan-grants-table' : 'plan-past-grants'"
@@ -485,6 +486,9 @@ const GRANT_SEVERITY = {
         [payerId]="payerId"
         [plans]="assignable()"
         [currentCode]="subscription()?.planCode ?? null"
+        [expectedRevision]="data.revision()"
+        [rereading]="data.accountLoading()"
+        (reread)="data.afterChange()"
         (retryPlans)="data.reloadPlans()"
         (done)="data.afterChange()"
       />
@@ -492,6 +496,9 @@ const GRANT_SEVERITY = {
         [(visible)]="grantOpen"
         [payerType]="payerType"
         [payerId]="payerId"
+        [expectedRevision]="data.revision()"
+        [rereading]="data.accountLoading()"
+        (reread)="data.afterChange()"
         (done)="data.afterChange()"
       />
     }
@@ -503,6 +510,10 @@ const GRANT_SEVERITY = {
       level="admin"
       [danger]="true"
       [action]="cancel"
+      [codeText]="codeText()"
+      [rereadable]="true"
+      [rereading]="data.accountLoading()"
+      (reread)="data.afterChange()"
       (done)="data.afterChange()"
     >
       <p class="text-sm" data-testid="cancel-text">
@@ -518,6 +529,10 @@ const GRANT_SEVERITY = {
       level="admin"
       [danger]="true"
       [action]="revoke"
+      [codeText]="codeText()"
+      [rereadable]="true"
+      [rereading]="data.accountLoading()"
+      (reread)="data.afterChange()"
       (done)="data.afterChange()"
     >
       @if (revoking(); as g) {
@@ -543,6 +558,7 @@ export class SchoolPlanTab {
   protected readonly cancelOpen = signal(false);
   /** The grant whose revoke dialog is open. */
   protected readonly revoking = signal<GrantResponseDto | null>(null);
+  protected readonly codeText = accountRefusalText();
 
   protected readonly payerId = this.data.card.payerId;
   protected readonly payerType = this.data.card.payerType;
@@ -615,6 +631,7 @@ export class SchoolPlanTab {
       type: this.payerType,
       externalId: this.payerId()!,
       reason,
+      expectedRevision: this.data.revision(),
     });
 
   protected readonly revoke = (reason: string) =>
@@ -622,7 +639,7 @@ export class SchoolPlanTab {
       type: this.payerType,
       externalId: this.payerId()!,
       grantId: this.revoking()!.id,
-      body: { reason },
+      body: { reason, expectedRevision: this.data.revision() },
     });
 
   /** The seat limit (`limits.max`) of a feature row or grant; `null` when it carries none. */

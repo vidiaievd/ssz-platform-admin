@@ -88,10 +88,12 @@
         "closing": "Sperret: stenger snart",
         "purging": "I arkivet: slettes snart",
         "breakerOpen": "Sikring åpen: kall går til reserven",
+        "breakerOpenFailing": "Sikring åpen: agenter uten modell",
         "providerOff": "Leverandør slått av, men i bruk",
         "providerNoKey": "Leverandør i bruk mangler nøkkel",
         "deletionRequests": "Sletteforespørsler"
       },
+      "failing": "ingen modell igjen, kall feiler: {{ agents }}",
       "reopensAt": "prøves igjen {{ time }}",
       "openProviders": "Leverandører",
       "deletionCount": "{{ n }} venter",
@@ -510,6 +512,27 @@
         "ceiling": "Tak (grense + 10 %)",
         "hint": "En plass er en aktiv elev i rosteren; ventende invitasjoner tar ingen. Over grensen går skolen på 10 % slingringsmonn med advarsel; ved taket avvises nye elever. En tildeling hever bare planens grense.",
         "max": "opptil {{ n }}"
+      },
+      "errors": {
+        "account_changed": "Planen eller tilleggene ble endret i en annen fane eller av en annen administrator. Trykk «Les inn på nytt» — det du skrev blir stående — og prøv igjen.",
+        "grant_already_revoked": "Dette tillegget er allerede tilbakekalt — kanskje i en annen fane.",
+        "grant_ended": "Dette tillegget er allerede utløpt; det er ingenting å tilbakekalle.",
+        "no_current_subscription": "Det finnes ikke lenger noe gjeldende abonnement — kanskje det ble avsluttet i en annen fane.",
+        "audience_mismatch": "Denne planen er for en annen type betaler.",
+        "plan_archived": "Planen er arkivert og kan ikke tildeles.",
+        "trial_needs_period_end": "En prøveperiode trenger en sluttdato.",
+        "period_end_in_past": "Sluttdatoen må være i fremtiden.",
+        "invalid_grant_period": "Tillegget må slutte i fremtiden og etter starten.",
+        "grant_reason_required": "Et tillegg trenger en begrunnelse.",
+        "grant_disable_with_allowance": "Et tillegg som slår av en nøkkel, har ingen kreditter eller grenser.",
+        "grant_disable_not_applicable": "Denne nøkkelen kan ikke slås av med et tillegg — gi heller et tillegg med høyere grense.",
+        "feature_not_for_audience": "Denne nøkkelen er ikke for denne typen betaler.",
+        "unknown_feature_key": "Ukjent nøkkel.",
+        "invalid_credits": "Kreditter må være et tall som ikke er negativt.",
+        "credits_not_applicable": "Denne nøkkelen har ingen kreditter.",
+        "limit_required": "Denne nøkkelen trenger en grense.",
+        "invalid_limit": "Grenseverdien er ikke tillatt.",
+        "unknown_limit": "Denne nøkkelen har ingen slik grense."
       }
     },
     "ai": {
@@ -1109,6 +1132,7 @@
     "required": "Oppgi en begrunnelse for endringen.",
     "fieldRequired": "Feltet er påkrevd.",
     "cancel": "Avbryt",
+    "reread": "Les inn på nytt",
     "errors": {
       "network": "Gatewayen svarer ikke. Ingenting ble endret.",
       "forbidden": "Nivået ditt tillater ikke dette.",

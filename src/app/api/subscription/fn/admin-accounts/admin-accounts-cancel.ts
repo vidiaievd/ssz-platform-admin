@@ -25,6 +25,11 @@ export interface AdminAccountsCancel$Params {
  * Why — goes to the admin trail; required, not blank
  */
   reason: string;
+
+/**
+ * account.revision as last read; a mismatch is 409 account_changed. Omitted = no check. 0 for a payer the GET answered 404 for
+ */
+  expectedRevision?: number;
 }
 
 export function adminAccountsCancel(http: HttpClient, rootUrl: string, params: AdminAccountsCancel$Params, context?: HttpContext): Observable<StrictHttpResponse<AccountOverviewResponseDto>> {
@@ -33,6 +38,7 @@ export function adminAccountsCancel(http: HttpClient, rootUrl: string, params: A
     rb.path('type', params.type, {});
     rb.path('externalId', params.externalId, {});
     rb.query('reason', params.reason, {});
+    rb.query('expectedRevision', params.expectedRevision, {});
   }
 
   return http.request(

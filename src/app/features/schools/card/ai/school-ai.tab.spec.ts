@@ -189,6 +189,8 @@ describe('SchoolAiTab', () => {
     policy?: unknown;
     grants?: GrantResponseDto[];
     settings?: unknown;
+    /** The account's revision; 4 unless said. */
+    revision?: number;
   }
 
   const unavailable = { status: 503, statusText: 'Unavailable' };
@@ -198,7 +200,13 @@ describe('SchoolAiTab', () => {
     if (answers.usage === 'fail') u.flush(null, unavailable);
     else u.flush(answers.usage ?? usage);
     (await next(ACCOUNT)).flush({
-      account: { id: 'a-1', type: 'workspace', externalId: ID, createdAt: '2026-01-01' },
+      account: {
+        id: 'a-1',
+        type: 'workspace',
+        externalId: ID,
+        createdAt: '2026-01-01',
+        revision: answers.revision ?? 4,
+      },
       subscription: null,
       grants: answers.grants ?? [grant()],
     });
@@ -349,6 +357,7 @@ describe('SchoolAiTab', () => {
       enabled: false,
       endsAt: `${day(14)}T00:00:00.000Z`,
       reason: 'Abuse of the rehearsal',
+      expectedRevision: 4,
     });
     post.flush(
       { account: {}, subscription: null, grants: [] },
@@ -384,8 +393,44 @@ describe('SchoolAiTab', () => {
     await confirm();
 
     const post = await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST');
-    expect(post.request.body).toEqual({ reason: 'Pause over' });
+    expect(post.request.body).toEqual({ reason: 'Pause over', expectedRevision: 4 });
     post.flush({ account: {}, subscription: null, grants: [] });
+    (await next(LOOKUP, 'POST')).flush({ items: [lookup] });
+    await answerUsageAndGrants({ grants: [] });
+    await stable();
+    expect(inPage('reason-dialog')).toBeNull();
+  });
+
+  it('revokes from a stale tab: 409, reread, then the new revision is sent', async () => {
+    await open();
+    find<HTMLButtonElement>('ai-key-revoke-off', row('ai.voice_review'))!.click();
+    await dialogShown();
+    await type('reason-input', 'Pause over');
+    await confirm();
+
+    (await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST')).flush(
+      { statusCode: 409, code: 'account_changed', details: { expectedRevision: 4, revision: 6 } },
+      { status: 409, statusText: 'Conflict' },
+    );
+    await stable();
+    expect(text('reason-error', document.body)).toContain(
+      'The plan or grants were changed in another tab or by another administrator.',
+    );
+
+    inPage('reason-reread')!.click();
+    await stable();
+    // While the account is read again, confirming would send the old revision.
+    expect(inPage<HTMLButtonElement>('reason-confirm')!.disabled).toBe(true);
+    await answerUsageAndGrants({ revision: 6 });
+    (await next(LOOKUP, 'POST')).flush({ items: [lookup] });
+    await stable();
+    expect(inPage<HTMLTextAreaElement>('reason-input')!.value).toBe('Pause over');
+    expect(inPage<HTMLButtonElement>('reason-confirm')!.disabled).toBe(false);
+
+    await confirm();
+    const again = await next(`${ACCOUNT}/grants/g-1/revoke`, 'POST');
+    expect(again.request.body).toEqual({ reason: 'Pause over', expectedRevision: 6 });
+    again.flush({ account: {}, subscription: null, grants: [] });
     (await next(LOOKUP, 'POST')).flush({ items: [lookup] });
     await answerUsageAndGrants({ grants: [] });
     await stable();

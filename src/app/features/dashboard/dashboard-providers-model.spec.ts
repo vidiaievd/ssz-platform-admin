@@ -4,6 +4,7 @@ import {
   breaker,
   flash,
   google,
+  haiku,
   openai,
   provider,
   providers,
@@ -40,10 +41,40 @@ describe('providerAttention', () => {
       model: 'Sonnet',
       provider: 'Anthropic',
       capabilities: ['practice', 'review_draft'],
+      // Both have a fallback with a closed breaker: their calls go there.
+      failing: [],
       reopensAt: '2026-11-14T12:00:30.000Z',
     });
     // OpenAI is off and keyless, but no agent uses it: no row.
     expect(rows.some((r) => r.id === 'provider:p-o')).toBe(false);
+  });
+
+  it('names the agents an open breaker leaves without any model', () => {
+    const open = { state: 'open' as const, reopensAt: '2026-11-14T12:00:30.000Z' };
+    const items = [
+      breaker(
+        sonnet,
+        anthropic,
+        [
+          { capability: 'practice', role: 'primary', enabled: true },
+          { capability: 'review_draft', role: 'primary', enabled: true },
+          { capability: 'diagnostic', role: 'primary', enabled: true },
+        ],
+        open,
+      ),
+      // practice falls back to an open breaker too; review_draft to a serving one;
+      // diagnostic's fallback binding is switched off.
+      breaker(flash, google, [{ capability: 'practice', role: 'fallback', enabled: true }], open),
+      breaker(haiku, anthropic, [
+        { capability: 'review_draft', role: 'fallback', enabled: true },
+        { capability: 'diagnostic', role: 'fallback', enabled: false },
+      ]),
+    ];
+    const rows = providerAttention([anthropic, google], items);
+    expect(rows.map((r) => [r.id, r.kind === 'breakerOpen' ? r.failing : null])).toEqual([
+      ['breaker:m-sonnet', ['diagnostic', 'practice']],
+      ['breaker:m-flash', ['practice']],
+    ]);
   });
 
   it('flags a used provider that is off ("off" wins) or has no key', () => {

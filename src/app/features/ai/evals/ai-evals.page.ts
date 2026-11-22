@@ -182,7 +182,7 @@ interface RunRow {
               {{ 'ai.evals.empty' | transloco }}
             </p>
           } @else {
-            <div class="overflow-x-auto">
+            <div class="relative overflow-x-auto">
               <table class="w-full min-w-[64rem] text-sm" data-testid="eval-runs">
                 <thead class="text-muted-color text-left">
                   <tr>
